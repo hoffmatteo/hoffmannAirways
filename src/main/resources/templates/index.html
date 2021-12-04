@@ -26,27 +26,29 @@
     </thead>
     <tbody>
     <tr th:each="flight : ${flights}">
-        <th scope="row">
-            <label th:text="test"></label></th>
-        <td><label th:text="${flight.getConnection().getDeparture()}"></label>
+        <th scope="row" class="align-middle">
+            <label th:text="${flight.getConnection().getFlightNumber()}"></label></th>
+        <td class="align-middle"><label th:text="${flight.getConnection().getDeparture()}"></label>
         </td>
-        <td><label th:text="${flight.getConnection().getDestination()}"></label></td>
-        <td><label th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy hh:mm')}"></label></td>
-        <td><label th:text="${#dates.format(flight.getArrivalTime(), 'dd.MM.yyyy hh:mm')}"></label></td>
-        <td>
+        <td class="align-middle"><label th:text=" ${flight.getConnection().getDestination()}
+        "></label></td>
+        <td class="align-middle"><label
+                th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy hh:mm')}"></label></td>
+        <td class="align-middle"><label th:text="${#dates.format(flight.getArrivalTime(), 'dd.MM.yyyy hh:mm')}"></label>
+        </td>
+        <td class="align-middle">
             <a type="button" class="btn btn-primary" data-bs-toggle="modal"
-               th:attr="data-bs-target='#exampleModal'+${flight.getFlightID()}">
-                Launch demo modal
+               th:attr="data-bs-target='#bookModal'+${flight.getFlightID()}">
+                Book this flight
             </a>
-            <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true" th:id="exampleModal+${flight.getFlightID()}">
+            <div class="modal fade" tabindex="-1" aria-labelledby="bookModalLabel"
+                 aria-hidden="true" th:id="bookModal+${flight.getFlightID()}">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="container-fluid">
-
                             <form>
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel"><label
+                                    <h5 class="modal-title" id="bookModalLabel"><label
                                             th:text="'Book flight '+${flight.getConnection().getFlightNumber()}"></label>
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -106,6 +108,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </td>
     </tr>
     </tbody>
