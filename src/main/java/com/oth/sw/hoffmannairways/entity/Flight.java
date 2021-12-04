@@ -1,6 +1,7 @@
 package com.oth.sw.hoffmannairways.entity;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +29,13 @@ public class Flight {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Order> orders;
 
-    public Flight(Date departureTime, Date arrivalTime, Airplane airplane, Staff creator, FlightConnection connection) {
+    public Flight(Date departureTime, Airplane airplane, Staff creator, FlightConnection connection) {
         this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(departureTime);
+        calendar.add(Calendar.MINUTE, (int) (connection.getFlightTimeHours() * 60));
+
+        this.arrivalTime = calendar.getTime();
         this.bookedSeats = 0;
         this.bookedCargoInKg = 0;
         this.airplane = airplane;

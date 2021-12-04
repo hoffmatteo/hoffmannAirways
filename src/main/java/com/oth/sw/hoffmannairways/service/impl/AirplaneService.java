@@ -1,9 +1,9 @@
-package com.oth.sw.hoffmannairways.service;
+package com.oth.sw.hoffmannairways.service.impl;
 
 import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.repository.AirplaneRepository;
-import com.oth.sw.hoffmannairways.service.inf.AirplaneServiceIF;
+import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

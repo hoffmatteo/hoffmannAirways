@@ -1,12 +1,10 @@
 package com.oth.sw.hoffmannairways;
 
-import com.oth.sw.hoffmannairways.service.AirplaneService;
-import com.oth.sw.hoffmannairways.service.FlightService;
+import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
+import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -23,7 +21,7 @@ public class DemoApplication {
 
     }
 
-    @GetMapping("/")
+    /*@GetMapping("/")
     public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
         //Flight a = new Flight(departureTime, flightTime, shipment, destination, departure);
         //a.setArtikelNR(187);
@@ -36,7 +34,8 @@ public class DemoApplication {
         Flight a = new Flight(new Date(), new Date(), savedPlane, null, conn);
         flightService.createFlight(a);
 
-         */
+
+
 
 
         flightService.deleteFlight(0);
@@ -45,5 +44,6 @@ public class DemoApplication {
         return String.format("Hello %s!", name);
 
     }
+    */
 
 }

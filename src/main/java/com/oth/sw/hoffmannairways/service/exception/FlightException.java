@@ -1,4 +1,4 @@
-package com.oth.sw.hoffmannairways.service;
+package com.oth.sw.hoffmannairways.service.exception;
 
 import com.oth.sw.hoffmannairways.entity.Order;
 

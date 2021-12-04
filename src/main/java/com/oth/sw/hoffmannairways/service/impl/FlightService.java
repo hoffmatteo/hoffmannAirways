@@ -1,4 +1,4 @@
-package com.oth.sw.hoffmannairways.service;
+package com.oth.sw.hoffmannairways.service.impl;
 
 import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
@@ -7,8 +7,8 @@ import com.oth.sw.hoffmannairways.entity.Order;
 import com.oth.sw.hoffmannairways.repository.FlightConnectionRepo;
 import com.oth.sw.hoffmannairways.repository.FlightRepository;
 import com.oth.sw.hoffmannairways.repository.OrderRepository;
-import com.oth.sw.hoffmannairways.service.inf.AirplaneServiceIF;
-import com.oth.sw.hoffmannairways.service.inf.FlightServiceIF;
+import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
+import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +31,7 @@ public class FlightService implements FlightServiceIF {
 
     @Transactional
     public Flight createFlight(Flight flight) {
+        //TODO
         if (airplaneService.assignPlane(flight) != null) {
             Flight overlappingFlight = flightRepo.findFlightByAirplane_PlaneID(flight.getAirplane().getPlaneID());
             if (overlappingFlight != null) {
@@ -50,7 +51,7 @@ public class FlightService implements FlightServiceIF {
     //TODO maybe DTO? But only for rest?
     @Transactional
     public void deleteFlight(Flight flight) {
-        List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID())
+        List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
         orderRepository.deleteAll(orders);
         //TODO notify customer here
         //TODO notify airport here if necessary

@@ -1,4 +1,4 @@
-package com.oth.sw.hoffmannairways.service.inf;
+package com.oth.sw.hoffmannairways.service;
 
 import com.oth.sw.hoffmannairways.entity.Customer;
 import com.oth.sw.hoffmannairways.entity.Staff;
