@@ -7,34 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
 
 @Controller
-public class StartController {
+public class FlightCreateController {
     @Autowired
     private FlightService flightService;
 
     @Autowired
     private AirplaneService airplaneService;
 
-    @RequestMapping("/")
+    @RequestMapping(value = "/createflight", method = RequestMethod.GET)
     //Principal als parameter
     public String start(Model model) {
 
-        /*Airplane plane = new Airplane("A380", 100, 5000);
-        Airplane savedPlane = airplaneService.createPlane(plane);
-        FlightConnection connection = new FlightConnection("LH2370", "MUC", "DUB", 2.0);
-        FlightConnection conn = flightService.createFlightConnection(connection);
-        Flight a = new Flight(new Date(), savedPlane, null, conn);
-        flightService.createFlight(a);
-
-         */
-        Collection<Flight> flightList = flightService.listAllFlights();
-        System.out.println(flightList.size());
-        model.addAttribute("flights", flightList);
-        return "index";
+        return "createflight";
     }
-
-
 }
