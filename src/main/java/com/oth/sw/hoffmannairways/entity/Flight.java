@@ -1,5 +1,7 @@
 package com.oth.sw.hoffmannairways.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +13,7 @@ public class Flight {
     private int flightID;
     //difference, naming
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private Date departureTime;
     @Temporal(TemporalType.TIMESTAMP)
     private Date arrivalTime;
@@ -26,8 +29,11 @@ public class Flight {
     @ManyToOne
     private FlightConnection connection;
     //TODO diagramm
+    /*
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Order> orders;
+
+     */
 
     public Flight(Date departureTime, Airplane airplane, Staff creator, FlightConnection connection) {
         this.departureTime = departureTime;

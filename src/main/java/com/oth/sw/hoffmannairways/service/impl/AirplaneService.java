@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Date;
 
 @Service
@@ -46,6 +47,10 @@ public class AirplaneService implements AirplaneServiceIF {
     @Transactional
     public Airplane createPlane(Airplane airplane) {
         return airplaneRepository.save(airplane);
+    }
+
+    public Collection<Airplane> getAvailablePlanes() {
+        return airplaneRepository.getAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNull(new Date());
     }
 
 

@@ -1,6 +1,8 @@
 package com.oth.sw.hoffmannairways.web;
 
+import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
+import com.oth.sw.hoffmannairways.entity.FlightConnection;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
+import java.util.Date;
 
 @Controller
 public class StartController {
@@ -30,6 +33,8 @@ public class StartController {
         flightService.createFlight(a);
 
          */
+
+
         Collection<Flight> flightList = flightService.listAllFlights();
         System.out.println(flightList.size());
         model.addAttribute("flights", flightList);

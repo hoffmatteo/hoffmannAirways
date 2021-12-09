@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="common/header :: header"/>
+<head th:replace="common/header :: header" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script type="text/javascript" th:src="@{/js/actions.js}"></script>
 
 <body>
 
 <div th:replace="common/header :: navigation"/>
 <div class="p-5">
-    <form>
+    <form th:action="@{/createflight}" method="post" th:object="${flight}">
         <div class="mb-3">
-            <label for="flight-route-select" class="form-label">Flight route</label>
-            <select class="form-select" aria-label="Default select example" id="flight-route-select">
-                <option selected>Open this select menu</option>
-                <option value="1">DUB &rArr; MUC</option>
-                <option value="2">DUB &lArr; MUC</option>
+            <label for="selectFlightroute" class="form-label">Flight route</label>
+            <select class="form-select" aria-label="Default select example" id="selectFlightroute" th:onchange="setTime()">
+                <option selected value="0">Open this select menu</option>
+                <option value="2">HA320 DUB &lArr; MUC</option>
             </select>
         </div>
         <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Airplane</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <label for="selectAirplane" class="form-label">Airplane</label>
+            <select class="form-select" aria-label="Default select example" id="selectAirplane" th:field="${flight.airplane}">
+                <option th:each="plane : ${planes}" th:value="${plane.getPlaneID()}" th:text="${plane.getPlaneName()}">
+            </select>
         </div>
         <div class="mb-3">
-            <label for="test" class="form-label">Departure time</label>
-            <input type="password" class="form-control" id="test">
+            <label for="DepartureTimePicker" class="form-label">Departure time</label>
+            <input class="form-control" type="datetime-local" id="DepartureTimePicker" th:onchange="sendAlrt()" th:field="${flight.departureTime}"/>
         </div>
-
+        <div class="mb-3">
+            <label for="ArrivalTimePicker" class="form-label" >Arrival time</label>
+            <input class="form-control" type="datetime-local" id="ArrivalTimePicker" readonly value="2018-06-12T19:30"/>
+        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
