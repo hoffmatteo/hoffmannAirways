@@ -55,4 +55,14 @@ public class FlightConnection {
     public FlightConnection() {
 
     }
+
+    @Override
+    public String toString() {
+        return "FlightConnection{" +
+                "flightNumber='" + flightNumber + '\'' +
+                ", destination='" + destination + '\'' +
+                ", departure='" + departure + '\'' +
+                ", flightTimeHours=" + flightTimeHours +
+                '}';
+    }
 }

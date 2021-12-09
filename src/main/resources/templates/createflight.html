@@ -15,25 +15,26 @@
     <form th:action="@{/createflight}" method="post" th:object="${flight}">
         <div class="mb-3">
             <label for="selectFlightroute" class="form-label">Flight route</label>
-            <select class="form-select" aria-label="Default select example" id="selectFlightroute" th:onchange="setTime()">
-                <option selected value="0">Open this select menu</option>
-                <option value="2">HA320 DUB &lArr; MUC</option>
+            <select class="form-select" aria-label="Default select example" id="selectFlightroute" th:onchange="setFlightDuration()" th:field="${flight.connection}">
+                <option th:value="0" text="Please Select"></option>
+                <option th:each="connection : ${connections}" th:value="${connection.getFlightNumber()}" th:text="${connection.getFlightNumber()}+ ': '+${connection.getDeparture()} + ' &rArr; '+ ${connection.getDestination()} + ', ' + ${connection.getFlightTimeHours()} + 'h'">
             </select>
         </div>
         <div class="mb-3">
             <label for="selectAirplane" class="form-label">Airplane</label>
             <select class="form-select" aria-label="Default select example" id="selectAirplane" th:field="${flight.airplane}">
-                <option th:each="plane : ${planes}" th:value="${plane.getPlaneID()}" th:text="${plane.getPlaneName()}">
+                <option th:each="airplane : ${planes}" th:value="${airplane.getPlaneID()}" th:text="${airplane.getPlaneName()}">
             </select>
         </div>
         <div class="mb-3">
             <label for="DepartureTimePicker" class="form-label">Departure time</label>
-            <input class="form-control" type="datetime-local" id="DepartureTimePicker" th:onchange="sendAlrt()" th:field="${flight.departureTime}"/>
+            <input class="form-control" type="datetime-local" id="DepartureTimePicker" th:onchange="updateArrivalTime()" th:field="${flight.departureTime}"/>
         </div>
         <div class="mb-3">
             <label for="ArrivalTimePicker" class="form-label" >Arrival time</label>
-            <input class="form-control" type="datetime-local" id="ArrivalTimePicker" readonly value="2018-06-12T19:30"/>
+            <input class="form-control" type="datetime-local" id="ArrivalTimePicker" readonly th:field="${flight.arrivalTime}"/>
         </div>
+
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 

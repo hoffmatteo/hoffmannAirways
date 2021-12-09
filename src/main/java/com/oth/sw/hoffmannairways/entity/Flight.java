@@ -10,12 +10,14 @@ import java.util.List;
 @Entity
 public class Flight {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int flightID;
     //difference, naming
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date departureTime;
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date arrivalTime;
     private int bookedSeats = 0;
     private double bookedCargoInKg = 0.0;

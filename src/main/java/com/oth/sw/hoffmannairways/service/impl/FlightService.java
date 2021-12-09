@@ -113,7 +113,7 @@ public class FlightService implements FlightServiceIF {
     }
 
     public List<Flight> listAllFlights() {
-        return flightRepo.getAllByDepartureTimeAfter(new Date());
+        return flightRepo.getAllByDepartureTimeAfterOrderByDepartureTime(new Date());
     }
 
     public List<FlightConnection> listAllFlightConnections() {

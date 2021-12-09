@@ -11,7 +11,7 @@ public interface FlightRepository extends CrudRepository<Flight, Integer> {
 
     Flight findFlightByAirplane_PlaneID(int planeID);
 
-    List<Flight> getAllByDepartureTimeAfter(Date date);
+    List<Flight> getAllByDepartureTimeAfterOrderByDepartureTime(Date date);
 
     List<Flight> getAllByConnection(FlightConnection connection);
 
