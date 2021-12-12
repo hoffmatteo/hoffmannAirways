@@ -14,6 +14,9 @@ public class Order {
 
     @ManyToOne
     private Flight flight;
+
+
+
     @ManyToOne
     private Customer customer;
 
@@ -58,5 +61,16 @@ public class Order {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "oderID=" + oderID +
+                ", totalSeats=" + totalSeats +
+                ", totalCargoInKg=" + totalCargoInKg +
+                ", flight=" + flight +
+                ", customer=" + customer +
+                '}';
     }
 }
