@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="common/header :: header" />
+
+<div th:fragment="flightTable (orders)">
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Order number</th>
+            <th scope="col">Flight number</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Departure time</th>
+            <th scope="col">Arrival time</th>
+            <th scope="col">Booked seats</th>
+
+
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <th scope="row" class="align-middle">
+                <label th:text="${order.getOderID()}"></label></th>
+            <th scope="row" class="align-middle">
+                <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></th>
+            <td class="align-middle"><label th:text="${order.getFlight().getConnection().getDeparture()}"></label>
+            </td>
+            <td class="align-middle"><label th:text=" ${order.getFlight().getConnection().getDestination()}"></label></td>
+            <td class="align-middle"><label
+                    th:text="${#dates.format(order.getFlight().getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
+            <td class="align-middle"><label th:text="${#dates.format(order.getFlight().getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
+            </td>
+            <td class="align-middle"><label th:text="${order.getTotalSeats()}"></label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</html>

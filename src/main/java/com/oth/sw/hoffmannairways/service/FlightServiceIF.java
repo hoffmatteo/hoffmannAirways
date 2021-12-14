@@ -16,6 +16,12 @@ public interface FlightServiceIF {
 
     Flight bookFlight(Order order);
 
+    List<Order> getAllOrders();
+
+    List<Order> getAllPastOrders();
+
+    List<Order> getAllFutureOrders();
+
     List<Flight> listAllFlights();
 
     List<Flight> getFlightsForConnection(FlightConnection connection);

@@ -8,14 +8,13 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    //TODO orderID
     private int oderID;
     private int totalSeats;
     private double totalCargoInKg;
 
     @ManyToOne
     private Flight flight;
-
-
 
     @ManyToOne
     private Customer customer;
@@ -30,6 +29,12 @@ public class Order {
         this.flight = flight;
         this.customer = customer;
     }
+
+    public int getOderID() {
+        return oderID;
+    }
+
+
 
     public int getTotalSeats() {
         return totalSeats;

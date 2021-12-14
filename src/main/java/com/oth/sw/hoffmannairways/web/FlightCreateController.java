@@ -43,6 +43,8 @@ public class FlightCreateController {
     //Principal als parameter
     public String createFlight(Model model, @ModelAttribute("flight") Flight f) {
         //TODO check if values are null, return errors
+        System.out.println(f.toString());
+
         Flight createdFlight = flightService.createFlight(f);
         if(createdFlight != null) {
             System.out.println("success!");

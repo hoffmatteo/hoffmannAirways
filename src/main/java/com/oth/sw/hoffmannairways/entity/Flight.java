@@ -125,4 +125,17 @@ public class Flight {
         this.bookedCargoInKg = bookedCargoInKg;
     }
 
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "flightID=" + flightID +
+                ", departureTime=" + departureTime +
+                ", arrivalTime=" + arrivalTime +
+                ", bookedSeats=" + bookedSeats +
+                ", bookedCargoInKg=" + bookedCargoInKg +
+                ", airplane=" + airplane.getPlaneID() +
+                ", creator=" + creator +
+                ", connection=" + connection +
+                '}';
+    }
 }

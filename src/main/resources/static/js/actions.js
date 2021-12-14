@@ -12,13 +12,20 @@ function updateArrivalTime() {
 }
 
 function setFlightDuration() {
-    var connection = $("#selectFlightroute").text();
+    var connection = $("#selectFlightroute").find(":selected").text();
     var strings = connection.split(',');
     var flightTime = strings[1];
     if(flightTime != null) {
         var result = flightTime.substring(1, flightTime.length - 1);
+        console.log(result);
 
-        routeTime = parseFloat(result[0]);
+        routeTime = parseFloat(result);
+        if(routeTime != null) {
+            console.log("Set route time to " + routeTime);
+        }
+        else {
+            routeTime = 0;
+        }
     }
     else {
         routeTime = 0;

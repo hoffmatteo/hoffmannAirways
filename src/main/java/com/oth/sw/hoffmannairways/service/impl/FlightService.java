@@ -32,14 +32,14 @@ public class FlightService implements FlightServiceIF {
     @Transactional
     public Flight createFlight(Flight flight) {
         //TODO
-        if (airplaneService.assignPlane(flight) != null) {
+        Airplane plane = airplaneService.assignPlane(flight);
+        if (plane != null) {
             Flight overlappingFlight = flightRepo.findFlightByAirplane_PlaneID(flight.getAirplane().getPlaneID());
-            if (overlappingFlight != null) {
+            if (overlappingFlight != null && overlappingFlight.getFlightID() != flight.getFlightID()) {
                 overlappingFlight.setAirplane(null);
             }
-            Airplane plane = airplaneService.assignPlane(flight);
             //TODO necessary? I already save the new information in airplaneService --> look at Cascade
-            flight.setAirplane(plane);
+            //flight.setAirplane(plane);
             //TODO here: call airport
         } else {
             return null;
@@ -111,6 +111,20 @@ public class FlightService implements FlightServiceIF {
 
 
     }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    public List<Order> getAllPastOrders() {
+        return orderRepository.findOrdersByFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(new Date());
+    }
+
+    public List<Order> getAllFutureOrders() {
+        return orderRepository.findOrdersByFlight_DepartureTimeAfterOrderByFlight_DepartureTime(new Date());
+    }
+
 
     public List<Flight> listAllFlights() {
         return flightRepo.getAllByDepartureTimeAfterOrderByDepartureTime(new Date());
