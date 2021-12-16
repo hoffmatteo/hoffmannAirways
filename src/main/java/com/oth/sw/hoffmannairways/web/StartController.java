@@ -32,6 +32,7 @@ public class StartController {
     @RequestMapping("/flights")
     //Principal als parameter
     public String viewFlights(Model model) {
+
         /*
         Airplane plane = new Airplane("A380", 100, 5000);
         Airplane savedPlane = airplaneService.createPlane(plane);
@@ -44,8 +45,8 @@ public class StartController {
         FlightConnection conn = flightService.createFlightConnection(connection);
         connection = new FlightConnection("LH457", "LAX", "FRA", 11.0);
         flightService.createFlightConnection(connection);
+        */
 
-         */
 
         Collection<Flight> flightList = flightService.listAllFlights();
         System.out.println(flightList.size());

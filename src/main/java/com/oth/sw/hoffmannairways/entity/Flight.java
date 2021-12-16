@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class Flight {
@@ -24,7 +23,7 @@ public class Flight {
     private double bookedCargoInKg = 0.0;
 
     //cascade stuff
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Airplane airplane;
     @ManyToOne
     private Staff creator;

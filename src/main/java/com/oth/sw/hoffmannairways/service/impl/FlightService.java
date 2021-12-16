@@ -38,9 +38,6 @@ public class FlightService implements FlightServiceIF {
             if (overlappingFlight != null && overlappingFlight.getFlightID() != flight.getFlightID()) {
                 overlappingFlight.setAirplane(null);
             }
-            //TODO necessary? I already save the new information in airplaneService --> look at Cascade
-            //flight.setAirplane(plane);
-            //TODO here: call airport
         } else {
             return null;
         }
@@ -86,7 +83,6 @@ public class FlightService implements FlightServiceIF {
     }
 
     @Transactional
-
     public Flight bookFlight(Order order) {
         //TODO customer checking
         Optional<Flight> flightOption = flightRepo.findById(order.getFlight().getFlightID());
@@ -101,7 +97,6 @@ public class FlightService implements FlightServiceIF {
                 flight.setBookedSeats(totalBookedSeats);
                 flight.setBookedCargoInKg(totalBookedCargo);
                 orderRepository.save(order);
-                flightRepo.save(flight);
                 return flight;
 
             }
@@ -138,11 +133,11 @@ public class FlightService implements FlightServiceIF {
         return flightRepo.getAllByConnection(conn);
 
     }
-
+    @Transactional
     public FlightConnection createFlightConnection(FlightConnection flightConnection) {
         return flightConnectionRepo.save(flightConnection);
     }
-
+    @Transactional
     public void repairPlane(Airplane plane) {
         Flight flight = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
         deleteFlight(flight);

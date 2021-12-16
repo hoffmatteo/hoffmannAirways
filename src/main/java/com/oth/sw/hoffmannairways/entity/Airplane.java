@@ -16,6 +16,9 @@ public class Airplane {
     private Date unavailableUntil;
     @ElementCollection
     private List<String> issues;
+    @OneToOne(mappedBy = "airplane")
+
+    private Flight assignment;
 
     public int getPlaneID() {
         return planeID;
@@ -59,6 +62,14 @@ public class Airplane {
 
     public void setIssues(List<String> issues) {
         this.issues = issues;
+    }
+
+    public Flight getAssignment() {
+        return assignment;
+    }
+
+    public void setAssignment(Flight assignment) {
+        this.assignment = assignment;
     }
 
     public Airplane(String planeName, int totalSeats, double maxCargo) {

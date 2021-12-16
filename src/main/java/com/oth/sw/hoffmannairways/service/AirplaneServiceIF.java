@@ -14,4 +14,7 @@ public interface AirplaneServiceIF {
     public Airplane createPlane(Airplane plane);
 
     public Collection<Airplane> getAvailablePlanes();
+
+    public Collection<Airplane> getAllPlanes();
+
 }
