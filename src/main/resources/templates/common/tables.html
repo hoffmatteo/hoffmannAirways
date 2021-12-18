@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head th:replace="common/header :: header" />
+<script type="text/javascript" th:src="@{/js/actions.js}"></script>
+
 
 <div th:fragment="flightTable (orders)">
 
@@ -69,18 +71,69 @@
             </div>
             <div th:if="${unavailable} == true">
 
-            <td <label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy hh:mm')}"></label>
+            <td> <label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy hh:mm')}"></label>
             </td>
             </div>
             <div th:if="${repairable} == true">
                 <td class="align-middle">
                     <div class="float-end">
-                        <a type="button" class="btn btn-primary text-right" >Repair plane </a>
-                    </div>
-                </td>
-            </a>
-            </div>
+                        <a type="button" class="btn btn-primary" data-bs-toggle="modal"
+                           th:attr="data-bs-target='#planeModal'+${plane.getPlaneID()}">
+                            Repair plane
+                        </a>
+                        <div class="modal fade" tabindex="-1" aria-labelledby="planeModalLabel"
+                             aria-hidden="true" th:id="planeModal+${plane.getPlaneID()}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="container-fluid">
+                                        <form th:action="@{/repairplane}" method="post" th:object="${plane}">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="bookModalLabel"><label
+                                                        th:text="'Repair Plane '+${plane.getPlaneName()}+ ', ID: ' +${plane.getPlaneID()}"></label>
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <div class="mb-3">
+                                                            <label for="DeadlinePicker" class="form-label" >Deadline</label>
+                                                            <input class="form-control" type="date" id="DeadlinePicker"/>
+                                                        </div>
 
+                                                        <div class="mb-3">
+                                                            <label class="control-label">Issues</label>
+                                                            <div id="inputFormRow">
+                                                                <div class="input-group mb-3">
+                                                                    <input type="text" name="title[]" class="form-control m-input" placeholder="Enter title" autocomplete="off">
+                                                                    <div class="input-group-append">
+                                                                        <button id="removeRow" type="button" class="btn btn-danger">Remove</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div id="newRow"></div>
+                                                            <button id="addRow" type="button" class="btn btn-info">Add Row</button>                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    </td>
+            </div>
         </tr>
         </tbody>
     </table>

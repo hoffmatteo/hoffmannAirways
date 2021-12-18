@@ -27,10 +27,10 @@
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><div th:replace="common/flighttable :: planeTable(${availablePlanes}, false, false, true)"> </div></div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">        <div th:replace="common/flighttable :: planeTable(${assignedPlanes}, true, true, true)"> </div>
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><div th:replace="common/tables :: planeTable(${availablePlanes}, false, false, true)"> </div></div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"> <div th:replace="common/tables :: planeTable(${assignedPlanes}, true, true, true)"> </div>
         </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">        <div th:replace="common/flighttable :: planeTable(${brokenPlanes}, false, true, false)"> </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab"> <div th:replace="common/tables :: planeTable(${brokenPlanes}, false, true, false)"> </div>
         </div>
     </div>
 
