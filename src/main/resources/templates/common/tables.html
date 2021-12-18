@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="common/header :: header" />
+
+<div th:fragment="flightTable (orders)">
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Order number</th>
+            <th scope="col">Flight number</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Departure time</th>
+            <th scope="col">Arrival time</th>
+            <th scope="col">Booked seats</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <th scope="row" class="align-middle">
+                <label th:text="${order.getOderID()}"></label></th>
+            <th scope="row" class="align-middle">
+                <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></th>
+            <td class="align-middle"><label th:text="${order.getFlight().getConnection().getDeparture()}"></label>
+            </td>
+            <td class="align-middle"><label th:text=" ${order.getFlight().getConnection().getDestination()}"></label></td>
+            <td class="align-middle"><label
+                    th:text="${#dates.format(order.getFlight().getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
+            <td class="align-middle"><label th:text="${#dates.format(order.getFlight().getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
+            </td>
+            <td class="align-middle"><label th:text="${order.getTotalSeats()}"></label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:fragment="planeTable (planes, assignment, unavailable, repairable)">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <div th:if="${assignment} == true">
+
+            <th scope="col">Assignment</th>
+            </div>
+            <div th:if="${unavailable} == true">
+            <th scope="col">Unavailable until</th>
+            </div>
+            <div th:if="${repairable} == true">
+                <th scope="col"></th>
+            </div>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="plane : ${planes}">
+            <th scope="row" class="align-middle">
+                <label th:text="${plane.getPlaneID()}"></label></th>
+            <td ><label th:text="${plane.getPlaneName()}"></label>
+            </td>
+            <div th:if="${assignment} == true">
+
+            <td ><label th:text="${plane.getAssignment()?.getConnection()?.getFlightNumber()}"></label>
+            </td>
+            </div>
+            <div th:if="${unavailable} == true">
+
+            <td <label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy hh:mm')}"></label>
+            </td>
+            </div>
+            <div th:if="${repairable} == true">
+                <td class="align-middle">
+                    <div class="float-end">
+                        <a type="button" class="btn btn-primary text-right" >Repair plane </a>
+                    </div>
+                </td>
+            </a>
+            </div>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+</html>

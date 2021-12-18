@@ -9,11 +9,11 @@
 <div class="p-5">
     <div>
         <h2>Upcoming flights</h2>
-        <div th:replace="common/flighttable :: flightTable(${upcomingOrders})"> </div>
+        <div th:replace="common/tables :: flightTable(${upcomingOrders})"> </div>
     </div>
-    <div>
+    <div class="mt-5">
         <h2>Past flights</h2>
-        <div th:replace="common/flighttable :: flightTable(${pastOrders})"> </div>
+        <div th:replace="common/tables :: flightTable(${pastOrders})"> </div>
     </div>
 
 

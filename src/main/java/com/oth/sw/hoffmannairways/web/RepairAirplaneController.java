@@ -18,9 +18,12 @@ public class RepairAirplaneController {
     //Principal als parameter
     public String viewRepairPlane(Model model) {
         //TODO find and get
-        Collection<Airplane> planeList = airplaneService.getAllPlanes();
-        model.addAttribute("planes", planeList);
-        System.out.println(planeList.size());
+        Collection<Airplane> availablePlanes = airplaneService.getAvailablePlanes();
+        Collection<Airplane> assignedPlanes = airplaneService.getAllAssignedPlanes();
+        Collection<Airplane> brokenPlanes = airplaneService.getAllBrokenPlanes();
+        model.addAttribute("availablePlanes", availablePlanes);
+        model.addAttribute("assignedPlanes", assignedPlanes);
+        model.addAttribute("brokenPlanes", brokenPlanes);
         return "repairplane";
     }
 }

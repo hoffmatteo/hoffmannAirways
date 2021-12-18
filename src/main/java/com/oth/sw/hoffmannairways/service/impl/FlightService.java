@@ -120,7 +120,7 @@ public class FlightService implements FlightServiceIF {
         return orderRepository.findOrdersByFlight_DepartureTimeAfterOrderByFlight_DepartureTime(new Date());
     }
 
-
+//TODO change name
     public List<Flight> listAllFlights() {
         return flightRepo.getAllByDepartureTimeAfterOrderByDepartureTime(new Date());
     }

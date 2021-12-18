@@ -17,4 +17,10 @@ public interface AirplaneServiceIF {
 
     public Collection<Airplane> getAllPlanes();
 
+    public Collection<Airplane> getAllAssignedPlanes();
+
+    public Collection<Airplane> getAllBrokenPlanes();
+
+
+
 }
