@@ -35,10 +35,11 @@ public class AirplaneService implements AirplaneServiceIF {
 
     @Transactional
     public Airplane repairPlane(Airplane plane) {
+
         if (!plane.getIssues().isEmpty() && plane.getUnavailableUntil() != null) {
             //TODO call haberl repairs
-            Date newDeadline = new Date();
-            plane.setUnavailableUntil(newDeadline);
+            //Date newDeadline = new Date();
+            //plane.setUnavailableUntil(newDeadline);
             return airplaneRepository.save(plane);
         }
         return null;

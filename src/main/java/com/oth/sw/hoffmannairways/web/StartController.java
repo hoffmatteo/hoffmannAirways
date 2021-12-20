@@ -33,7 +33,7 @@ public class StartController {
     //Principal als parameter
     public String viewFlights(Model model) {
 
-        /*
+    /*
         Airplane plane = new Airplane("A380", 100, 5000);
         Airplane savedPlane = airplaneService.createPlane(plane);
         plane = new Airplane("A320", 500, 5000);
@@ -45,7 +45,9 @@ public class StartController {
         FlightConnection conn = flightService.createFlightConnection(connection);
         connection = new FlightConnection("LH457", "LAX", "FRA", 11.0);
         flightService.createFlightConnection(connection);
-        */
+
+     */
+
 
 
         Collection<Flight> flightList = flightService.listAllFlights();

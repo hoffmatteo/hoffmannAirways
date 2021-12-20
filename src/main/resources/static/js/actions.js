@@ -59,18 +59,21 @@ Date.prototype.toDateInputValue = (function() {
 
 });
 
+var index = 1;
+
 $(document).on('click', '#addRow', function () {
     var html = '';
     html += '<div id="inputFormRow">';
     html += '<div class="input-group mb-3">';
-    html += '<input type="text" name="title[]" class="form-control m-input" placeholder="Enter title" autocomplete="off">';
+    html += '<input type="text" name="issues[' + index + ']" class="form-control m-input" placeholder="Enter title" autocomplete="off" id="issues' + index + '">';
     html += '<div class="input-group-append">';
-    html += '<button id="removeRow" type="button" class="btn btn-danger" th:onclick="testFunc()">Remove</button>';
+    html += '<button id="removeRow" type="button" class="btn btn-danger">Remove</button>';
     html += '</div>';
     html += '</div>';
 
     $('#newRow').append(html);
     console.log("test");
+    index++;
 });
 
 // remove row

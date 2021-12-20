@@ -1,5 +1,7 @@
 package com.oth.sw.hoffmannairways.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,8 @@ public class Airplane {
     private String planeName;
     private int totalSeats;
     private double maxCargo;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date unavailableUntil;
     @ElementCollection
     private List<String> issues;
@@ -22,6 +26,10 @@ public class Airplane {
 
     public int getPlaneID() {
         return planeID;
+    }
+
+    public void setPlaneID(int planeID) {
+        this.planeID = planeID;
     }
 
     public String getPlaneName() {
@@ -80,5 +88,18 @@ public class Airplane {
 
     public Airplane() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "Airplane{" +
+                "planeID=" + planeID +
+                ", planeName='" + planeName + '\'' +
+                ", totalSeats=" + totalSeats +
+                ", maxCargo=" + maxCargo +
+                ", unavailableUntil=" + unavailableUntil +
+                ", issues=" + issues +
+                ", assignment=" + assignment +
+                '}';
     }
 }
