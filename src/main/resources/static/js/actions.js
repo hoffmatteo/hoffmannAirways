@@ -84,3 +84,12 @@ $(document).on('click', '#removeRow', function () {
 function testFunc() {
     console.log("lol");
 }
+
+function empty() {
+    var issue = $("#issues0").val;
+    if(issue === "") {
+
+        return false;
+    }
+
+}

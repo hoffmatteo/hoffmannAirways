@@ -38,27 +38,21 @@
         </tbody>
     </table>
 </div>
-
-<div th:fragment="planeTable (planes, assignment, unavailable, repairable)">
+<!-- cases: available, assigned, broken-->
+<div th:fragment="planeTable (planes, case)">
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <!-- TODO -->
             <th scope="col">ID</th>
             <th scope="col">Name</th>
-            <div th:if="${assignment} == true">
-
+            <div th:if="${case} == 'assigned'">
             <th scope="col">Assignment</th>
             </div>
-            <div th:if="${unavailable} == true">
+            <div th:if="${case eq 'assigned' or case eq 'broken'}">
             <th scope="col">Unavailable until</th>
             </div>
-            <div th:if="${repairable} == true">
-                <th scope="col"></th>
-            </div>
-            <div th:if="${repairable} == false">
-                <th scope="col">Issues</th>
-            </div>
+            <th scope="col"></th>
+
 
 
 
@@ -67,22 +61,23 @@
         </thead>
         <tbody>
         <!-- data-toggle="collapse" th:attr="data-bs-target='#accordion'+${plane.getPlaneID()}" -->
-        <tr th:each="plane : ${planes}"  class="clickable">
+        <div th:each="plane : ${planes}">
+        <tr>
             <th scope="row" class="align-middle">
                 <label th:text="${plane.getPlaneID()}"></label></th>
             <td ><label th:text="${plane.getPlaneName()}"></label>
             </td>
-            <div th:if="${assignment} == true">
+            <div th:if="${case} == 'assigned'">
 
             <td ><label th:text="${plane.getAssignment()?.getConnection()?.getFlightNumber()}"></label>
             </td>
             </div>
-            <div th:if="${unavailable} == true">
+            <div th:if="${case eq 'assigned' or case eq 'broken'}">
 
             <td> <label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy hh:mm')}"></label>
             </td>
             </div>
-            <div th:if="${repairable} == true">
+            <div th:if="${case} != 'broken'">
                 <td class="align-middle">
                     <div class="float-end">
                         <a type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -113,15 +108,14 @@
                                                             <label class="control-label">Issues</label>
                                                             <div id="inputFormRow">
                                                                 <div class="input-group mb-3">
-                                                                    <input type="text" name="title[]" class="form-control m-input" placeholder="Enter title" autocomplete="off" th:field="${newPlane.issues[0]}">
-                                                                    <div class="input-group-append">
-                                                                        <button id="removeRow" type="button" class="btn btn-danger">Remove</button>
-                                                                    </div>
+                                                                    <input type="text" class="form-control m-input" placeholder="Enter title" autocomplete="off" th:field="${newPlane.issues[0]}"
+                                                                    >
+
                                                                 </div>
                                                             </div>
 
                                                             <div id="newRow"></div>
-                                                            <button id="addRow" type="button" class="btn btn-info">Add Row</button>                                                        </div>
+                                                            <button id="addRow" type="button" class="btn btn-primary">Add Row</button>                                                        </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <input type="hidden" th:value="${plane.getPlaneID()}" id="planeID" name="planeID" readonly>
@@ -139,7 +133,7 @@
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                         Close
                                                     </button>
-                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                    <button type="submit" class="btn btn-primary" th:onclick="return empty()">Submit</button>
                                                 </div>
                                         </form>
                                     </div>
@@ -154,27 +148,54 @@
 
                 </td>
             </div>
-            <div th:if="${repairable} != true">
-                <td class="hiddenRow">
-                    <div class="accordion" id="accordionExample">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    Accordion Item #3
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                                </div>
-                            </div>
-                        </div>
-                    </div>                </td>
+            <div th:if="${case} == 'broken'">
+                <td>
+                    <div class="float-end">
+
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIssue" aria-expanded="false"
+                            th:attr="data-bs-target='#collapseIssue'+${plane.getPlaneID()}" >
+                                View issues
+                            </button>
+                    </div>
+
+                </td>
             </div>
         </tr>
+            <div th:if="${case} == 'broken'">
+            <tr class="p-0">
+                <td colspan="4" class="p-0">
+                <div class="accordion-collapse collapse" th:id="'collapseIssue'+${plane.getPlaneID()}">
+                    <div class="accordion-body">
+                        <table>
+                            <tr>
+                                <th>Issues</th>
+                            </tr>
+                            <tr th:each="issue : ${plane.getIssues()}">
+                                <td>
+                                    <label th:text="${issue}" ></label>
+                                </td>
+
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                </td>
+            </tr>
+                <tr class="d-none p-0">
+                    <td colspan="4" class="d-none" ></td>
+                </tr>
+
+        </div>
+        </div>
+
+
+
         </tbody>
     </table>
 </div>
+
+
+
 </html>
 
 
