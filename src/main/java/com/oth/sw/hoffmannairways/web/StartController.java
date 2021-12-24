@@ -4,6 +4,7 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.Order;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
+import com.oth.sw.hoffmannairways.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,7 +67,7 @@ public class StartController {
         String message;
         String alertClass;
         if(f != null) {
-            message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + f.getFormattedDate(f.getDepartureTime());
+            message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
             alertClass = "alert-success";
         }
         else {
@@ -78,13 +79,10 @@ public class StartController {
 
         //TODO source https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button
 
-        Collection<Flight> flightList = flightService.listAllFlights();
-        model.addAttribute("flights", flightList);
-        model.addAttribute("order", new Order());
         model.addAttribute("message", message);
         model.addAttribute("alertClass", alertClass);
 
-        return "flights";
+        return viewFlights(model);
     }
 
     @RequestMapping(value = "/orders", method = RequestMethod.GET)

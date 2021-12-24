@@ -23,8 +23,8 @@
         <tr th:each="order : ${orders}">
             <th scope="row" class="align-middle">
                 <label th:text="${order.getOderID()}"></label></th>
-            <th scope="row" class="align-middle">
-                <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></th>
+            <td class="align-middle">
+                <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></td>
             <td class="align-middle"><label th:text="${order.getFlight().getConnection().getDeparture()}"></label>
             </td>
             <td class="align-middle"><label th:text=" ${order.getFlight().getConnection().getDestination()}"></label></td>
@@ -53,10 +53,6 @@
             </div>
             <th scope="col"></th>
 
-
-
-
-
         </tr>
         </thead>
         <tbody>
@@ -74,7 +70,7 @@
             </div>
             <div th:if="${case eq 'assigned' or case eq 'broken'}">
 
-            <td> <label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy hh:mm')}"></label>
+            <td> <label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy HH:mm')}"></label>
             </td>
             </div>
             <div th:if="${case} != 'broken'">
@@ -101,7 +97,7 @@
                                                     <div class="form-group">
                                                         <div class="mb-3">
                                                             <label for="DeadlinePicker" class="form-label" >Deadline</label>
-                                                            <input class="form-control" type="date" id="DeadlinePicker" th:field="${newPlane.unavailableUntil}"/>
+                                                            <input class="form-control" type="datetime-local" id="DeadlinePicker" th:field="${newPlane.unavailableUntil}"/>
                                                         </div>
 
                                                         <div class="mb-3">

@@ -3,6 +3,7 @@ package com.oth.sw.hoffmannairways.web;
 import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
+import com.oth.sw.hoffmannairways.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,12 +43,21 @@ public class RepairAirplaneController {
         System.out.println(a.toString());
         System.out.println(a.getPlaneID());
 
-        flightService.repairPlane(a);
+        Airplane plane = flightService.repairPlane(a);
 
-
-
-
-
+        String message;
+        String alertClass;
+        if(plane != null) {
+            message = "Successfully started repair process for Airplane " + plane.getPlaneName()
+            + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());
+            alertClass = "alert-success";
+        }
+        else {
+            message = "Process failed.";
+            alertClass = "alert-danger";
+        }
+        model.addAttribute("message", message);
+        model.addAttribute("alertClass", alertClass);
 
         return viewRepairPlane(model);
     }

@@ -15,14 +15,16 @@ public class Airplane {
     private String planeName;
     private int totalSeats;
     private double maxCargo;
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date unavailableUntil;
     @ElementCollection
     private List<String> issues;
     @OneToOne(mappedBy = "airplane")
 
     private Flight assignment;
+
+
 
     public int getPlaneID() {
         return planeID;

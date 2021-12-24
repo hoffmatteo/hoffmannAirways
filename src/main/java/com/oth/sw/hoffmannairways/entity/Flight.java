@@ -3,7 +3,6 @@ package com.oth.sw.hoffmannairways.entity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -55,10 +54,6 @@ public class Flight {
 
     }
 
-    public String getFormattedDate(Date oldDate) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        return format.format(oldDate);
-    }
 
     public Airplane getAirplane() {
         return airplane;

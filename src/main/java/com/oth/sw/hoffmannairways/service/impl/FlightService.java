@@ -138,14 +138,14 @@ public class FlightService implements FlightServiceIF {
         return flightConnectionRepo.save(flightConnection);
     }
     @Transactional
-    public void repairPlane(Airplane plane) {
+    public Airplane repairPlane(Airplane plane) {
         Flight flight = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
         //TODO
         //überlegen: falls deadline vor start des flugs --> nicht löschen?
         if(flight != null) {
             deleteFlight(flight);
         }
-        airplaneService.repairPlane(plane);
+        return airplaneService.repairPlane(plane);
     }
 
 

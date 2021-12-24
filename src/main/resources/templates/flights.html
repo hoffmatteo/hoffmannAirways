@@ -48,10 +48,17 @@
         <td class="align-middle"><label th:text="${#dates.format(flight.getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
         </td>
         <td class="align-middle">
+            <div class="float-end">
+                <a type="button" class="btn btn-primary" href="/editflight">
+                    Edit
+                </a>
+
+
             <a type="button" class="btn btn-primary" data-bs-toggle="modal"
                th:attr="data-bs-target='#bookModal'+${flight.getFlightID()}">
                 Book this flight
             </a>
+            </div>
             <div class="modal fade" tabindex="-1" aria-labelledby="bookModalLabel"
                  aria-hidden="true" th:id="bookModal+${flight.getFlightID()}">
                 <div class="modal-dialog">
