@@ -7,6 +7,7 @@ import com.oth.sw.hoffmannairways.entity.Order;
 import java.util.List;
 
 public interface FlightServiceIF {
+    Flight getFlight(int flightID);
 
     Flight createFlight(Flight flight);
 

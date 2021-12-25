@@ -13,9 +13,10 @@
 
 <div th:replace="common/header :: navigation"/>
 <div class="p-5">
-    <form th:action="@{/createflight}" method="post" th:object="${flight}">
-        <div th:replace="common/flightform :: flightform(${flight}, ${connections}, ${planes})"> </div>
-    </form>
+  <form th:action="@{/editflight}" method="post" th:object="${flight}">
+    <div th:replace="common/flightform :: flightform(${flight}, ${connections}, ${planes})"> </div>
+    <input th:field="${flight.flightID}" th:value="${flight.getFlightID()}" type="hidden"/>
+  </form>
 
 </div>
 

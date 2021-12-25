@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class FlightCreateController {
@@ -26,15 +29,21 @@ public class FlightCreateController {
     @RequestMapping(value = "/createflight", method = RequestMethod.GET)
     //Principal als parameter
     public String viewCreateFlight(Model model) {
-        if(model.getAttribute("flight") == null) {
-            model.addAttribute("flight", new Flight());
+        model.addAllAttributes(setFlightArguments());
+        model.addAttribute("flight", new Flight());
+        return "createflight";
 
-        }
+
+    }
+
+    private Map<String, Object> setFlightArguments() {
+        Map<String, Object> attributes = new HashMap<>();
         Collection<Airplane> planeList = airplaneService.getAvailablePlanes();
         List<FlightConnection> connectionList = flightService.listAllFlightConnections();
-        model.addAttribute("planes", planeList);
-        model.addAttribute("connections", connectionList);
-        return "createflight";
+        attributes.put("planes", planeList);
+        attributes.put("connections", connectionList);
+        return attributes;
+
     }
 
     @RequestMapping(value = "/createflight", method = RequestMethod.POST)
@@ -48,15 +57,30 @@ public class FlightCreateController {
             System.out.println("success!");
         }
 
-
         return viewCreateFlight(model);
     }
-    @RequestMapping(value = "/editflight", method = RequestMethod.GET)
-    public String editFlight(Model model) {
 
-        model.addAttribute("flight", flightService.listAllFlights().get(0));
-        return viewCreateFlight(model);
+    @RequestMapping(value = "/editflight/{flight_id}", method = RequestMethod.GET)
+    public String viewEditFlight(Model model, @PathVariable("flight_id") int flightID) {
+        Flight selectedFlight = flightService.getFlight(flightID);
+        if(selectedFlight != null) {
+            model.addAttribute("flight", selectedFlight);
+        }
+        else {
+            //TODO
+        }
+        model.addAllAttributes(setFlightArguments());
 
+        return "editflight";
+
+    }
+
+    @RequestMapping(value = "/editflight", method = RequestMethod.POST)
+    //Principal als parameter
+    public String editFlight(Model model, @ModelAttribute("flight") Flight f) {
+        Flight savedFlight = flightService.editFlight(f);
+
+        return viewEditFlight(model, f.getFlightID());
     }
 
 

@@ -52,7 +52,6 @@ public class StartController {
 
 
         Collection<Flight> flightList = flightService.listAllFlights();
-        System.out.println(flightList.size());
         model.addAttribute("flights", flightList);
         model.addAttribute("order", new Order());
         return "flights";

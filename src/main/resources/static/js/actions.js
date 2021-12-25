@@ -1,14 +1,23 @@
 var routeTime = 0;
 
 $(document).ready( function() {
-    $("#DepartureTimePicker").val(new Date().toDateInputValue());
-    updateArrivalTime();
-
+    //TODO source https://stackoverflow.com/questions/8102940/javascript-check-what-page-has-loaded
+    window.location.pathname;
+    var sPath = window.location.pathname;
+    var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
+    if(sPage === "createflight"){
+        $("#DepartureTimePicker").val(new Date().toDateInputValue());
+        updateArrivalTime();
+    }
+    else {
+        setFlightDuration();
+    }
 });
 function updateArrivalTime() {
     var date = new Date($("#DepartureTimePicker").val());
     date.addHours(routeTime);
     $("#ArrivalTimePicker").val(date.toDateInputValue());
+    console.log("done");
 }
 
 function setFlightDuration() {

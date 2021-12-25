@@ -74,10 +74,11 @@ public class FlightService implements FlightServiceIF {
         Optional<Flight> oldFlightOption = flightRepo.findById(flight.getFlightID());
         if (oldFlightOption.isPresent()) {
             Flight oldFlight = oldFlightOption.get();
-            deleteFlight(oldFlight);
-            createFlight(flight);
-            return flight;
+            //TODO notify customers, call airport etc.
+            Flight savedFlight = flightRepo.save(flight);
+            return savedFlight;
         } else {
+            System.out.println("Flight not found " + flight.getFlightID());
             return null;
         }
     }
@@ -147,6 +148,13 @@ public class FlightService implements FlightServiceIF {
         }
         return airplaneService.repairPlane(plane);
     }
+
+    public Flight getFlight(int flightID) {
+        Optional<Flight> flightOption = flightRepo.findById(flightID);
+        return flightOption.orElse(null);
+        //TODO
+    }
+
 
 
 }
