@@ -27,11 +27,18 @@ public class HoffmannAirwaysSecurityConfiguration extends WebSecurityConfigurerA
     }
 
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
-            "/css/**", "/image/**", "/fonts/**", "/js/**", "/", "/createflight", "/editflight/**", "/repairplane", "/flights","/orders", "/login", "/forgotPassword", "/register"
+            "/css/**", "/image/**", "/fonts/**", "/js/**", "/", "/flights", "/login", "/forgotPassword", "/register"
+    };
+
+    private static final String[] ALLOW_ACCESS_FOR_STAFF = {
+            "/repairplane", "/editflight/**", "/createflight"
     };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers(ALLOW_ACCESS_FOR_STAFF).hasAuthority("STAFF");
+
         http.authorizeRequests()
                 .antMatchers(ALLOW_ACCESS_WITHOUT_AUTHENTICATION)
                 .permitAll().anyRequest().authenticated();

@@ -28,7 +28,8 @@
           </li>
           <li class="nav-item">
             <!-- TODO source: https://stackoverflow.com/a/32033141 -->
-            <a class="nav-link" aria-current="page" href="/repairplane" th:classappend="${#httpServletRequest.getRequestURI() == '/repairplane' ? 'active':''}">Planes</a>
+            <a class="nav-link" aria-current="page" href="/repairplane" th:classappend="${#httpServletRequest.getRequestURI() == '/repairplane' ? 'active':''}"
+               sec:authorize="hasAuthority('STAFF')">Planes</a>
           </li>
           <li class="nav-item">
             <!-- TODO source: https://stackoverflow.com/a/32033141 -->
@@ -39,11 +40,10 @@
         <ul class="navbar-nav  mb-2 mb-md-0 ms-auto">
 
           <li class="nav-item ">
-            <button type="button" class="btn btn-outline-light">Login Customer</button>
+            <a class="nav-link" href="/login" sec:authorize="isAnonymous()">Login</a>
+
           </li>
-          <li class="nav-item ">
-            <a class="nav-link ">Login Staff</a>
-          </li>
+
         </ul>
 
       </div>

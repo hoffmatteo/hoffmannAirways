@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="common/header :: header"/>
 
@@ -14,7 +14,7 @@
 </div>
 <div class="col ">
     <div class="float-end">
-<a class="btn btn-success" href="/createflight">Create new flight</a>
+<a class="btn btn-success" href="/createflight" sec:authorize="hasAuthority('STAFF')">Create new flight</a>
 </div>
 </div>
 </div>
@@ -47,9 +47,10 @@
                 th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
         <td class="align-middle"><label th:text="${#dates.format(flight.getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
         </td>
-        <td class="align-middle">
+        <td class="align-middle" >
             <div class="float-end">
-                <a type="button" class="btn btn-primary" th:href="'/editflight/'+${flight.getFlightID()}">
+                <a type="button" class="btn btn-primary" th:href="'/editflight/'+${flight.getFlightID()}"
+                   sec:authorize="hasAuthority('STAFF')">
                     Edit
                 </a>
 

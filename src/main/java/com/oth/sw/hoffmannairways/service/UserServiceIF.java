@@ -1,13 +1,10 @@
 package com.oth.sw.hoffmannairways.service;
 
-import com.oth.sw.hoffmannairways.entity.Customer;
-import com.oth.sw.hoffmannairways.entity.Staff;
-import com.oth.sw.hoffmannairways.entity.Userdata;
+import com.oth.sw.hoffmannairways.entity.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserServiceIF {
-    public Customer registerCustomer(Customer customer);
+public interface UserServiceIF extends UserDetailsService {
+    User getUserByUsername(String username);
+    User registerUser(User newUser);
 
-    public Customer loginCustomer(Userdata userdata);
-
-    public Staff loginStaff(Userdata userdata);
 }

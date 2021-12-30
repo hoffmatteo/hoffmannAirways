@@ -25,7 +25,7 @@ public class Flight {
     @OneToOne(cascade = CascadeType.ALL)
     private Airplane airplane;
     @ManyToOne
-    private Staff creator;
+    private User creator;
 
     @ManyToOne
     private FlightConnection connection;
@@ -36,7 +36,7 @@ public class Flight {
 
      */
 
-    public Flight(Date departureTime, Airplane airplane, Staff creator, FlightConnection connection) {
+    public Flight(Date departureTime, Airplane airplane, User creator, FlightConnection connection) {
         this.departureTime = departureTime;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(departureTime);
@@ -63,11 +63,11 @@ public class Flight {
         this.airplane = airplane;
     }
 
-    public Staff getCreator() {
+    public User getCreator() {
         return creator;
     }
 
-    public void setCreator(Staff creator) {
+    public void setCreator(User creator) {
         this.creator = creator;
     }
 

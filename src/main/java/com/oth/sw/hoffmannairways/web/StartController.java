@@ -2,6 +2,9 @@ package com.oth.sw.hoffmannairways.web;
 
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.Order;
+import com.oth.sw.hoffmannairways.entity.User;
+import com.oth.sw.hoffmannairways.entity.util.AccountType;
+import com.oth.sw.hoffmannairways.service.UserServiceIF;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
@@ -21,6 +24,9 @@ public class StartController {
 
     @Autowired
     private AirplaneService airplaneService;
+
+    @Autowired
+    private UserServiceIF userService;
 
     @RequestMapping("/")
     //Principal als parameter
@@ -97,6 +103,22 @@ public class StartController {
 
         return "orders";
     }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET) // /login
+    public String login(Model model) {
+        model.addAttribute("user", new User());
+        //userService.registerUser(new User("test", "123", "Max MusterMann",
+               // AccountType.STAFF));
+        userService.registerUser(new User("user", "123", "Max MusterMann",
+        AccountType.USER));
+        return "login";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST) // th:action="@{/login}"
+    public String doLogin() {
+        return "index";
+    }
+
 
 
 }

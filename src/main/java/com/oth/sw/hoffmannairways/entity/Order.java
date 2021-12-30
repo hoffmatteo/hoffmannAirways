@@ -17,13 +17,13 @@ public class Order {
     private Flight flight;
 
     @ManyToOne
-    private Customer customer;
+    private User customer;
 
     public Order() {
 
     }
 
-    public Order(int totalSeats, double totalCargoInKg, Flight flight, Customer customer) {
+    public Order(int totalSeats, double totalCargoInKg, Flight flight, User customer) {
         this.totalSeats = totalSeats;
         this.totalCargoInKg = totalCargoInKg;
         this.flight = flight;
@@ -60,11 +60,11 @@ public class Order {
         this.flight = flight;
     }
 
-    public Customer getCustomer() {
+    public User getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(User customer) {
         this.customer = customer;
     }
 
