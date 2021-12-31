@@ -2,6 +2,7 @@ package com.oth.sw.hoffmannairways.entity;
 
 import com.oth.sw.hoffmannairways.entity.util.AccountType;
 import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
+import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,7 +18,9 @@ import java.util.List;
 public class User extends SingleIdEntity<String> implements UserDetails {
     @Id
     private String username;
+    @NotNull
     private String password;
+    @NotNull
     private String name;
     @Enumerated(EnumType.ORDINAL)
     private AccountType accountType;

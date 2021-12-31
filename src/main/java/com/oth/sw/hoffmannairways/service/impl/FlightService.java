@@ -57,15 +57,7 @@ public class FlightService implements FlightServiceIF {
 
     }
 
-    public void deleteFlight(int flightID) {
-        ////orderRepository.deleteAll(orders);
-        //TODO notify customer here
-        //TODO notify airport here if necessary
-        Flight flight = flightRepo.findById(flightID).get();
-        flightRepo.delete(flight);
 
-
-    }
 
 
     //TODO
@@ -113,12 +105,12 @@ public class FlightService implements FlightServiceIF {
         return orderRepository.findAll();
     }
 
-    public List<Order> getAllPastOrders() {
-        return orderRepository.findOrdersByFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(new Date());
+    public List<Order> getAllPastOrders(String username) {
+        return orderRepository.findOrdersByCustomer_UsernameAndFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(username, new Date());
     }
 
-    public List<Order> getAllFutureOrders() {
-        return orderRepository.findOrdersByFlight_DepartureTimeAfterOrderByFlight_DepartureTime(new Date());
+    public List<Order> getAllFutureOrders(String username) {
+        return orderRepository.findOrdersByCustomer_UsernameAndFlight_DepartureTimeAfterOrderByFlight_DepartureTime(username, new Date());
     }
 
 //TODO change name

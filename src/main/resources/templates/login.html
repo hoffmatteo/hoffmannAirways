@@ -7,11 +7,13 @@
 
 <div th:replace="common/header :: navigation"/>
 
+<div class="p-5">
 
+<h2>Login</h2>
 <form th:action="@{/login}" method="post">
     <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Username</label>
-        <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <label for="inputUsername" class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" id="inputUsername" aria-describedby="emailHelp">
     </div>
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -25,6 +27,6 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 
-
+</div>
 </body>
 </html>

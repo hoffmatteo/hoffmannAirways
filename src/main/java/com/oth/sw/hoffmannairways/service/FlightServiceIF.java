@@ -19,9 +19,9 @@ public interface FlightServiceIF {
 
     List<Order> getAllOrders();
 
-    List<Order> getAllPastOrders();
+    List<Order> getAllPastOrders(String username);
 
-    List<Order> getAllFutureOrders();
+    List<Order> getAllFutureOrders(String username);
 
     List<Flight> listAllFlights();
 

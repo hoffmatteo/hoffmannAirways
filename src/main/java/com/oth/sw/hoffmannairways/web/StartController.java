@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.security.Principal;
 import java.util.Collection;
 
 @Controller
 public class StartController {
+    //TODO order controller?
     @Autowired
     private FlightService flightService;
 
@@ -65,22 +67,23 @@ public class StartController {
 
     @RequestMapping(value = "/flights", method = RequestMethod.POST)
     //Principal als parameter
-    public String createOrder(Model model, @ModelAttribute("order") Order o) {
+    public String createOrder(Model model, @ModelAttribute("order") Order o, Principal principal) {
         //TODO check if values are null, return errors
         System.out.println(o.toString());
-        Flight f = flightService.bookFlight(o);
-        String message;
-        String alertClass;
-        if(f != null) {
-            message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
-            alertClass = "alert-success";
-        }
-        else {
-            //TODO reason
-            message = "Booking failed.";
-            alertClass = "alert-danger";
-        }
+        String message = "Booking failed.";
+        String alertClass = "alert-danger";
 
+        if(principal != null) {
+            User currUser = userService.getUserByUsername(principal.getName());
+            if(currUser != null) {
+                o.setCustomer(currUser);
+                Flight f = flightService.bookFlight(o);
+                if(f != null) {
+                    message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
+                    alertClass = "alert-success";
+                }
+            }
+        }
 
         //TODO source https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button
 
@@ -92,13 +95,17 @@ public class StartController {
 
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
     //Principal als parameter
-    public String viewOrders(Model model) {
+    public String viewOrders(Model model, Principal principal) {
         //TODO check if values are null, return errors
-        Collection<Order> upcomingOrders = flightService.getAllFutureOrders();
-        Collection<Order> pastOrders = flightService.getAllPastOrders();
+        if(principal != null) {
+            String username = principal.getName();
+            System.out.println("user: " + username);
+            Collection<Order> upcomingOrders = flightService.getAllFutureOrders(username);
+            Collection<Order> pastOrders = flightService.getAllPastOrders(username);
 
-        model.addAttribute("pastOrders", pastOrders);
-        model.addAttribute("upcomingOrders", upcomingOrders);
+            model.addAttribute("pastOrders", pastOrders);
+            model.addAttribute("upcomingOrders", upcomingOrders);
+        }
 
 
         return "orders";
@@ -109,14 +116,32 @@ public class StartController {
         model.addAttribute("user", new User());
         //userService.registerUser(new User("test", "123", "Max MusterMann",
                // AccountType.STAFF));
-        userService.registerUser(new User("user", "123", "Max MusterMann",
+        /*userService.registerUser(new User("user", "123", "Max MusterMann",
         AccountType.USER));
+
+         */
         return "login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST) // th:action="@{/login}"
     public String doLogin() {
         return "index";
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.GET) // /login
+    public String register(Model model) {
+        model.addAttribute("user", new User());
+
+        return "register";
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST) // /login
+    public String doRegister(Model model, @ModelAttribute("user") User user) {
+        user.setAccountType(AccountType.USER);
+        //TODO error handling, input validation
+        userService.registerUser(user);
+
+        return login(model);
     }
 
 

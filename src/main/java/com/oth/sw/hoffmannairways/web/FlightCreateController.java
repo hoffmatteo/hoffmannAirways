@@ -3,6 +3,8 @@ package com.oth.sw.hoffmannairways.web;
 import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
+import com.oth.sw.hoffmannairways.entity.User;
+import com.oth.sw.hoffmannairways.service.UserServiceIF;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +28,9 @@ public class FlightCreateController {
 
     @Autowired
     private AirplaneService airplaneService;
+
+    @Autowired
+    private UserServiceIF userService;
 
     @RequestMapping(value = "/createflight", method = RequestMethod.GET)
     //Principal als parameter
@@ -48,13 +54,18 @@ public class FlightCreateController {
 
     @RequestMapping(value = "/createflight", method = RequestMethod.POST)
     //Principal als parameter
-    public String createFlight(Model model, @ModelAttribute("flight") Flight f) {
+    public String createFlight(Model model, @ModelAttribute("flight") Flight f, Principal principal) {
         //TODO check if values are null, return errors
         System.out.println(f.toString());
-
-        Flight createdFlight = flightService.createFlight(f);
-        if(createdFlight != null) {
-            System.out.println("success!");
+        if(principal != null) {
+            User currUser = userService.getUserByUsername(principal.getName());
+            if (currUser != null) {
+                f.setCreator(currUser);
+                Flight createdFlight = flightService.createFlight(f);
+                if (createdFlight != null) {
+                    System.out.println("success!");
+                }
+            }
         }
 
         return viewCreateFlight(model);

@@ -28,6 +28,10 @@ public class UserService implements UserServiceIF {
 
     @Override
     public User registerUser(User newUser) {
+        if(userRepo.findById(newUser.getID()).isPresent()) {
+            //TODO error handling
+            return null;
+        }
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         return userRepo.save(newUser);
     }
