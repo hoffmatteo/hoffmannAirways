@@ -33,7 +33,7 @@
           </li>
           <li class="nav-item">
             <!-- TODO source: https://stackoverflow.com/a/32033141 -->
-            <a class="nav-link" aria-current="page" href="/orders" th:classappend="${#httpServletRequest.getRequestURI() == '/orders' ? 'active':''}">View Bookings</a>
+            <a class="nav-link" aria-current="page" href="/orders" th:classappend="${#httpServletRequest.getRequestURI() == '/orders' ? 'active':''}">Bookings</a>
           </li>
 
         </ul>
@@ -45,7 +45,7 @@
             <a class="btn btn-outline-light" href="/register" sec:authorize="isAnonymous()">Register</a>
           </li>
           <li class="nav-item ">
-            <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
+            <a class="btn btn-outline-light" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
 
           </li>
 

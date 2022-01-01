@@ -104,6 +104,14 @@ public class FlightService implements FlightServiceIF {
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+    public List<Order> getAllPastOrders() {
+        return orderRepository.findOrdersByFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(new Date());
+
+    }
+
+    public List<Order> getAllFutureOrders() {
+        return orderRepository.findOrdersByFlight_DepartureTimeAfterOrderByFlight_DepartureTime(new Date());
+    }
 
     public List<Order> getAllPastOrders(String username) {
         return orderRepository.findOrdersByCustomer_UsernameAndFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(username, new Date());

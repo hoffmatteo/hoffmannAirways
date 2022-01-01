@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common/header :: header" />
 <script type="text/javascript" th:src="@{/js/actions.js}"></script>
 
@@ -10,6 +10,7 @@
         <thead>
         <tr>
             <th scope="col">Order number</th>
+            <th scope="col" sec:authorize="hasAuthority('STAFF')">Customer</th>
             <th scope="col">Flight number</th>
             <th scope="col">From</th>
             <th scope="col">To</th>
@@ -23,6 +24,8 @@
         <tr th:each="order : ${orders}">
             <th scope="row" class="align-middle">
                 <label th:text="${order.getOderID()}"></label></th>
+            <td class="align-middle" sec:authorize="hasAuthority('STAFF')">
+                <label th:text="${order.getCustomer()?.getUsername()}"></label></td>
             <td class="align-middle">
                 <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></td>
             <td class="align-middle"><label th:text="${order.getFlight().getConnection().getDeparture()}"></label>
