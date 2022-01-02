@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class FlightCreateController {
+public class FlightController {
     @Autowired
     private FlightService flightService;
 
@@ -56,17 +56,23 @@ public class FlightCreateController {
     //Principal als parameter
     public String createFlight(Model model, @ModelAttribute("flight") Flight f, Principal principal) {
         //TODO check if values are null, return errors
-        System.out.println(f.toString());
-        if(principal != null) {
+        String message = "Flight could not be created.";
+        String alertClass = "alert-danger";
+
+        if (principal != null) {
             User currUser = userService.getUserByUsername(principal.getName());
             if (currUser != null) {
                 f.setCreator(currUser);
                 Flight createdFlight = flightService.createFlight(f);
                 if (createdFlight != null) {
-                    System.out.println("success!");
+                    message = "Successfully created flight " + createdFlight.getFlightID();
+                    alertClass = "alert-success";
                 }
             }
         }
+        model.addAttribute("message", message);
+        model.addAttribute("alertClass", alertClass);
+
 
         return viewCreateFlight(model);
     }
@@ -74,10 +80,10 @@ public class FlightCreateController {
     @RequestMapping(value = "/editflight/{flight_id}", method = RequestMethod.GET)
     public String viewEditFlight(Model model, @PathVariable("flight_id") int flightID) {
         Flight selectedFlight = flightService.getFlight(flightID);
-        if(selectedFlight != null) {
+        if (selectedFlight != null) {
             model.addAttribute("flight", selectedFlight);
-        }
-        else {
+            model.addAttribute("selectedPlane", selectedFlight.getAirplane());
+        } else {
             //TODO
         }
         model.addAllAttributes(setFlightArguments());
@@ -90,12 +96,21 @@ public class FlightCreateController {
     //Principal als parameter
     public String editFlight(Model model, @ModelAttribute("flight") Flight f) {
         Flight savedFlight = flightService.editFlight(f);
+        String message;
+        String alertClass;
+        if (savedFlight != null) {
+            message = "Successfully edited flight " + savedFlight.getFlightID();
+            alertClass = "alert-success";
+        } else {
+            message = "Edit failed.";
+            alertClass = "alert-danger";
+        }
+        model.addAttribute("message", message);
+        model.addAttribute("alertClass", alertClass);
+
 
         return viewEditFlight(model, f.getFlightID());
     }
-
-
-
 
 
 }

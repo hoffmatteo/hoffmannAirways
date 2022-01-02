@@ -24,6 +24,7 @@ public class User extends SingleIdEntity<String> implements UserDetails {
     private String name;
     @Enumerated(EnumType.ORDINAL)
     private AccountType accountType;
+    private boolean sendNotification;
 
     public User() {
     }
@@ -121,5 +122,13 @@ public class User extends SingleIdEntity<String> implements UserDetails {
     @Override
     public String getID() {
         return this.username;
+    }
+
+    public boolean isSendNotification() {
+        return sendNotification;
+    }
+
+    public void setSendNotification(boolean sendNotification) {
+        this.sendNotification = sendNotification;
     }
 }

@@ -3,9 +3,7 @@ package com.oth.sw.hoffmannairways.web;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.Order;
 import com.oth.sw.hoffmannairways.entity.User;
-import com.oth.sw.hoffmannairways.entity.util.AccountType;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
-import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Controller
@@ -26,9 +23,6 @@ public class StartController {
     private FlightService flightService;
 
     @Autowired
-    private AirplaneService airplaneService;
-
-    @Autowired
     private UserServiceIF userService;
 
     @RequestMapping("/")
@@ -36,7 +30,6 @@ public class StartController {
     public String start() {
         return "index";
     }
-
 
 
     @RequestMapping("/flights")
@@ -59,7 +52,6 @@ public class StartController {
      */
 
 
-
         Collection<Flight> flightList = flightService.listAllFlights();
         model.addAttribute("flights", flightList);
         model.addAttribute("order", new Order());
@@ -74,12 +66,12 @@ public class StartController {
         String message = "Booking failed.";
         String alertClass = "alert-danger";
 
-        if(principal != null) {
+        if (principal != null) {
             User currUser = userService.getUserByUsername(principal.getName());
-            if(currUser != null) {
+            if (currUser != null) {
                 o.setCustomer(currUser);
                 Flight f = flightService.bookFlight(o);
-                if(f != null) {
+                if (f != null) {
                     message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
                     alertClass = "alert-success";
                 }
@@ -93,70 +85,6 @@ public class StartController {
 
         return viewFlights(model);
     }
-
-    @RequestMapping(value = "/orders", method = RequestMethod.GET)
-    //Principal als parameter
-    public String viewOrders(Model model, Principal principal) {
-        //TODO check if values are null, return errors
-        Collection<Order> upcomingOrders = new ArrayList<>();
-        Collection<Order> pastOrders = new ArrayList<>();
-
-        if(principal != null) {
-            String username = principal.getName();
-            User user = userService.getUserByUsername(username);
-            if(user != null) {
-                if(user.getAccountType() == AccountType.STAFF) {
-                    upcomingOrders = flightService.getAllFutureOrders();
-                    pastOrders = flightService.getAllPastOrders();
-                }
-                else {
-                    upcomingOrders = flightService.getAllFutureOrders(username);
-                    pastOrders = flightService.getAllPastOrders(username);
-
-                }
-            }
-        }
-        model.addAttribute("pastOrders", pastOrders);
-        model.addAttribute("upcomingOrders", upcomingOrders);
-
-
-
-        return "orders";
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET) // /login
-    public String login(Model model) {
-        model.addAttribute("user", new User());
-        //userService.registerUser(new User("test", "123", "Max MusterMann",
-               // AccountType.STAFF));
-        /*userService.registerUser(new User("user", "123", "Max MusterMann",
-        AccountType.USER));
-
-         */
-        return "login";
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST) // th:action="@{/login}"
-    public String doLogin() {
-        return "index";
-    }
-
-    @RequestMapping(value = "/register", method = RequestMethod.GET) // /login
-    public String register(Model model) {
-        model.addAttribute("user", new User());
-
-        return "register";
-    }
-
-    @RequestMapping(value = "/register", method = RequestMethod.POST) // /login
-    public String doRegister(Model model, @ModelAttribute("user") User user) {
-        user.setAccountType(AccountType.USER);
-        //TODO error handling, input validation
-        userService.registerUser(user);
-
-        return login(model);
-    }
-
 
 
 }

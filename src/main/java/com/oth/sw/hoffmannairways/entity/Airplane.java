@@ -21,9 +21,7 @@ public class Airplane {
     @ElementCollection
     private List<String> issues;
     @OneToOne(mappedBy = "airplane")
-
     private Flight assignment;
-
 
 
     public int getPlaneID() {

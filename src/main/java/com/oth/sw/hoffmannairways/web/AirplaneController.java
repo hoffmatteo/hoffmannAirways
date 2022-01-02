@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Collection;
 
 @Controller
-public class RepairAirplaneController {
+public class AirplaneController {
     @Autowired
     private AirplaneService airplaneService;
 
@@ -47,12 +47,11 @@ public class RepairAirplaneController {
 
         String message;
         String alertClass;
-        if(plane != null) {
+        if (plane != null) {
             message = "Successfully started repair process for Airplane " + plane.getPlaneName()
-            + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());
+                    + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());
             alertClass = "alert-success";
-        }
-        else {
+        } else {
             message = "Process failed.";
             alertClass = "alert-danger";
         }
