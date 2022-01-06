@@ -65,7 +65,18 @@
             <artifactId>bootstrap-datepicker</artifactId>
             <version>1.9.0</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-spring -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-spring</artifactId>
+            <version>5.16.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jms -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+            <version>5.3.14</version>
+        </dependency>
 
 
     </dependencies>

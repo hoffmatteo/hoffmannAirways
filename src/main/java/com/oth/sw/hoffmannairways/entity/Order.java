@@ -1,10 +1,11 @@
 package com.oth.sw.hoffmannairways.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "order_table")
-public class Order {
+public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +34,6 @@ public class Order {
     public int getOderID() {
         return oderID;
     }
-
 
 
     public int getTotalSeats() {
