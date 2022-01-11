@@ -88,13 +88,12 @@ public class AirlineDTO implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("AirlineDTO{");
-        sb.append("availableFlights=").append(availableFlights);
-        sb.append(", availableConnections=").append(availableConnections);
-        sb.append(", currentOrder=").append(currentOrder);
-        sb.append(", currentFlight=").append(currentFlight);
-        sb.append(", status=").append(status);
-        sb.append('}');
-        return sb.toString();
+        return "AirlineDTO{" +
+                "availableFlights=" + availableFlights +
+                ", availableConnections=" + availableConnections +
+                ", currentOrder=" + currentOrder +
+                ", currentFlight=" + currentFlight +
+                ", status=" + status +
+                '}';
     }
 }

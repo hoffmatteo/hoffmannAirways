@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oth.sw.hoffmannairways.entity.Order;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomerDTO implements Serializable {
@@ -55,7 +56,7 @@ public class CustomerDTO implements Serializable {
     public String toString() {
         return "CustomerDTO{" +
                 "message=" + message +
-                ", order=" + order +
+                ", order=" + Objects.toString(order, "null") +
                 '}';
     }
 

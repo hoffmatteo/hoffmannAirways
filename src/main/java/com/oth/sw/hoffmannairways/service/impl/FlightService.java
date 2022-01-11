@@ -97,7 +97,6 @@ public class FlightService implements FlightServiceIF {
 
     @Transactional
     public Order bookFlight(Order order) {
-
         //TODO customer checking
         Optional<Flight> flightOption = flightRepo.findById(order.getFlight().getFlightID());
         if (flightOption.isPresent()) {
@@ -113,7 +112,6 @@ public class FlightService implements FlightServiceIF {
                 Order savedOrder = orderRepository.save(order);
                 //TODO remove
                 if (order.getCustomer() != null) {
-
                     if (order.getCustomer().getAccountType() == AccountType.STAFF) {
                         queueController.bookAsPartner(savedOrder);
                     }

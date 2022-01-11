@@ -102,8 +102,8 @@ public class Airplane {
                 ", totalSeats=" + totalSeats +
                 ", maxCargo=" + maxCargo +
                 ", unavailableUntil=" + unavailableUntil +
-                ", issues=" + issues +
-                ", assignment=" + assignment +
                 '}';
     }
+
+
 }

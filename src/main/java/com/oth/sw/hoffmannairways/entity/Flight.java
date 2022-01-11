@@ -129,7 +129,7 @@ public class Flight {
                 ", arrivalTime=" + arrivalTime +
                 ", bookedSeats=" + bookedSeats +
                 ", bookedCargoInKg=" + bookedCargoInKg +
-                ", airplane=" + airplane.getPlaneID() +
+                ", airplane=" + airplane +
                 ", creator=" + creator +
                 ", connection=" + connection +
                 '}';

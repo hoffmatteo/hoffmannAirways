@@ -1,7 +1,6 @@
 package com.oth.sw.hoffmannairways.web;
 
 import com.oth.sw.hoffmannairways.entity.Airplane;
-import com.oth.sw.hoffmannairways.queue.SenderService;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
@@ -21,9 +20,6 @@ public class AirplaneController {
 
     @Autowired
     private FlightService flightService;
-
-    @Autowired
-    SenderService senderService;
 
     @RequestMapping(value = "/repairplane", method = RequestMethod.GET)
     //Principal als parameter

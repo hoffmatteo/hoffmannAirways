@@ -62,7 +62,7 @@ public class StartController {
     //Principal als parameter
     public String createOrder(Model model, @ModelAttribute("order") Order o, Principal principal) {
         //TODO check if values are null, return errors
-        System.out.println(o.toString());
+        System.out.println(o);
         String message = "Booking failed.";
         String alertClass = "alert-danger";
 
@@ -70,10 +70,13 @@ public class StartController {
             User currUser = userService.getUserByUsername(principal.getName());
             if (currUser != null) {
                 o.setCustomer(currUser);
-                Flight f = flightService.bookFlight(o).getFlight();
-                if (f != null) {
-                    message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
-                    alertClass = "alert-success";
+                Order savedOrder = flightService.bookFlight(o);
+                if (savedOrder != null) {
+                    if (o.getFlight() != null) {
+                        Flight f = o.getFlight();
+                        message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
+                        alertClass = "alert-success";
+                    }
                 }
             }
         }
