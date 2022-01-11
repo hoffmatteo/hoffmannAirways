@@ -1,5 +1,6 @@
 package com.oth.sw.hoffmannairways.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -21,10 +22,11 @@ public class Flight {
     private int bookedSeats = 0;
     private double bookedCargoInKg = 0.0;
 
-    //cascade stuff
+    //TODO cascade stuff
     @OneToOne(cascade = CascadeType.ALL)
     private Airplane airplane;
     @ManyToOne
+    @JsonIgnore
     private User creator;
 
     @ManyToOne

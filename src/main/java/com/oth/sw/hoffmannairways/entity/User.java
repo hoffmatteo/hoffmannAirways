@@ -10,12 +10,13 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
 //TODO unmodifiable list
-public class User extends SingleIdEntity<String> implements UserDetails {
+public class User extends SingleIdEntity<String> implements UserDetails, Serializable {
     @Id
     private String username;
     @NotNull

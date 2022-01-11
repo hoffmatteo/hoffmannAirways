@@ -37,7 +37,6 @@ public class AirplaneController {
         model.addAttribute("brokenPlanes", brokenPlanes);
         model.addAttribute("newPlane", new Airplane());
 
-        senderService.sendDTO();
         return "repairplane";
     }
 

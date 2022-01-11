@@ -15,7 +15,7 @@ public interface FlightServiceIF {
 
     Flight editFlight(Flight flight);
 
-    Flight bookFlight(Order order);
+    Order bookFlight(Order order);
 
     List<Order> getAllOrders();
 

@@ -5,6 +5,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserServiceIF extends UserDetailsService {
     User getUserByUsername(String username);
+
     User registerUser(User newUser);
+
+    boolean checkPassword(String password, User user);
 
 }

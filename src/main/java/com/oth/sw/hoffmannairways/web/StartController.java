@@ -70,7 +70,7 @@ public class StartController {
             User currUser = userService.getUserByUsername(principal.getName());
             if (currUser != null) {
                 o.setCustomer(currUser);
-                Flight f = flightService.bookFlight(o);
+                Flight f = flightService.bookFlight(o).getFlight();
                 if (f != null) {
                     message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
                     alertClass = "alert-success";

@@ -1,5 +1,6 @@
 package com.oth.sw.hoffmannairways.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -17,10 +18,13 @@ public class Airplane {
     private double maxCargo;
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonIgnore
     private Date unavailableUntil;
     @ElementCollection
+    @JsonIgnore
     private List<String> issues;
     @OneToOne(mappedBy = "airplane")
+    @JsonIgnore
     private Flight assignment;
 
 

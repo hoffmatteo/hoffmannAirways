@@ -28,7 +28,7 @@ public class UserService implements UserServiceIF {
 
     @Override
     public User registerUser(User newUser) {
-        if(userRepo.findById(newUser.getID()).isPresent()) {
+        if (userRepo.findById(newUser.getID()).isPresent()) {
             //TODO error handling
             return null;
         }
@@ -41,5 +41,10 @@ public class UserService implements UserServiceIF {
         return userRepo.findById(username).orElseThrow(
                 () -> new UsernameNotFoundException("User with username " + username + " not found")
         );
+    }
+
+    @Override
+    public boolean checkPassword(String password, User user) {
+        return passwordEncoder.matches(password, user.getPassword());
     }
 }

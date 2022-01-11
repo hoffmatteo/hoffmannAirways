@@ -21,6 +21,12 @@ public class QueueConfiguration {
     }
 
     @Bean
+    public ActiveMQQueue testQueue() {
+        return new ActiveMQQueue("sw_matteo_hoffmann_queue_Customer");
+    }
+
+
+    @Bean
     public ActiveMQConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory();
         factory.setBrokerURL(brokerUrl);
@@ -41,11 +47,10 @@ public class QueueConfiguration {
     public JmsTemplate jmsTemplate() {
         JmsTemplate template = new JmsTemplate(connectionFactory());
         template.setMessageConverter(jacksonJmsMessageConverter());
-        System.out.println("test " + template);
         return template;
     }
 
     public QueueConfiguration() {
-        
+
     }
 }

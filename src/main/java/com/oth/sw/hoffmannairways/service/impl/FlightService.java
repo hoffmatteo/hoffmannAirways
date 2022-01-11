@@ -1,9 +1,12 @@
 package com.oth.sw.hoffmannairways.service.impl;
 
+import com.oth.sw.hoffmannairways.dto.AirlineDTO;
 import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
 import com.oth.sw.hoffmannairways.entity.Order;
+import com.oth.sw.hoffmannairways.entity.util.AccountType;
+import com.oth.sw.hoffmannairways.queue.QueueController;
 import com.oth.sw.hoffmannairways.repository.FlightConnectionRepo;
 import com.oth.sw.hoffmannairways.repository.FlightRepository;
 import com.oth.sw.hoffmannairways.repository.OrderRepository;
@@ -28,6 +31,9 @@ public class FlightService implements FlightServiceIF {
     @Autowired
     AirplaneServiceIF airplaneService;
 
+    @Autowired
+    QueueController queueController;
+
 
     @Transactional
     public Flight createFlight(Flight flight) {
@@ -49,6 +55,7 @@ public class FlightService implements FlightServiceIF {
     @Transactional
     public void deleteFlight(Flight flight) {
         List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
+        notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
         orderRepository.deleteAll(orders);
         //TODO notify customer here
         //TODO notify airport here if necessary
@@ -56,8 +63,6 @@ public class FlightService implements FlightServiceIF {
 
 
     }
-
-
 
 
     //TODO
@@ -68,6 +73,7 @@ public class FlightService implements FlightServiceIF {
             Flight oldFlight = oldFlightOption.get();
             //TODO notify customers, call airport etc.
             Flight savedFlight = flightRepo.save(flight);
+            notifyCustomer(savedFlight, AirlineDTO.Status.CHANGED);
             return savedFlight;
         } else {
             System.out.println("Flight not found " + flight.getFlightID());
@@ -75,8 +81,23 @@ public class FlightService implements FlightServiceIF {
         }
     }
 
+    private void notifyCustomer(Flight flight, AirlineDTO.Status status) {
+        List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
+        for (Order order : orders) {
+            if (order.getCustomer().isSendNotification()) {
+                //TODO does order already contain new information? --> probably depends on if save is called before or after!
+                System.out.println("Order flight: " + order.getFlight());
+                System.out.println("New flight: " + flight);
+
+                AirlineDTO dto = new AirlineDTO(order, flight, status);
+                queueController.sendDTO(dto);
+            }
+        }
+    }
+
     @Transactional
-    public Flight bookFlight(Order order) {
+    public Order bookFlight(Order order) {
+
         //TODO customer checking
         Optional<Flight> flightOption = flightRepo.findById(order.getFlight().getFlightID());
         if (flightOption.isPresent()) {
@@ -89,8 +110,15 @@ public class FlightService implements FlightServiceIF {
             if (totalBookedSeats <= maxSeats && totalBookedCargo <= maxCargo) {
                 flight.setBookedSeats(totalBookedSeats);
                 flight.setBookedCargoInKg(totalBookedCargo);
-                orderRepository.save(order);
-                return flight;
+                Order savedOrder = orderRepository.save(order);
+                //TODO remove
+                if (order.getCustomer() != null) {
+
+                    if (order.getCustomer().getAccountType() == AccountType.STAFF) {
+                        queueController.bookAsPartner(savedOrder);
+                    }
+                }
+                return savedOrder;
 
             }
         }
@@ -104,6 +132,7 @@ public class FlightService implements FlightServiceIF {
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
     public List<Order> getAllPastOrders() {
         return orderRepository.findOrdersByFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(new Date());
 
@@ -121,7 +150,7 @@ public class FlightService implements FlightServiceIF {
         return orderRepository.findOrdersByCustomer_UsernameAndFlight_DepartureTimeAfterOrderByFlight_DepartureTime(username, new Date());
     }
 
-//TODO change name
+    //TODO change name
     public List<Flight> listAllFlights() {
         return flightRepo.getAllByDepartureTimeAfterOrderByDepartureTime(new Date());
     }
@@ -134,16 +163,18 @@ public class FlightService implements FlightServiceIF {
         return flightRepo.getAllByConnection(conn);
 
     }
+
     @Transactional
     public FlightConnection createFlightConnection(FlightConnection flightConnection) {
         return flightConnectionRepo.save(flightConnection);
     }
+
     @Transactional
     public Airplane repairPlane(Airplane plane) {
         Flight flight = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
         //TODO
         //überlegen: falls deadline vor start des flugs --> nicht löschen?
-        if(flight != null) {
+        if (flight != null) {
             deleteFlight(flight);
         }
         return airplaneService.repairPlane(plane);
@@ -154,7 +185,6 @@ public class FlightService implements FlightServiceIF {
         return flightOption.orElse(null);
         //TODO
     }
-
 
 
 }

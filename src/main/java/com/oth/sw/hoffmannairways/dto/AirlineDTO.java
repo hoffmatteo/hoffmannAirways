@@ -1,12 +1,15 @@
 package com.oth.sw.hoffmannairways.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
 import com.oth.sw.hoffmannairways.entity.Order;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class AirlineDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AirlineDTO implements Serializable {
     //TODO split up in two queues?
     Collection<Flight> availableFlights;
     Collection<FlightConnection> availableConnections;
@@ -18,7 +21,8 @@ public class AirlineDTO {
         CANCELLED,
         CHANGED,
         CONFIRMED,
-        INFO //if only information was requested
+        INFO, //if only information was requested
+        ERROR //previous message threw error
     }
 
     public AirlineDTO() {
@@ -80,5 +84,17 @@ public class AirlineDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("AirlineDTO{");
+        sb.append("availableFlights=").append(availableFlights);
+        sb.append(", availableConnections=").append(availableConnections);
+        sb.append(", currentOrder=").append(currentOrder);
+        sb.append(", currentFlight=").append(currentFlight);
+        sb.append(", status=").append(status);
+        sb.append('}');
+        return sb.toString();
     }
 }

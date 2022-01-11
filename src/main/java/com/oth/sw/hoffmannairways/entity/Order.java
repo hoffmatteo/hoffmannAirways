@@ -1,5 +1,7 @@
 package com.oth.sw.hoffmannairways.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -18,6 +20,7 @@ public class Order implements Serializable {
     private Flight flight;
 
     @ManyToOne
+    @JsonIgnore
     private User customer;
 
     public Order() {

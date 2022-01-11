@@ -18,4 +18,5 @@ public class HoffmannAirwaysSecurityUtilities {
         return new BCryptPasswordEncoder(15, new SecureRandom(salt.getBytes()));
     }
 
+
 }

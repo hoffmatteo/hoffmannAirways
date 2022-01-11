@@ -17,7 +17,6 @@ public class SenderService {
 
         AirlineDTO dto = new AirlineDTO(new Order(), AirlineDTO.Status.CONFIRMED);
 
-
         jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Airline", dto);
 
     }
