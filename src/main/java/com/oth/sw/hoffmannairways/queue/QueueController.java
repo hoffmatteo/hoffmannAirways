@@ -9,7 +9,10 @@ import com.oth.sw.hoffmannairways.entity.Order;
 import com.oth.sw.hoffmannairways.entity.User;
 import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.FlightException;
+import com.oth.sw.hoffmannairways.service.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -31,19 +34,21 @@ public class QueueController {
     @JmsListener(destination = "sw_matteo_hoffmann_queue_Customer")
     public void receiveMessage(CustomerDTO message) {
         System.out.println("Received from customer: " + message);
-        if (message.getOrder() != null) {
-            message.getOrder().setFlight(new Flight());
-        }
+        
 
         if (message.getUserInfo() != null) {
             UserDTO info = message.getUserInfo();
-            User registeredUser = userService.getUserByUsername(info.getUsername());
-            if (userService.checkPassword(info.getPassword(), registeredUser)) {
-                if (message.getMessage() == CustomerDTO.Message.CREATE_ORDER) {
-                    sendDTO(createBooking(message.getOrder(), registeredUser));
-                } else if (message.getMessage() == CustomerDTO.Message.UPDATE_INFO) {
-                    sendDTO(listInfo());
+            try {
+                User registeredUser = userService.getUserByUsername(info.getUsername());
+                if (userService.checkPassword(info.getPassword(), registeredUser)) {
+                    if (message.getMessage() == CustomerDTO.Message.CREATE_ORDER) {
+                        sendDTO(createBooking(message.getOrder(), registeredUser));
+                    } else if (message.getMessage() == CustomerDTO.Message.UPDATE_INFO) {
+                        sendDTO(listInfo());
+                    }
                 }
+            } catch (UserException e) {
+                //TODO
             }
         }
     }
@@ -53,10 +58,12 @@ public class QueueController {
         dto.setStatus(AirlineDTO.Status.ERROR);
         if (order != null) {
             order.setCustomer(registeredUser);
-            Order completedOrder = flightService.bookFlight(order);
-            if (completedOrder != null) {
+            try {
+                Order completedOrder = flightService.bookFlight(order);
                 dto.setCurrentOrder(completedOrder);
                 dto.setStatus(AirlineDTO.Status.CONFIRMED);
+            } catch (FlightException e) {
+                //TODO
             }
         }
         return dto;
@@ -82,19 +89,27 @@ public class QueueController {
 
     public void sendDTO(AirlineDTO dto) {
         System.out.println("Sending message to Customer: " + dto);
-        jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Airline", dto);
+        try {
+            jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Airline", dto);
+        } catch (JmsException e) {
+            //TODO
+        }
     }
 
 
     public void bookAsPartner(Order order) {
         //order.setFlight(new Flight());
         CustomerDTO dto = new CustomerDTO(CustomerDTO.Message.CREATE_ORDER, order);
-        dto.setUserInfo(new UserDTO("ingo", "123"));
+        dto.setUserInfo(new UserDTO("daumen", "123"));
         System.out.println("Sending message to Airline: " + dto);
-        jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Customer", dto);
+        try {
+            jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Customer", dto);
+        } catch (JmsException e) {
+            //TODO
+        }
 
         /*dto = new CustomerDTO(CustomerDTO.Message.UPDATE_INFO);
-        dto.setUserInfo(new UserDTO("ingo", "123"));
+        dto.setUserInfo(new UserDTO("daumen", "123"));
         jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Customer", dto);
 
          */

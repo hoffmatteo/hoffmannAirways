@@ -5,6 +5,8 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
 import com.oth.sw.hoffmannairways.entity.User;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.FlightException;
+import com.oth.sw.hoffmannairways.service.exception.UserException;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,14 +64,17 @@ public class FlightController {
         String alertClass = "alert-danger";
 
         if (principal != null) {
-            User currUser = userService.getUserByUsername(principal.getName());
-            if (currUser != null) {
+            try {
+                User currUser = userService.getUserByUsername(principal.getName());
                 f.setCreator(currUser);
                 Flight createdFlight = flightService.createFlight(f);
-                if (createdFlight != null) {
-                    message = "Successfully created flight " + createdFlight.getFlightID();
-                    alertClass = "alert-success";
-                }
+                message = "Successfully created flight " + createdFlight.getFlightID();
+                alertClass = "alert-success";
+
+
+            } catch (UserException | FlightException e) {
+                //TODO
+
             }
         }
         model.addAttribute("message", message);
@@ -97,13 +102,15 @@ public class FlightController {
     @RequestMapping(value = "/editflight", method = RequestMethod.POST)
     //Principal als parameter
     public String editFlight(Model model, @ModelAttribute("flight") Flight f) {
-        Flight savedFlight = flightService.editFlight(f);
         String message;
         String alertClass;
-        if (savedFlight != null) {
+
+        try {
+            Flight savedFlight = flightService.editFlight(f);
             message = "Successfully edited flight " + savedFlight.getFlightID();
             alertClass = "alert-success";
-        } else {
+
+        } catch (FlightException e) {
             message = "Edit failed.";
             alertClass = "alert-danger";
         }

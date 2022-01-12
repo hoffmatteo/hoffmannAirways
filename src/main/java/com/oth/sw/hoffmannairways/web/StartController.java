@@ -4,6 +4,8 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.Order;
 import com.oth.sw.hoffmannairways.entity.User;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.FlightException;
+import com.oth.sw.hoffmannairways.service.exception.UserException;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,17 +70,21 @@ public class StartController {
         String alertClass = "alert-danger";
 
         if (principal != null) {
-            User currUser = userService.getUserByUsername(principal.getName());
-            if (currUser != null) {
+            try {
+                User currUser = userService.getUserByUsername(principal.getName());
                 o.setCustomer(currUser);
-                Order savedOrder = flightService.bookFlight(o);
-                if (savedOrder != null) {
+                try {
+                    Order savedOrder = flightService.bookFlight(o);
                     if (o.getFlight() != null) {
                         Flight f = o.getFlight();
                         message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
                         alertClass = "alert-success";
                     }
+                } catch (FlightException e) {
+                    //TODO
                 }
+            } catch (UserException e) {
+                //TODO
             }
         }
 

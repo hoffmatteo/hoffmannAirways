@@ -1,6 +1,8 @@
 package com.oth.sw.hoffmannairways.web;
 
 import com.oth.sw.hoffmannairways.entity.Airplane;
+import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
+import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
@@ -43,21 +45,21 @@ public class AirplaneController {
     //Principal als parameter
     public String createRepairJob(Model model, @ModelAttribute("newPlane") Airplane a) {
         //TODO check if values are null, return errors
-        System.out.println(a.toString());
-        System.out.println(a.getPlaneID());
-
-        Airplane plane = flightService.repairPlane(a);
-
         String message;
         String alertClass;
-        if (plane != null) {
+        try {
+
+            Airplane plane = flightService.repairPlane(a);
+
             message = "Successfully started repair process for Airplane " + plane.getPlaneName()
                     + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());
             alertClass = "alert-success";
-        } else {
+        } catch (AirplaneException | FlightException e) {
+
             message = "Process failed.";
             alertClass = "alert-danger";
         }
+
         model.addAttribute("message", message);
         model.addAttribute("alertClass", alertClass);
 

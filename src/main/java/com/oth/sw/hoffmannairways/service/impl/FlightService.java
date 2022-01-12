@@ -65,7 +65,7 @@ public class FlightService implements FlightServiceIF {
             //TODO notify customer here
             //TODO notify airport here if necessary
             flightRepo.delete(flight);
-        } catch (IllegalArgumentException) {
+        } catch (IllegalArgumentException e) {
             throw new FlightException("Could not delete orders and flight", flight);
         }
     }
@@ -172,18 +172,15 @@ public class FlightService implements FlightServiceIF {
 
     @Override
     @Transactional
-    public Airplane repairPlane(Airplane plane) throws FlightException {
+    public Airplane repairPlane(Airplane plane) throws FlightException, AirplaneException {
         Optional<Flight> flightOptional = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
         //TODO
         //überlegen: falls deadline vor start des flugs --> nicht löschen?
-        try {
-            if (flightOptional.isPresent()) {
-                deleteFlight(flightOptional.get());
-            }
-            return airplaneService.repairPlane(plane);
-        } catch (AirplaneException e) {
-            throw new FlightException(e.getMessage(), flightOptional);
+        if (flightOptional.isPresent()) {
+            deleteFlight(flightOptional.get());
         }
+        return airplaneService.repairPlane(plane);
+
     }
 
     @Override

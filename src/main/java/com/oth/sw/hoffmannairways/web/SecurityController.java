@@ -3,6 +3,7 @@ package com.oth.sw.hoffmannairways.web;
 import com.oth.sw.hoffmannairways.entity.User;
 import com.oth.sw.hoffmannairways.entity.util.AccountType;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -47,7 +48,11 @@ public class SecurityController {
     public String doRegister(Model model, @ModelAttribute("user") User user) {
         user.setAccountType(AccountType.USER);
         //TODO error handling, input validation
-        userService.registerUser(user);
+        try {
+            userService.registerUser(user);
+        } catch (UserException e) {
+            //TODO
+        }
 
         return login(model);
     }

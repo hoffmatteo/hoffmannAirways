@@ -5,6 +5,7 @@ import com.oth.sw.hoffmannairways.entity.User;
 import com.oth.sw.hoffmannairways.entity.util.AccountType;
 import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -36,8 +37,8 @@ public class OrderController {
 
         if (principal != null) {
             String username = principal.getName();
-            User user = userService.getUserByUsername(username);
-            if (user != null) {
+            try {
+                User user = userService.getUserByUsername(username);
                 if (user.getAccountType() == AccountType.STAFF) {
                     upcomingOrders = flightService.getAllFutureOrders();
                     pastOrders = flightService.getAllPastOrders();
@@ -46,6 +47,9 @@ public class OrderController {
                     pastOrders = flightService.getAllPastOrders(username);
 
                 }
+
+            } catch (UserException e) {
+                //TODO
             }
         }
         model.addAttribute("pastOrders", pastOrders);

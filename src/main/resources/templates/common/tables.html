@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="common/header :: header" />
+<head th:replace="common/header :: header"/>
 <script type="text/javascript" th:src="@{/js/actions.js}"></script>
 
 
@@ -23,17 +23,19 @@
         <tbody>
         <tr th:each="order : ${orders}">
             <th scope="row" class="align-middle">
-                <label th:text="${order.getOderID()}"></label></th>
+                <label th:text="${order.getOrderID()}"></label></th>
             <td class="align-middle" sec:authorize="hasAuthority('STAFF')">
                 <label th:text="${order.getCustomer()?.getUsername()}"></label></td>
             <td class="align-middle">
                 <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></td>
             <td class="align-middle"><label th:text="${order.getFlight().getConnection().getDeparture()}"></label>
             </td>
-            <td class="align-middle"><label th:text=" ${order.getFlight().getConnection().getDestination()}"></label></td>
+            <td class="align-middle"><label th:text=" ${order.getFlight().getConnection().getDestination()}"></label>
+            </td>
             <td class="align-middle"><label
                     th:text="${#dates.format(order.getFlight().getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
-            <td class="align-middle"><label th:text="${#dates.format(order.getFlight().getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
+            <td class="align-middle"><label
+                    th:text="${#dates.format(order.getFlight().getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
             </td>
             <td class="align-middle"><label th:text="${order.getTotalSeats()}"></label>
             </td>
@@ -49,10 +51,10 @@
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <div th:if="${case} == 'assigned'">
-            <th scope="col">Assignment</th>
+                <th scope="col">Assignment</th>
             </div>
             <div th:if="${case eq 'assigned' or case eq 'broken'}">
-            <th scope="col">Unavailable until</th>
+                <th scope="col">Unavailable until</th>
             </div>
             <th scope="col"></th>
 
@@ -61,138 +63,149 @@
         <tbody>
         <!-- data-toggle="collapse" th:attr="data-bs-target='#accordion'+${plane.getPlaneID()}" -->
         <div th:each="plane : ${planes}">
-        <tr>
-            <th scope="row" class="align-middle">
-                <label th:text="${plane.getPlaneID()}"></label></th>
-            <td ><label th:text="${plane.getPlaneName()}"></label>
-            </td>
-            <div th:if="${case} == 'assigned'">
+            <tr>
+                <th scope="row" class="align-middle">
+                    <label th:text="${plane.getPlaneID()}"></label></th>
+                <td><label th:text="${plane.getPlaneName()}"></label>
+                </td>
+                <div th:if="${case} == 'assigned'">
 
-            <td ><label th:text="${plane.getAssignment()?.getConnection()?.getFlightNumber()}"></label>
-            </td>
-            </div>
-            <div th:if="${case eq 'assigned' or case eq 'broken'}">
+                    <td><label th:text="${plane.getAssignment()?.getConnection()?.getFlightNumber()}"></label>
+                    </td>
+                </div>
+                <div th:if="${case eq 'assigned' or case eq 'broken'}">
 
-            <td> <label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy HH:mm')}"></label>
-            </td>
-            </div>
-            <div th:if="${case} != 'broken'">
-                <td class="align-middle">
-                    <div class="float-end">
-                        <a type="button" class="btn btn-primary" data-bs-toggle="modal"
-                           th:attr="data-bs-target='#planeModal'+${plane.getPlaneID()}">
-                            Repair plane
-                        </a>
-                        <div class="modal fade" tabindex="-1" aria-labelledby="planeModalLabel"
-                             aria-hidden="true" th:id="planeModal+${plane.getPlaneID()}">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="container-fluid">
-                                        <form th:action="@{/repairplane}" method="post" th:object="${newPlane}">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="bookModalLabel"><label
-                                                        th:text="'Repair Plane '+${plane.getPlaneName()}+ ', ID: ' +${plane.getPlaneID()}"></label>
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
+                    <td><label th:text="${#dates.format(plane.getUnavailableUntil(), 'dd.MM.yyyy HH:mm')}"></label>
+                    </td>
+                </div>
+                <div th:if="${case} != 'broken'">
+                    <td class="align-middle">
+                        <div class="float-end">
+                            <a type="button" class="btn btn-primary" data-bs-toggle="modal"
+                               th:attr="data-bs-target='#planeModal'+${plane.getPlaneID()}">
+                                Repair plane
+                            </a>
+                            <div class="modal fade" tabindex="-1" aria-labelledby="planeModalLabel"
+                                 aria-hidden="true" th:id="planeModal+${plane.getPlaneID()}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="container-fluid">
+                                            <form th:action="@{/repairplane}" method="post" th:object="${newPlane}">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="bookModalLabel"><label
+                                                            th:text="'Repair Plane '+${plane.getPlaneName()}+ ', ID: ' +${plane.getPlaneID()}"></label>
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
                                                     <div class="form-group">
                                                         <div class="mb-3">
-                                                            <label for="DeadlinePicker" class="form-label" >Deadline</label>
-                                                            <input class="form-control" type="datetime-local" id="DeadlinePicker" th:field="${newPlane.unavailableUntil}"/>
+                                                            <label for="DeadlinePicker"
+                                                                   class="form-label">Deadline</label>
+                                                            <input class="form-control" type="datetime-local"
+                                                                   id="DeadlinePicker"
+                                                                   th:field="${newPlane.unavailableUntil}"/>
                                                         </div>
 
                                                         <div class="mb-3">
                                                             <label class="control-label">Issues</label>
                                                             <div id="inputFormRow">
                                                                 <div class="input-group mb-3">
-                                                                    <input type="text" class="form-control m-input" placeholder="Enter title" autocomplete="off" th:field="${newPlane.issues[0]}"
+                                                                    <input type="text" class="form-control m-input"
+                                                                           placeholder="Enter title" autocomplete="off"
+                                                                           th:field="${newPlane.issues[0]}"
                                                                     >
 
                                                                 </div>
                                                             </div>
 
                                                             <div id="newRow"></div>
-                                                            <button id="addRow" type="button" class="btn btn-primary">Add Row</button>                                                        </div>
+                                                            <button id="addRow" type="button" class="btn btn-primary">
+                                                                Add Row
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="hidden" th:value="${plane.getPlaneID()}" id="planeID" name="planeID" readonly>
-                                                        <input type="hidden" th:value="${plane.getPlaneName()}" id="planeName" name="planeName" readonly>
-                                                        <input type="hidden" th:value="${plane.getAssignment()?.getFlightID()}" id="assignment" name="assignment" readonly>
-                                                        <input type="hidden" th:value="${plane.getMaxCargo()}" id="maxCargo" name="maxCargo" readonly>
-                                                        <input type="hidden" th:value="${plane.getTotalSeats()}" id="totalSeats" name="totalSeats" readonly>
-
-
+                                                        <input type="hidden" th:value="${plane.getPlaneID()}"
+                                                               id="planeID" name="planeID" readonly>
+                                                        <input type="hidden" th:value="${plane.getPlaneName()}"
+                                                               id="planeName" name="planeName" readonly>
+                                                        <input type="hidden"
+                                                               th:value="${plane.getAssignment()?.getFlightID()}"
+                                                               id="assignment" name="assignment" readonly>
+                                                        <input type="hidden" th:value="${plane.getMaxCargo()}"
+                                                               id="maxCargo" name="maxCargo" readonly>
+                                                        <input type="hidden" th:value="${plane.getTotalSeats()}"
+                                                               id="totalSeats" name="totalSeats" readonly>
 
 
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
                                                         Close
                                                     </button>
-                                                    <button type="submit" class="btn btn-primary" th:onclick="return empty()">Submit</button>
+                                                    <button type="submit" class="btn btn-primary"
+                                                            th:onclick="return empty()">Submit
+                                                    </button>
                                                 </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
 
+                    </td>
+                </div>
+                <div th:if="${case} == 'broken'">
+                    <td>
+                        <div class="float-end">
 
-
-
-                </td>
-            </div>
-            <div th:if="${case} == 'broken'">
-                <td>
-                    <div class="float-end">
-
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIssue" aria-expanded="false"
-                            th:attr="data-bs-target='#collapseIssue'+${plane.getPlaneID()}" >
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseIssue" aria-expanded="false"
+                                    th:attr="data-bs-target='#collapseIssue'+${plane.getPlaneID()}">
                                 View issues
                             </button>
-                    </div>
+                        </div>
 
-                </td>
-            </div>
-        </tr>
-            <div th:if="${case} == 'broken'">
-            <tr class="p-0">
-                <td colspan="4" class="p-0">
-                <div class="accordion-collapse collapse" th:id="'collapseIssue'+${plane.getPlaneID()}">
-                    <div class="accordion-body">
-                        <table>
-                            <tr>
-                                <th>Issues</th>
-                            </tr>
-                            <tr th:each="issue : ${plane.getIssues()}">
-                                <td>
-                                    <label th:text="${issue}" ></label>
-                                </td>
-
-                            </tr>
-                        </table>
-                    </div>
+                    </td>
                 </div>
-                </td>
             </tr>
+            <div th:if="${case} == 'broken'">
+                <tr class="p-0">
+                    <td colspan="4" class="p-0">
+                        <div class="accordion-collapse collapse" th:id="'collapseIssue'+${plane.getPlaneID()}">
+                            <div class="accordion-body">
+                                <table>
+                                    <tr>
+                                        <th>Issues</th>
+                                    </tr>
+                                    <tr th:each="issue : ${plane.getIssues()}">
+                                        <td>
+                                            <label th:text="${issue}"></label>
+                                        </td>
+
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
                 <tr class="d-none p-0">
-                    <td colspan="4" class="d-none" ></td>
+                    <td colspan="4" class="d-none"></td>
                 </tr>
 
+            </div>
         </div>
-        </div>
-
 
 
         </tbody>
     </table>
 </div>
-
 
 
 </html>
