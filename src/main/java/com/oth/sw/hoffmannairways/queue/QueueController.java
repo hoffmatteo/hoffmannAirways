@@ -30,54 +30,75 @@ public class QueueController {
 
     @JmsListener(destination = "sw_matteo_hoffmann_queue_Customer")
     public void receiveMessage(CustomerDTO message) {
-        //TODO handle user
-        AirlineDTO dto = new AirlineDTO();
-        dto.setStatus(AirlineDTO.Status.ERROR);
+        System.out.println("Received from customer: " + message);
+        if (message.getOrder() != null) {
+            message.getOrder().setFlight(new Flight());
+        }
 
         if (message.getUserInfo() != null) {
             UserDTO info = message.getUserInfo();
             User registeredUser = userService.getUserByUsername(info.getUsername());
             if (userService.checkPassword(info.getPassword(), registeredUser)) {
                 if (message.getMessage() == CustomerDTO.Message.CREATE_ORDER) {
-                    if (message.getOrder() != null) {
-                        message.getOrder().setCustomer(registeredUser);
-                        Order order = flightService.bookFlight(message.getOrder());
-                        if (order != null) {
-                            dto.setCurrentOrder(order);
-                            dto.setStatus(AirlineDTO.Status.CONFIRMED);
-                        }
-                    }
+                    sendDTO(createBooking(message.getOrder(), registeredUser));
                 } else if (message.getMessage() == CustomerDTO.Message.UPDATE_INFO) {
-                    List<Flight> flights = flightService.listAllFlights();
-                    List<FlightConnection> connections = flightService.listAllFlightConnections();
-                    dto.setAvailableConnections(connections);
-                    dto.setAvailableFlights(flights);
-                    dto.setStatus(AirlineDTO.Status.INFO);
+                    sendDTO(listInfo());
                 }
             }
         }
-        //sendDTO(dto);
+    }
+
+    private AirlineDTO createBooking(Order order, User registeredUser) {
+        AirlineDTO dto = new AirlineDTO();
+        dto.setStatus(AirlineDTO.Status.ERROR);
+        if (order != null) {
+            order.setCustomer(registeredUser);
+            Order completedOrder = flightService.bookFlight(order);
+            if (completedOrder != null) {
+                dto.setCurrentOrder(completedOrder);
+                dto.setStatus(AirlineDTO.Status.CONFIRMED);
+            }
+        }
+        return dto;
+    }
+
+    private AirlineDTO listInfo() {
+        AirlineDTO dto = new AirlineDTO();
+        dto.setStatus(AirlineDTO.Status.ERROR);
+
+        List<Flight> flights = flightService.listAllFlights();
+        List<FlightConnection> connections = flightService.listAllFlightConnections();
+        dto.setAvailableConnections(connections);
+        dto.setAvailableFlights(flights);
+        dto.setStatus(AirlineDTO.Status.INFO);
+        return dto;
 
     }
 
     @JmsListener(destination = "sw_matteo_hoffmann_queue_Airline")
     public void receiveTest(AirlineDTO message) {
-        System.out.println(message);
+        System.out.println("Received from Airline: " + message);
     }
 
     public void sendDTO(AirlineDTO dto) {
-        System.out.println("Sending message: " + dto);
+        System.out.println("Sending message to Customer: " + dto);
         jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Airline", dto);
     }
 
 
     public void bookAsPartner(Order order) {
+        //order.setFlight(new Flight());
         CustomerDTO dto = new CustomerDTO(CustomerDTO.Message.CREATE_ORDER, order);
-        dto.setUserInfo(new UserDTO("test", "123"));
+        dto.setUserInfo(new UserDTO("ingo", "123"));
+        System.out.println("Sending message to Airline: " + dto);
         jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Customer", dto);
 
-        dto = new CustomerDTO(CustomerDTO.Message.UPDATE_INFO);
+        /*dto = new CustomerDTO(CustomerDTO.Message.UPDATE_INFO);
+        dto.setUserInfo(new UserDTO("ingo", "123"));
         jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Customer", dto);
+
+         */
+
 
     }
 

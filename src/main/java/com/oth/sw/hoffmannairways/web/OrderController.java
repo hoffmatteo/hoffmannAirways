@@ -3,9 +3,10 @@ package com.oth.sw.hoffmannairways.web;
 import com.oth.sw.hoffmannairways.entity.Order;
 import com.oth.sw.hoffmannairways.entity.User;
 import com.oth.sw.hoffmannairways.entity.util.AccountType;
+import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
-import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +17,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Controller
+@Scope("singleton")
 public class OrderController {
     //TODO order controller?
     @Autowired
-    private FlightService flightService;
-    
+    private FlightServiceIF flightService;
+
     @Autowired
     private UserServiceIF userService;
 

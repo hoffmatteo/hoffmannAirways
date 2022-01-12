@@ -8,6 +8,7 @@ import com.oth.sw.hoffmannairways.service.UserServiceIF;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@Scope("singleton")
 public class FlightController {
     @Autowired
     private FlightService flightService;

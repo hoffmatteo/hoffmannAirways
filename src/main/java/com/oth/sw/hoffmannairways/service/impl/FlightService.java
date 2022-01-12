@@ -12,6 +12,8 @@ import com.oth.sw.hoffmannairways.repository.FlightRepository;
 import com.oth.sw.hoffmannairways.repository.OrderRepository;
 import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
 import com.oth.sw.hoffmannairways.service.FlightServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
+import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,49 +38,46 @@ public class FlightService implements FlightServiceIF {
 
 
     @Transactional
-    public Flight createFlight(Flight flight) {
+    public Flight createFlight(Flight flight) throws FlightException {
         //TODO
-        Airplane plane = airplaneService.assignPlane(flight);
-        if (plane != null) {
-            Flight overlappingFlight = flightRepo.findFlightByAirplane_PlaneID(flight.getAirplane().getPlaneID());
-            if (overlappingFlight != null && overlappingFlight.getFlightID() != flight.getFlightID()) {
-                overlappingFlight.setAirplane(null);
+        try {
+            Airplane plane = airplaneService.assignPlane(flight);
+            Optional<Flight> overlappingFlightOption = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
+            if (overlappingFlightOption.isPresent()) {
+                Flight overlappingFlight = overlappingFlightOption.get();
+                if (overlappingFlight.getFlightID() != flight.getFlightID()) {
+                    overlappingFlight.setAirplane(null);
+                }
             }
-        } else {
-            return null;
+            return flightRepo.save(flight);
+        } catch (AirplaneException e) {
+            throw new FlightException(e.getMessage(), flight);
         }
-        return flightRepo.save(flight);
     }
 
-    //TODO change diagram
-    //TODO maybe DTO? But only for rest?
+    //TODO implement
     @Transactional
-    public void deleteFlight(Flight flight) {
-        List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
-        notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
-        orderRepository.deleteAll(orders);
-        //TODO notify customer here
-        //TODO notify airport here if necessary
-        flightRepo.delete(flight);
-
-
+    public void deleteFlight(Flight flight) throws FlightException {
+        try {
+            List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
+            notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
+            orderRepository.deleteAll(orders);
+            //TODO notify customer here
+            //TODO notify airport here if necessary
+            flightRepo.delete(flight);
+        } catch (IllegalArgumentException) {
+            throw new FlightException("Could not delete orders and flight", flight);
+        }
     }
 
 
     //TODO
     @Transactional
-    public Flight editFlight(Flight flight) {
-        Optional<Flight> oldFlightOption = flightRepo.findById(flight.getFlightID());
-        if (oldFlightOption.isPresent()) {
-            Flight oldFlight = oldFlightOption.get();
-            //TODO notify customers, call airport etc.
-            Flight savedFlight = flightRepo.save(flight);
-            notifyCustomer(savedFlight, AirlineDTO.Status.CHANGED);
-            return savedFlight;
-        } else {
-            System.out.println("Flight not found " + flight.getFlightID());
-            return null;
-        }
+    public Flight editFlight(Flight flight) throws FlightException {
+        Flight oldFlight = flightRepo.findById(flight.getFlightID()).orElseThrow(() -> new FlightException("Could not find flight to edit!", flight));
+        Flight savedFlight = flightRepo.save(flight);
+        notifyCustomer(savedFlight, AirlineDTO.Status.CHANGED);
+        return savedFlight;
     }
 
     private void notifyCustomer(Flight flight, AirlineDTO.Status status) {
@@ -96,33 +95,29 @@ public class FlightService implements FlightServiceIF {
     }
 
     @Transactional
-    public Order bookFlight(Order order) {
+    public Order bookFlight(Order order) throws FlightException {
         //TODO customer checking
-        Optional<Flight> flightOption = flightRepo.findById(order.getFlight().getFlightID());
-        if (flightOption.isPresent()) {
-            Flight flight = flightOption.get();
-            //TODO call airplanerepo here?
-            int maxSeats = flight.getAirplane().getTotalSeats();
-            double maxCargo = flight.getAirplane().getMaxCargo();
-            int totalBookedSeats = flight.getBookedSeats() + order.getTotalSeats();
-            double totalBookedCargo = flight.getBookedCargoInKg() + order.getTotalCargoInKg();
-            if (totalBookedSeats <= maxSeats && totalBookedCargo <= maxCargo) {
-                flight.setBookedSeats(totalBookedSeats);
-                flight.setBookedCargoInKg(totalBookedCargo);
-                Order savedOrder = orderRepository.save(order);
-                //TODO remove
-                if (order.getCustomer() != null) {
-                    if (order.getCustomer().getAccountType() == AccountType.STAFF) {
-                        queueController.bookAsPartner(savedOrder);
-                    }
+        Flight flight = flightRepo.findById(order.getFlight().getFlightID()).orElseThrow(() -> new FlightException("Could not find flight.", order.getFlight()));
+        int maxSeats = flight.getAirplane().getTotalSeats();
+        double maxCargo = flight.getAirplane().getMaxCargo();
+        int totalBookedSeats = flight.getBookedSeats() + order.getTotalSeats();
+        double totalBookedCargo = flight.getBookedCargoInKg() + order.getTotalCargoInKg();
+        if (totalBookedSeats <= maxSeats && totalBookedCargo <= maxCargo) {
+            flight.setBookedSeats(totalBookedSeats);
+            flight.setBookedCargoInKg(totalBookedCargo);
+            flightRepo.save(flight);
+            Order savedOrder = orderRepository.save(order);
+            //TODO remove
+            if (order.getCustomer() != null) {
+                if (order.getCustomer().getAccountType() == AccountType.STAFF) {
+                    queueController.bookAsPartner(savedOrder);
                 }
-                return savedOrder;
-
             }
-        }
-        //TODO throw exception
-        return null;
+            return savedOrder;
 
+        } else {
+            throw new FlightException("Could not book flight as there are is no more space available.", flight);
+        }
 
     }
 
@@ -131,53 +126,67 @@ public class FlightService implements FlightServiceIF {
         return orderRepository.findAll();
     }
 
+    @Override
     public List<Order> getAllPastOrders() {
         return orderRepository.findOrdersByFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(new Date());
 
     }
 
+    @Override
     public List<Order> getAllFutureOrders() {
         return orderRepository.findOrdersByFlight_DepartureTimeAfterOrderByFlight_DepartureTime(new Date());
     }
 
+    @Override
     public List<Order> getAllPastOrders(String username) {
         return orderRepository.findOrdersByCustomer_UsernameAndFlight_DepartureTimeBeforeOrderByFlight_DepartureTime(username, new Date());
     }
 
+    @Override
     public List<Order> getAllFutureOrders(String username) {
         return orderRepository.findOrdersByCustomer_UsernameAndFlight_DepartureTimeAfterOrderByFlight_DepartureTime(username, new Date());
     }
 
     //TODO change name
+    @Override
     public List<Flight> listAllFlights() {
         return flightRepo.getAllByDepartureTimeAfterOrderByDepartureTime(new Date());
     }
 
+    @Override
     public List<FlightConnection> listAllFlightConnections() {
         return flightConnectionRepo.findAll();
     }
 
+    @Override
     public List<Flight> getFlightsForConnection(FlightConnection conn) {
         return flightRepo.getAllByConnection(conn);
 
     }
 
+    @Override
     @Transactional
     public FlightConnection createFlightConnection(FlightConnection flightConnection) {
         return flightConnectionRepo.save(flightConnection);
     }
 
+    @Override
     @Transactional
-    public Airplane repairPlane(Airplane plane) {
-        Flight flight = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
+    public Airplane repairPlane(Airplane plane) throws FlightException {
+        Optional<Flight> flightOptional = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
         //TODO
         //überlegen: falls deadline vor start des flugs --> nicht löschen?
-        if (flight != null) {
-            deleteFlight(flight);
+        try {
+            if (flightOptional.isPresent()) {
+                deleteFlight(flightOptional.get());
+            }
+            return airplaneService.repairPlane(plane);
+        } catch (AirplaneException e) {
+            throw new FlightException(e.getMessage(), flightOptional);
         }
-        return airplaneService.repairPlane(plane);
     }
 
+    @Override
     public Flight getFlight(int flightID) {
         Optional<Flight> flightOption = flightRepo.findById(flightID);
         return flightOption.orElse(null);

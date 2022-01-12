@@ -1,23 +1,27 @@
 package com.oth.sw.hoffmannairways.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 
 @Entity
-public class Flight {
+public class Flight extends SingleIdEntity<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int flightID;
     //difference, naming
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @NotNull
     private Date departureTime;
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @NotNull
     private Date arrivalTime;
     private int bookedSeats = 0;
     private double bookedCargoInKg = 0.0;
@@ -32,11 +36,12 @@ public class Flight {
     @ManyToOne
     private FlightConnection connection;
     //TODO diagramm
-    /*
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<Order> orders;
+    
 
-     */
+    @Override
+    public Integer getID() {
+        return this.flightID;
+    }
 
     public Flight(Date departureTime, Airplane airplane, User creator, FlightConnection connection) {
         this.departureTime = departureTime;

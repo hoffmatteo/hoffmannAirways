@@ -1,20 +1,23 @@
 package com.oth.sw.hoffmannairways.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "order_table")
-public class Order implements Serializable {
+public class Order extends SingleIdEntity<Integer> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //TODO orderID
-    private int oderID;
-    private int totalSeats;
-    private double totalCargoInKg;
+    private int orderID;
+    @NotNull
+    private int totalSeats = 0;
+    @NotNull
+    private double totalCargoInKg = 0.0;
 
     @ManyToOne
     private Flight flight;
@@ -28,14 +31,20 @@ public class Order implements Serializable {
     }
 
     public Order(int totalSeats, double totalCargoInKg, Flight flight, User customer) {
+        //TODO if 0 seats and 0 cargo is booked?
         this.totalSeats = totalSeats;
         this.totalCargoInKg = totalCargoInKg;
         this.flight = flight;
         this.customer = customer;
     }
 
-    public int getOderID() {
-        return oderID;
+    @Override
+    public Integer getID() {
+        return this.orderID;
+    }
+
+    public int getOrderID() {
+        return orderID;
     }
 
 
@@ -74,7 +83,7 @@ public class Order implements Serializable {
     @Override
     public String toString() {
         return "Order{" +
-                "oderID=" + oderID +
+                "oderID=" + orderID +
                 ", totalSeats=" + totalSeats +
                 ", totalCargoInKg=" + totalCargoInKg +
                 ", flight=" + flight +

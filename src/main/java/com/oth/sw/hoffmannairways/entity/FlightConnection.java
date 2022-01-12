@@ -1,14 +1,23 @@
 package com.oth.sw.hoffmannairways.entity;
 
+import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
-public class FlightConnection {
+public class FlightConnection extends SingleIdEntity<String> {
     @Id
+    @Length(min = 5, max = 10)
     private String flightNumber;
+    @NotBlank
     private String destination;
+    @NotBlank
     private String departure;
+    @NotNull
     private double flightTimeHours;
 
 
@@ -17,6 +26,11 @@ public class FlightConnection {
         this.destination = destination;
         this.departure = departure;
         this.flightTimeHours = flightTimeHours;
+    }
+
+    @Override
+    public String getID() {
+        return this.flightNumber;
     }
 
 

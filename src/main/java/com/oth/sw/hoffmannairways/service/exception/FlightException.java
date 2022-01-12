@@ -1,13 +1,25 @@
 package com.oth.sw.hoffmannairways.service.exception;
 
-import com.oth.sw.hoffmannairways.entity.Order;
+import com.oth.sw.hoffmannairways.entity.Flight;
 
 public class FlightException extends Exception {
-    public Order order;
-    public String errorMessage;
+    private Flight flight;
 
-    public FlightException(Order order, String errorMessage) {
-        this.order = order;
-        this.errorMessage = errorMessage;
+
+    public FlightException(String message, Flight flight) {
+        super(message);
+        this.flight = flight;
+    }
+
+    public FlightException(String message) {
+        super(message);
+    }
+
+    public Flight getFlight() {
+        return flight;
+    }
+
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 }

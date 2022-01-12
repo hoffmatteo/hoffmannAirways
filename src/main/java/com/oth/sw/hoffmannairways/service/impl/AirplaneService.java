@@ -4,6 +4,7 @@ import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.repository.AirplaneRepository;
 import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,30 +20,29 @@ public class AirplaneService implements AirplaneServiceIF {
     //TODO oder ich rufe das von FlightService aus auf?
 
     @Transactional
-    public Airplane assignPlane(Flight flight) {
-        Airplane plane = airplaneRepository.getAirplaneByPlaneID(flight.getAirplane().getPlaneID());
-        //TODO was bedeutet assignPlane überhaupt?
-        //Availability setzen?
+    public Airplane assignPlane(Flight flight) throws AirplaneException {
+        Airplane plane = airplaneRepository.findAirplaneByPlaneID(flight.getAirplane().getPlaneID()).orElseThrow(() -> new AirplaneException("Plane could not be found", flight.getAirplane()));
         if (plane.getUnavailableUntil() == null || plane.getUnavailableUntil().before(new Date())) {
             plane.setUnavailableUntil(flight.getArrivalTime());
             return plane;
         } else {
-            //TODO Exception?
-            return null;
+            throw new AirplaneException("Plane is unavailable!", plane);
         }
     }
 
 
     @Transactional
-    public Airplane repairPlane(Airplane plane) {
+    public Airplane repairPlane(Airplane plane) throws AirplaneException {
 
         if (!plane.getIssues().isEmpty() && plane.getUnavailableUntil() != null) {
             //TODO call haberl repairs
             //Date newDeadline = new Date();
             //plane.setUnavailableUntil(newDeadline);
             return airplaneRepository.save(plane);
+        } else {
+            throw new AirplaneException("Repair request information was not set properly!", plane);
+
         }
-        return null;
     }
 
     @Transactional
@@ -51,9 +51,8 @@ public class AirplaneService implements AirplaneServiceIF {
     }
 
     public Collection<Airplane> getAvailablePlanes() {
-        return airplaneRepository.getAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNull(new Date());
+        return airplaneRepository.findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNull(new Date());
     }
-
 
 
     public Collection<Airplane> getAllPlanes() {
@@ -67,8 +66,6 @@ public class AirplaneService implements AirplaneServiceIF {
     public Collection<Airplane> getAllBrokenPlanes() {
         return airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentIsNull(new Date());
     }
-
-
 
 
 }

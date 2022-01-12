@@ -7,6 +7,7 @@ import com.oth.sw.hoffmannairways.service.UserServiceIF;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,6 +18,7 @@ import java.security.Principal;
 import java.util.Collection;
 
 @Controller
+@Scope("singleton")
 public class StartController {
     //TODO order controller?
     @Autowired
@@ -50,7 +52,6 @@ public class StartController {
         flightService.createFlightConnection(connection);
 
      */
-
 
         Collection<Flight> flightList = flightService.listAllFlights();
         model.addAttribute("flights", flightList);

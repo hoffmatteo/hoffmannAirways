@@ -1,20 +1,26 @@
 package com.oth.sw.hoffmannairways.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Airplane {
+public class Airplane extends SingleIdEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int planeID;
+    @NotBlank
     private String planeName;
+    @NotNull
     private int totalSeats;
+    @NotNull
     private double maxCargo;
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -26,6 +32,11 @@ public class Airplane {
     @OneToOne(mappedBy = "airplane")
     @JsonIgnore
     private Flight assignment;
+
+    @Override
+    public Integer getID() {
+        return this.planeID;
+    }
 
 
     public int getPlaneID() {
