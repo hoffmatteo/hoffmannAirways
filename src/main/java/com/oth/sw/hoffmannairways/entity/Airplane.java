@@ -29,7 +29,7 @@ public class Airplane extends SingleIdEntity<Integer> {
     @ElementCollection
     @JsonIgnore
     private List<String> issues;
-    @OneToOne(mappedBy = "airplane")
+    @OneToOne(mappedBy = "airplane", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private Flight assignment;
 

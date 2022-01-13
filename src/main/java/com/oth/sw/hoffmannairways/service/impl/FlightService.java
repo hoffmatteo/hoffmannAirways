@@ -62,7 +62,6 @@ public class FlightService implements FlightServiceIF {
             List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
             notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
             orderRepository.deleteAll(orders);
-            //TODO notify customer here
             //TODO notify airport here if necessary
             flightRepo.delete(flight);
         } catch (IllegalArgumentException e) {
@@ -184,10 +183,9 @@ public class FlightService implements FlightServiceIF {
     }
 
     @Override
-    public Flight getFlight(int flightID) {
+    public Flight getFlight(int flightID) throws FlightException {
         Optional<Flight> flightOption = flightRepo.findById(flightID);
-        return flightOption.orElse(null);
-        //TODO
+        return flightOption.orElseThrow(() -> new FlightException("Could not find flight", new Flight(flightID)));
     }
 
 

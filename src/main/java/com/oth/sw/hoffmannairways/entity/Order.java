@@ -2,6 +2,8 @@ package com.oth.sw.hoffmannairways.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,6 +22,7 @@ public class Order extends SingleIdEntity<Integer> implements Serializable {
     private double totalCargoInKg = 0.0;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Flight flight;
 
     @ManyToOne

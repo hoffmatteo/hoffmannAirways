@@ -8,6 +8,7 @@ import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.exception.UserException;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
+import com.oth.sw.hoffmannairways.web.util.UIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -65,9 +66,6 @@ public class StartController {
     //Principal als parameter
     public String createOrder(Model model, @ModelAttribute("order") Order o, Principal principal) {
         //TODO check if values are null, return errors
-        System.out.println(o);
-        String message = "Booking failed.";
-        String alertClass = "alert-danger";
 
         if (principal != null) {
             try {
@@ -77,22 +75,23 @@ public class StartController {
                     Order savedOrder = flightService.bookFlight(o);
                     if (o.getFlight() != null) {
                         Flight f = o.getFlight();
-                        message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
-                        alertClass = "alert-success";
+                        String message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
+                        model.addAttribute("UIMessage", new UIMessage(message, "alert-success"));
+
                     }
                 } catch (FlightException e) {
-                    //TODO
+                    model.addAttribute("UIMessage", new UIMessage("Booking failed.", "alert-danger"));
+
                 }
             } catch (UserException e) {
-                //TODO
+                model.addAttribute("UIMessage", new UIMessage("Booking failed, could not find user.", "alert-danger"));
+
+
             }
         }
 
         //TODO source https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button
-
-        model.addAttribute("message", message);
-        model.addAttribute("alertClass", alertClass);
-
+        
         return viewFlights(model);
     }
 

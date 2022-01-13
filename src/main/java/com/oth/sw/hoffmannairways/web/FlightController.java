@@ -9,6 +9,7 @@ import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.exception.UserException;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
+import com.oth.sw.hoffmannairways.web.util.UIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -60,38 +61,28 @@ public class FlightController {
     //Principal als parameter
     public String createFlight(Model model, @ModelAttribute("flight") Flight f, Principal principal) {
         //TODO check if values are null, return errors
-        String message = "Flight could not be created.";
-        String alertClass = "alert-danger";
-
         if (principal != null) {
             try {
                 User currUser = userService.getUserByUsername(principal.getName());
                 f.setCreator(currUser);
                 Flight createdFlight = flightService.createFlight(f);
-                message = "Successfully created flight " + createdFlight.getFlightID();
-                alertClass = "alert-success";
-
-
+                model.addAttribute(new UIMessage("Successfully created flight " + createdFlight.getFlightID(), "alert-success"));
             } catch (UserException | FlightException e) {
-                //TODO
-
+                model.addAttribute("UIMessage", new UIMessage("Flight could not be created.", "alert-danger"));
             }
         }
-        model.addAttribute("message", message);
-        model.addAttribute("alertClass", alertClass);
-
 
         return viewCreateFlight(model);
     }
 
     @RequestMapping(value = "/editflight/{flight_id}", method = RequestMethod.GET)
     public String viewEditFlight(Model model, @PathVariable("flight_id") int flightID) {
-        Flight selectedFlight = flightService.getFlight(flightID);
-        if (selectedFlight != null) {
+        try {
+            Flight selectedFlight = flightService.getFlight(flightID);
             model.addAttribute("flight", selectedFlight);
             model.addAttribute("selectedPlane", selectedFlight.getAirplane());
-        } else {
-            //TODO
+        } catch (FlightException e) {
+            return viewCreateFlight(model);
         }
         model.addAllAttributes(setFlightArguments());
 
@@ -107,18 +98,27 @@ public class FlightController {
 
         try {
             Flight savedFlight = flightService.editFlight(f);
-            message = "Successfully edited flight " + savedFlight.getFlightID();
-            alertClass = "alert-success";
-
+            model.addAttribute("UIMessage", new UIMessage("Successfully edited flight " + savedFlight.getFlightID(), "alert-success"));
         } catch (FlightException e) {
-            message = "Edit failed.";
-            alertClass = "alert-danger";
+            model.addAttribute("UIMessage", new UIMessage("Edit failed.", "alert-danger"));
         }
-        model.addAttribute("message", message);
-        model.addAttribute("alertClass", alertClass);
-
 
         return viewEditFlight(model, f.getFlightID());
+    }
+
+    @RequestMapping(value = "/deleteflight/{flight_id}", method = RequestMethod.GET)
+    //Principal als parameter
+    public String deleteFlight(Model model, @PathVariable("flight_id") int flightID) {
+        try {
+            Flight f = flightService.getFlight(flightID);
+            flightService.deleteFlight(f);
+            model.addAttribute("UIMessage", new UIMessage("Successfully deleted flight " + f.getFlightID(), "alert-success"));
+
+        } catch (FlightException e) {
+            model.addAttribute("UIMessage", new UIMessage("Delete failed.", "alert-danger"));
+        }
+        //TODO
+        return viewCreateFlight(model);
     }
 
 

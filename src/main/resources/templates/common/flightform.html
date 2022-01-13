@@ -2,7 +2,7 @@
 <html lang="en">
 <head th:replace="common/header :: header"/>
 <script type="text/javascript" th:src="@{/js/actions.js}"></script>
-<div th:fragment="flightform (flight, connections, planes, selectedPlane)">
+<div th:fragment="flightform (flight, connections, planes, selectedPlane, delete)">
     <div class="mb-3">
         <label for="selectFlightroute" class="form-label">Flight route</label>
         <select class="form-select" aria-label="Default select example" id="selectFlightroute"
@@ -35,6 +35,10 @@
 
 
     <button type="submit" class="btn btn-primary">Submit</button>
+    <a th:href="'/deleteflight/'+${flight.getFlightID()}" class="btn btn-danger"
+       th:if="${delete == true}">Delete
+    </a>
+
 </div>
 </body>
 </html>

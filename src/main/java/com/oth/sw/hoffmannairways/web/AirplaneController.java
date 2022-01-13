@@ -6,6 +6,7 @@ import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
+import com.oth.sw.hoffmannairways.web.util.UIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -45,23 +46,19 @@ public class AirplaneController {
     //Principal als parameter
     public String createRepairJob(Model model, @ModelAttribute("newPlane") Airplane a) {
         //TODO check if values are null, return errors
-        String message;
-        String alertClass;
         try {
 
             Airplane plane = flightService.repairPlane(a);
 
-            message = "Successfully started repair process for Airplane " + plane.getPlaneName()
+            String message = "Successfully started repair process for Airplane " + plane.getPlaneName()
                     + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());
-            alertClass = "alert-success";
+            model.addAttribute("UIMessage", new UIMessage(message, "alert-success"));
+
+
         } catch (AirplaneException | FlightException e) {
 
-            message = "Process failed.";
-            alertClass = "alert-danger";
+            model.addAttribute("UIMessage", new UIMessage("Process failed.", "alert-danger"));
         }
-
-        model.addAttribute("message", message);
-        model.addAttribute("alertClass", alertClass);
 
         return viewRepairPlane(model);
     }

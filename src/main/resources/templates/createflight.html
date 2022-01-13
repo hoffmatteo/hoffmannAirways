@@ -18,11 +18,11 @@
 
 <div th:replace="common/header :: navigation"/>
 <div class="p-5">
-    <!--TODO source: https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button -->
-    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"></div>
+    <div th:replace="common/components :: UIMessage (${UIMessage})">
+    </div>
 
     <form th:action="@{/createflight}" method="post" th:object="${flight}">
-        <div th:replace="common/flightform :: flightform(${flight}, ${connections}, ${planes}, null)"></div>
+        <div th:replace="common/flightform :: flightform(${flight}, ${connections}, ${planes}, null, false)"></div>
     </form>
 
 </div>

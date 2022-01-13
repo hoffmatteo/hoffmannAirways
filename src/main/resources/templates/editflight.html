@@ -14,15 +14,13 @@
 <script type="text/javascript" th:src="@{/js/actions.js}"></script>
 
 <body>
-
-
 <div th:replace="common/header :: navigation"/>
 <div class="p-5">
-    <!--TODO source: https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button -->
-    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"></div>
+    <div th:replace="common/components :: UIMessage (${UIMessage})"></div>
+
 
     <form th:action="@{/editflight}" method="post" th:object="${flight}">
-        <div th:replace="common/flightform :: flightform(${flight}, ${connections}, ${planes}, ${selectedPlane})"></div>
+        <div th:replace="common/flightform :: flightform(${flight}, ${connections}, ${planes}, ${selectedPlane}, true)"></div>
         <input th:field="${flight.flightID}" th:value="${flight.getFlightID()}" type="hidden"/>
     </form>
 

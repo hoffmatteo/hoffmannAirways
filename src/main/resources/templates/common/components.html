@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/header :: header"/>
+<script type="text/javascript" th:src="@{/js/actions.js}"></script>
+
+
+<div th:fragment="UIMessage (message)">
+    <div th:if="${message}" th:text="${message.getMessage()}"
+         th:class="${'alert ' + message.getAlertClass()}"></div>
+</div>
+
+
+</html>
+
+
