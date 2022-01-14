@@ -53,8 +53,9 @@ public class FlightService implements FlightServiceIF {
                     overlappingFlight.setAirplane(null);
                 }
             }
-            airportService.createFlight(flight);
-            return flightRepo.save(flight);
+            //TODO exception
+            Flight confirmedFlight = airportService.createFlight(flight);
+            return flightRepo.save(confirmedFlight);
         } catch (AirplaneException e) {
             throw new FlightException(e.getMessage(), flight);
         }

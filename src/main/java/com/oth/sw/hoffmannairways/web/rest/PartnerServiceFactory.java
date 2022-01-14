@@ -29,14 +29,6 @@ public class PartnerServiceFactory {
             return new ProxyService();
         }
     }
-    /*
-    @Bean
-    @ConditionalOnMissingBean
-    public tempAirportIF getProxyAirport() {
-        System.out.println("returning fake airport");
-        return new ProxyService();
-    }
-     */
 
 
 }

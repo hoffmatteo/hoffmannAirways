@@ -4,5 +4,5 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 
 public interface tempAirportIF {
 
-    public void createFlight(Flight f);
+    public Flight createFlight(Flight f);
 }

@@ -4,8 +4,9 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 
 public class AirportService implements tempAirportIF {
     @Override
-    public void createFlight(Flight f) {
+    public Flight createFlight(Flight f) {
         //TODO
         System.out.println("asked airport!");
+        return null;
     }
 }
