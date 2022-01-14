@@ -14,17 +14,19 @@ public class ProxyService implements tempAirportIF {
     @Override
     public Flight createFlight(Flight f) {
         System.out.println("asked proxy!");
-        Date proposedSlot = f.getDepartureTime();
-        //round time to 5 minute slots: e.g. 13:34 --> 13:30-13:35, 13:36 --> 13:35-13:40
+        //TODO rounding?
+        Date proposedTime = f.getDepartureTime();
         Calendar proposedCalendar = Calendar.getInstance();
-        Date roundedSlot = DateUtils.truncate(proposedSlot, Calendar.HOUR);
-        //TODO source https://stackoverflow.com/a/40421043
-        roundedSlot = DateUtils.addMinutes(roundedSlot, (proposedCalendar.get(Calendar.MINUTE) / 5) * 5);
 
-        Date correctSlot = findSlot(roundedSlot, f);
+        Date roundedTime = DateUtils.round(proposedTime, Calendar.HOUR);
 
-        f.setDepartureTime(correctSlot);
-        f.setArrivalTime(DateUtils.addMinutes(correctSlot, (int) f.getConnection().getFlightTimeHours() * 60));
+        Date proposedSlot = DateUtils.addMinutes(roundedTime, 5 * (proposedCalendar.get(Calendar.MINUTE) / 5));
+        System.out.println(proposedSlot);
+
+        Date correctDate = findSlot(proposedSlot, f);
+
+        f.setDepartureTime(correctDate);
+        f.setArrivalTime(DateUtils.addMinutes(correctDate, (int) f.getConnection().getFlightTimeHours() * 60));
 
         return f;
 
@@ -38,9 +40,10 @@ public class ProxyService implements tempAirportIF {
                 slot = DateUtils.addMinutes(slot, 5);
             }
         }
-        HashMap<Date, Flight> temp = new HashMap<>();
-        temp.put(slot, f);
-        airport.put(f.getConnection(), temp);
+        HashMap<Date, Flight> currSlot = new HashMap<>();
+        currSlot.put(slot, f);
+        System.out.println(airport.toString());
+        airport.put(f.getConnection(), currSlot);
         return slot;
 
     }
