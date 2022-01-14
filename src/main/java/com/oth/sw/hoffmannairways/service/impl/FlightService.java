@@ -14,6 +14,7 @@ import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
 import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
+import com.oth.sw.hoffmannairways.web.rest.tempAirportIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,9 @@ public class FlightService implements FlightServiceIF {
     @Autowired
     QueueController queueController;
 
+    @Autowired
+    tempAirportIF airportService;
+
 
     @Transactional
     public Flight createFlight(Flight flight) throws FlightException {
@@ -49,6 +53,7 @@ public class FlightService implements FlightServiceIF {
                     overlappingFlight.setAirplane(null);
                 }
             }
+            airportService.createFlight(flight);
             return flightRepo.save(flight);
         } catch (AirplaneException e) {
             throw new FlightException(e.getMessage(), flight);
@@ -64,6 +69,7 @@ public class FlightService implements FlightServiceIF {
             orderRepository.deleteAll(orders);
             //TODO notify airport here if necessary
             flightRepo.delete(flight);
+            //TODO airplane
         } catch (IllegalArgumentException e) {
             throw new FlightException("Could not delete orders and flight", flight);
         }

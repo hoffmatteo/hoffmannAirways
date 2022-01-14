@@ -43,8 +43,7 @@ public class FlightController {
         model.addAllAttributes(setFlightArguments());
         model.addAttribute("flight", new Flight());
         return "createflight";
-
-
+        
     }
 
     private Map<String, Object> setFlightArguments() {
