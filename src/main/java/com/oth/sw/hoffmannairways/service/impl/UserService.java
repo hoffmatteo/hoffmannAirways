@@ -21,6 +21,8 @@ public class UserService implements UserServiceIF {
 
     @Override
     public User getUserByUsername(String username) throws UserException {
+        System.out.println("getting username");
+
         return userRepo.findById(username).orElseThrow(
                 () -> new UserException("User not found", username));
     }
@@ -36,6 +38,7 @@ public class UserService implements UserServiceIF {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("loading username");
         return userRepo.findById(username).orElseThrow(
                 () -> new UsernameNotFoundException("User not found")
         );

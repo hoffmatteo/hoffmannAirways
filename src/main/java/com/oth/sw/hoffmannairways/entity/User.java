@@ -2,7 +2,7 @@ package com.oth.sw.hoffmannairways.entity;
 
 import com.oth.sw.hoffmannairways.entity.util.AccountType;
 import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
-import com.sun.istack.NotNull;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -18,10 +19,12 @@ import java.util.List;
 //TODO unmodifiable list
 public class User extends SingleIdEntity<String> implements UserDetails, Serializable {
     @Id
+    @Length(min = 5, max = 30)
     private String username;
-    @NotNull
+    @NotBlank
     private String password;
-    @NotNull
+    @NotBlank
+    @Length(min = 5, max = 30)
     private String name;
     @Enumerated(EnumType.ORDINAL)
     private AccountType accountType;

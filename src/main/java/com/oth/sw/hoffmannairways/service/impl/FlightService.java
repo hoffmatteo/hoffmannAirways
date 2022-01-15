@@ -43,7 +43,6 @@ public class FlightService implements FlightServiceIF {
 
     @Transactional
     public Flight createFlight(Flight flight) throws FlightException {
-        //TODO
         try {
             Airplane plane = airplaneService.assignPlane(flight);
             Optional<Flight> overlappingFlightOption = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
@@ -53,8 +52,8 @@ public class FlightService implements FlightServiceIF {
                     overlappingFlight.setAirplane(null);
                 }
             }
-            //TODO exception
-            Flight confirmedFlight = airportService.createFlight(flight);
+            Flight savedFlight = flightRepo.save(flight);
+            Flight confirmedFlight = airportService.createFlight(savedFlight);
             return flightRepo.save(confirmedFlight);
         } catch (AirplaneException e) {
             throw new FlightException(e.getMessage(), flight);
@@ -64,13 +63,16 @@ public class FlightService implements FlightServiceIF {
     //TODO implement
     @Transactional
     public void deleteFlight(Flight flight) throws FlightException {
+        if (flight.getDepartureTime().before(new Date()) && flight.getArrivalTime().after(new Date())) {
+            throw new FlightException("Can not delete flight that is currently in transit.", flight);
+        }
         try {
             List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
             notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
             orderRepository.deleteAll(orders);
             //TODO notify airport here if necessary
+            flight.getAirplane().setUnavailableUntil(null);
             flightRepo.delete(flight);
-            //TODO airplane
         } catch (IllegalArgumentException e) {
             throw new FlightException("Could not delete orders and flight", flight);
         }
@@ -180,8 +182,6 @@ public class FlightService implements FlightServiceIF {
     @Transactional
     public Airplane repairPlane(Airplane plane) throws FlightException, AirplaneException {
         Optional<Flight> flightOptional = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
-        //TODO
-        //überlegen: falls deadline vor start des flugs --> nicht löschen?
         if (flightOptional.isPresent()) {
             deleteFlight(flightOptional.get());
         }

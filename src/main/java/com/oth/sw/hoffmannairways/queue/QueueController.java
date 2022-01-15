@@ -12,6 +12,7 @@ import com.oth.sw.hoffmannairways.service.UserServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@Scope("singleton")
 public class QueueController {
 
     @Autowired
@@ -34,7 +36,7 @@ public class QueueController {
     @JmsListener(destination = "sw_matteo_hoffmann_queue_Customer")
     public void receiveMessage(CustomerDTO message) {
         System.out.println("Received from customer: " + message);
-        
+
 
         if (message.getUserInfo() != null) {
             UserDTO info = message.getUserInfo();

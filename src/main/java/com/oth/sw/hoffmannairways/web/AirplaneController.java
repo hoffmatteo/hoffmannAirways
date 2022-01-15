@@ -29,7 +29,6 @@ public class AirplaneController {
     @RequestMapping(value = "/repairplane", method = RequestMethod.GET)
     //Principal als parameter
     public String viewRepairPlane(Model model) {
-        //TODO find and get
         Collection<Airplane> availablePlanes = airplaneService.getAvailablePlanes();
         Collection<Airplane> assignedPlanes = airplaneService.getAllAssignedPlanes();
         Collection<Airplane> brokenPlanes = airplaneService.getAllBrokenPlanes();
@@ -38,6 +37,7 @@ public class AirplaneController {
         model.addAttribute("brokenPlanes", brokenPlanes);
         model.addAttribute("newPlane", new Airplane());
 
+
         return "repairplane";
     }
 
@@ -45,7 +45,6 @@ public class AirplaneController {
     @RequestMapping(value = "/repairplane", method = RequestMethod.POST)
     //Principal als parameter
     public String createRepairJob(Model model, @ModelAttribute("newPlane") Airplane a) {
-        //TODO check if values are null, return errors
         try {
 
             Airplane plane = flightService.repairPlane(a);
@@ -57,7 +56,7 @@ public class AirplaneController {
 
         } catch (AirplaneException | FlightException e) {
 
-            model.addAttribute("UIMessage", new UIMessage("Process failed.", "alert-danger"));
+            model.addAttribute("UIMessage", new UIMessage(e.getMessage(), "alert-danger"));
         }
 
         return viewRepairPlane(model);

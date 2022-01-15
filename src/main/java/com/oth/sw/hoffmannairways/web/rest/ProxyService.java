@@ -13,11 +13,8 @@ public class ProxyService implements tempAirportIF {
 
     @Override
     public Flight createFlight(Flight f) {
-        System.out.println("asked proxy!");
-        //TODO rounding?
         Date proposedTime = f.getDepartureTime();
         Calendar proposedCalendar = Calendar.getInstance();
-
         Date roundedTime = DateUtils.round(proposedTime, Calendar.HOUR);
 
         Date proposedSlot = DateUtils.addMinutes(roundedTime, 5 * (proposedCalendar.get(Calendar.MINUTE) / 5));
@@ -29,8 +26,6 @@ public class ProxyService implements tempAirportIF {
         f.setArrivalTime(DateUtils.addMinutes(correctDate, (int) f.getConnection().getFlightTimeHours() * 60));
 
         return f;
-
-
     }
 
     private Date findSlot(Date slot, Flight f) {

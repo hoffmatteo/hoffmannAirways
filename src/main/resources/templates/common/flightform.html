@@ -7,7 +7,6 @@
         <label for="selectFlightroute" class="form-label">Flight route</label>
         <select class="form-select" aria-label="Default select example" id="selectFlightroute"
                 th:onchange="setFlightDuration()" th:field="${flight.connection}">
-            <option th:value="0" text="Please Select"></option>
             <option th:each="connection : ${connections}" th:value="${connection.getFlightNumber()}"
                     th:text="${connection.getFlightNumber()}+ ': '+${connection.getDeparture()} + ' &rArr; '+ ${connection.getDestination()} + ', ' + ${connection.getFlightTimeHours()} + 'h'">
         </select>
