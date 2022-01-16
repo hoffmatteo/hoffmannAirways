@@ -51,7 +51,7 @@ public class AirplaneService implements AirplaneServiceIF {
     }
 
     public Collection<Airplane> getAvailablePlanes() {
-        return airplaneRepository.findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNull(new Date());
+        return airplaneRepository.findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNullOrderByPlaneName(new Date());
     }
 
 

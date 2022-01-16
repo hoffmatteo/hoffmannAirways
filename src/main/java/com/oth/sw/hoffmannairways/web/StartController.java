@@ -39,22 +39,6 @@ public class StartController {
     @RequestMapping("/flights")
     //Principal als parameter
     public String viewFlights(Model model) {
-
-    /*
-        Airplane plane = new Airplane("A380", 100, 5000);
-        Airplane savedPlane = airplaneService.createPlane(plane);
-        plane = new Airplane("A320", 500, 5000);
-        airplaneService.createPlane(plane);
-        plane = new Airplane("737 MAX", 1000, 5000);
-        airplaneService.createPlane(plane);
-
-        FlightConnection connection = new FlightConnection("LH2370", "MUC", "DUB", 2.0);
-        FlightConnection conn = flightService.createFlightConnection(connection);
-        connection = new FlightConnection("LH457", "LAX", "FRA", 11.0);
-        flightService.createFlightConnection(connection);
-
-     */
-
         Collection<Flight> flightList = flightService.listAllFlights();
         model.addAttribute("flights", flightList);
         model.addAttribute("order", new Order());
@@ -80,8 +64,7 @@ public class StartController {
         } else {
             model.addAttribute("UIMessage", new UIMessage("Booking failed, could not find user.", "alert-danger"));
         }
-        
-        //TODO source https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button
+
         return viewFlights(model);
     }
 

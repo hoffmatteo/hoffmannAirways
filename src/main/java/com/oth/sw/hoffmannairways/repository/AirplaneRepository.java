@@ -12,7 +12,7 @@ public interface AirplaneRepository extends CrudRepository<Airplane, Integer> {
     Optional<Airplane> findAirplaneByPlaneID(int planeID);
 
     //get all available planes
-    List<Airplane> findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNull(Date date);
+    List<Airplane> findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNullOrderByPlaneName(Date date);
 
     List<Airplane> findAll();
 

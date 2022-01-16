@@ -181,6 +181,7 @@ public class FlightService implements FlightServiceIF {
     @Override
     @Transactional
     public Airplane repairPlane(Airplane plane) throws FlightException, AirplaneException {
+        
         Optional<Flight> flightOptional = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
         if (flightOptional.isPresent()) {
             deleteFlight(flightOptional.get());

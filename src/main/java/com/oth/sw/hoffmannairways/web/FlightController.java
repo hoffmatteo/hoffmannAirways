@@ -88,9 +88,6 @@ public class FlightController {
     @RequestMapping(value = "/editflight", method = RequestMethod.POST)
     //Principal als parameter
     public String editFlight(Model model, @ModelAttribute("flight") Flight f) {
-        String message;
-        String alertClass;
-
         try {
             Flight savedFlight = flightService.editFlight(f);
             model.addAttribute("UIMessage", new UIMessage("Successfully edited flight " + savedFlight.getFlightID(), "alert-success"));
@@ -104,16 +101,14 @@ public class FlightController {
     @RequestMapping(value = "/deleteflight/{flight_id}", method = RequestMethod.GET)
     //Principal als parameter
     public String deleteFlight(Model model, @PathVariable("flight_id") int flightID) {
-        //TODO delete only before departure or after arrival
         try {
             Flight f = flightService.getFlight(flightID);
             flightService.deleteFlight(f);
             model.addAttribute("UIMessage", new UIMessage("Successfully deleted flight " + f.getFlightID(), "alert-success"));
 
         } catch (FlightException e) {
-            model.addAttribute("UIMessage", new UIMessage("Delete failed.", "alert-danger"));
+            model.addAttribute("UIMessage", new UIMessage("Delete failed: " + e.getMessage(), "alert-danger"));
         }
-        //TODO
         return viewCreateFlight(model);
     }
 

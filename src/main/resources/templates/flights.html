@@ -39,9 +39,9 @@
         <tr th:each="flight : ${flights}">
             <th scope="row" class="align-middle">
                 <label th:text="${flight.getConnection().getFlightNumber()}"></label></th>
-            <td class="align-middle"><label th:text="${flight.getConnection().getDeparture()}"></label>
+            <td class="align-middle"><label th:text="${flight.getConnection().getDepartureAirport()}"></label>
             </td>
-            <td class="align-middle"><label th:text=" ${flight.getConnection().getDestination()}
+            <td class="align-middle"><label th:text=" ${flight.getConnection().getDestinationAirport()}
         "></label></td>
             <td class="align-middle"><label
                     th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
@@ -81,7 +81,7 @@
                                                 <h6>Departure time:</h6>
                                             </div>
                                             <div class="col-8">
-                                                <label th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy hh:mm')}+' at ' +${flight.getConnection().getDeparture()}+' Airport'"></label>
+                                                <label th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy hh:mm')}+' at ' +${flight.getConnection().getDepartureAirport()}+' Airport'"></label>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -89,7 +89,7 @@
                                                 <h6>Arrival time:</h6>
                                             </div>
                                             <div class="col-8">
-                                                <label th:text="${#dates.format(flight.getArrivalTime(), 'dd.MM.yyyy hh:mm')}+' at ' +${flight.getConnection().getDestination()}+' Airport'"></label>
+                                                <label th:text="${#dates.format(flight.getArrivalTime(), 'dd.MM.yyyy hh:mm')}+' at ' +${flight.getConnection().getDestinationAirport()}+' Airport'"></label>
                                             </div>
                                         </div>
                                         <div class="row">

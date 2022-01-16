@@ -14,18 +14,24 @@ public class FlightConnection extends SingleIdEntity<String> {
     @Length(min = 5, max = 10)
     private String flightNumber;
     @NotBlank
-    private String destination;
+    private String destinationAirport;
     @NotBlank
-    private String departure;
+    private String departureAirport;
+    @NotBlank
+    private String destinationCountry;
+    @NotBlank
+    private String departureCountry;
     @NotNull
     private double flightTimeHours;
 
 
-    public FlightConnection(String flightNumber, String destination, String departure, double flightTimeHours) {
+    public FlightConnection(String flightNumber, String destinationAirport, String departureAirport, String destinationCountry, String departureCountry, double flightTimeHours) {
         this.flightNumber = flightNumber;
-        this.destination = destination;
-        this.departure = departure;
+        this.destinationAirport = destinationAirport;
+        this.departureAirport = departureAirport;
         this.flightTimeHours = flightTimeHours;
+        this.departureCountry = departureCountry;
+        this.destinationCountry = destinationCountry;
     }
 
     @Override
@@ -42,20 +48,20 @@ public class FlightConnection extends SingleIdEntity<String> {
         this.flightNumber = flightnumber;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getDestinationAirport() {
+        return destinationAirport;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setDestinationAirport(String destination) {
+        this.destinationAirport = destination;
     }
 
-    public String getDeparture() {
-        return departure;
+    public String getDepartureAirport() {
+        return departureAirport;
     }
 
-    public void setDeparture(String departure) {
-        this.departure = departure;
+    public void setDepartureAirport(String departure) {
+        this.departureAirport = departure;
     }
 
     public double getFlightTimeHours() {
@@ -66,6 +72,22 @@ public class FlightConnection extends SingleIdEntity<String> {
         this.flightTimeHours = flightTimeHours;
     }
 
+    public String getDestinationCountry() {
+        return destinationCountry;
+    }
+
+    public void setDestinationCountry(String destinationCountry) {
+        this.destinationCountry = destinationCountry;
+    }
+
+    public String getDepartureCountry() {
+        return departureCountry;
+    }
+
+    public void setDepartureCountry(String departureCountry) {
+        this.departureCountry = departureCountry;
+    }
+
     public FlightConnection() {
 
     }
@@ -74,9 +96,11 @@ public class FlightConnection extends SingleIdEntity<String> {
     public String toString() {
         return "FlightConnection{" +
                 "flightNumber='" + flightNumber + '\'' +
-                ", destination='" + destination + '\'' +
-                ", departure='" + departure + '\'' +
+                ", destinationAirport='" + destinationAirport + '\'' +
+                ", departureAirport='" + departureAirport + '\'' +
+                ", destinationCountry='" + destinationCountry + '\'' +
+                ", departureCountry='" + departureCountry + '\'' +
                 ", flightTimeHours=" + flightTimeHours +
-                '}';
+                "} " + super.toString();
     }
 }

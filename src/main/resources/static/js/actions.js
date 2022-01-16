@@ -1,18 +1,18 @@
 var routeTime = 0;
 
-$(document).ready( function() {
-    //TODO source https://stackoverflow.com/questions/8102940/javascript-check-what-page-has-loaded
+$(document).ready(function () {
+    //Source https://stackoverflow.com/questions/8102940/javascript-check-what-page-has-loaded
     window.location.pathname;
     var sPath = window.location.pathname;
     var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
-    if(sPage === "createflight"){
+    if (sPage === "createflight") {
         $("#DepartureTimePicker").val(new Date().toDateInputValue());
         updateArrivalTime();
-    }
-    else {
+    } else {
         setFlightDuration();
     }
 });
+
 function updateArrivalTime() {
     var date = new Date($("#DepartureTimePicker").val());
     date.addHours(routeTime);
@@ -24,39 +24,36 @@ function setFlightDuration() {
     var connection = $("#selectFlightroute").find(":selected").text();
     var strings = connection.split(',');
     var flightTime = strings[1];
-    if(flightTime != null) {
+    if (flightTime != null) {
         var result = flightTime.substring(1, flightTime.length - 1);
         console.log(result);
 
         routeTime = parseFloat(result);
-        if(routeTime != null) {
+        if (routeTime != null) {
             console.log("Set route time to " + routeTime);
-        }
-        else {
+        } else {
             routeTime = 0;
         }
-    }
-    else {
+    } else {
         routeTime = 0;
     }
     updateArrivalTime();
 
 }
-//TODO quelle angeben
-//https://stackoverflow.com/a/1050782
-Date.prototype.addHours = function(h) {
-    this.setTime(this.getTime() + (h*60*60*1000));
+
+//Source: https://stackoverflow.com/a/1050782
+Date.prototype.addHours = function (h) {
+    this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
-//TODO quelle
-//https://stackoverflow.com/a/13052187
-Date.prototype.toDateInputValue = (function() {
+//Source: https://stackoverflow.com/a/13052187
+Date.prototype.toDateInputValue = (function () {
     var date = new Date(this);
     var day = date.getDate(),
         month = date.getMonth() + 1,
         year = date.getFullYear(),
         hour = date.getHours(),
-        min  = date.getMinutes();
+        min = date.getMinutes();
 
     month = (month < 10 ? "0" : "") + month;
     day = (day < 10 ? "0" : "") + day;
@@ -69,7 +66,7 @@ Date.prototype.toDateInputValue = (function() {
 });
 
 var index = 1;
-
+//Source: https://shouts.dev/add-or-remove-input-fields-dynamically-using-jquery
 $(document).on('click', '#addRow', function () {
     var html = '';
     html += '<div id="inputFormRow">';
@@ -96,7 +93,7 @@ function testFunc() {
 
 function empty() {
     var issue = $("#issues0").val;
-    if(issue === "") {
+    if (issue === "") {
 
         return false;
     }

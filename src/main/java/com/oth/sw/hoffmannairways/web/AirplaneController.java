@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @Controller
@@ -27,7 +29,6 @@ public class AirplaneController {
     private FlightService flightService;
 
     @RequestMapping(value = "/repairplane", method = RequestMethod.GET)
-    //Principal als parameter
     public String viewRepairPlane(Model model) {
         Collection<Airplane> availablePlanes = airplaneService.getAvailablePlanes();
         Collection<Airplane> assignedPlanes = airplaneService.getAllAssignedPlanes();
@@ -43,20 +44,22 @@ public class AirplaneController {
 
 
     @RequestMapping(value = "/repairplane", method = RequestMethod.POST)
-    //Principal als parameter
-    public String createRepairJob(Model model, @ModelAttribute("newPlane") Airplane a) {
-        try {
+    public String createRepairJob(Model model, @Valid @ModelAttribute("newPlane") Airplane a, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("UIMessage", new UIMessage("Failed to repair plane: Inputs were not valid", "alert-danger"));
+        } else {
+            try {
 
-            Airplane plane = flightService.repairPlane(a);
+                Airplane plane = flightService.repairPlane(a);
 
-            String message = "Successfully started repair process for Airplane " + plane.getPlaneName()
-                    + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());
-            model.addAttribute("UIMessage", new UIMessage(message, "alert-success"));
+                String message = "Successfully started repair process for Airplane " + plane.getPlaneName()
+                        + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());
+                model.addAttribute("UIMessage", new UIMessage(message, "alert-success"));
 
+            } catch (AirplaneException | FlightException e) {
 
-        } catch (AirplaneException | FlightException e) {
-
-            model.addAttribute("UIMessage", new UIMessage(e.getMessage(), "alert-danger"));
+                model.addAttribute("UIMessage", new UIMessage("Failed to repair plane: " + e.getMessage(), "alert-danger"));
+            }
         }
 
         return viewRepairPlane(model);

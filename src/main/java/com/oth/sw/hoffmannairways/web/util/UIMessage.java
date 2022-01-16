@@ -1,9 +1,9 @@
 package com.oth.sw.hoffmannairways.web.util;
 
 public class UIMessage {
+    //Source: https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button -->
     private String message;
     private String alertClass;
-    //TODO source: https://stackoverflow.com/questions/46744586/thymeleaf-show-a-success-message-after-clicking-on-submit-button -->
 
 
     public UIMessage(String message, String alertClass) {

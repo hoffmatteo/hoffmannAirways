@@ -2,6 +2,7 @@ package com.oth.sw.hoffmannairways.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -28,7 +29,7 @@ public class Airplane extends SingleIdEntity<Integer> {
     private Date unavailableUntil;
     @ElementCollection
     @JsonIgnore
-    private List<String> issues;
+    private List<@NotBlank @Length(min = 4, max = 800) String> issues;
     @OneToOne(mappedBy = "airplane", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Flight assignment;
