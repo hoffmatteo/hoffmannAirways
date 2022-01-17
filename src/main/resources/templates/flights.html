@@ -40,11 +40,11 @@
             <th scope="row" class="align-middle">
                 <label th:text="${flight.getConnection().getFlightNumber()}"></label></th>
             <td class="align-middle"><label
-                    th:text="${flight.getConnection().getDepartureAirport() + ', ' + flight.getConnection().getDepartureCountry()}"></label>
+                    th:text="${flight.getConnection().getDepartureAirport() + ', ' + flight.getConnection().getDepartureCity() +', ' + flight.getConnection().getDepartureCountry()}"></label>
             </td>
 
             <td class="align-middle"><label
-                    th:text=" ${flight.getConnection().getDestinationAirport() + ', ' + flight.getConnection().getDestinationCountry()}"></label>
+                    th:text=" ${flight.getConnection().getDestinationAirport() + ', ' + flight.getConnection().getDestinationCity() + ', ' + flight.getConnection().getDestinationCountry()}"></label>
             </td>
             <td class="align-middle"><label
                     th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>

@@ -19,12 +19,12 @@ import java.util.List;
 //TODO unmodifiable list
 public class User extends SingleIdEntity<String> implements UserDetails, Serializable {
     @Id
-    @Length(min = 5, max = 30)
+    @Length(min = 4, max = 30)
     private String username;
     @NotBlank
     private String password;
     @NotBlank
-    @Length(min = 5, max = 30)
+    @Length(min = 7, max = 30)
     private String name;
     @Enumerated(EnumType.ORDINAL)
     private AccountType accountType;

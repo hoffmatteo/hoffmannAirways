@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class FlightConnection extends SingleIdEntity<String> {
-    //TODO destinationCity, departureCity!
     @Id
     @Length(min = 5, max = 10)
     private String flightNumber;
@@ -19,20 +18,25 @@ public class FlightConnection extends SingleIdEntity<String> {
     @NotBlank
     private String departureAirport;
     @NotBlank
+    private String destinationCity;
+    @NotBlank
+    private String departureCity;
+    @NotBlank
     private String destinationCountry;
     @NotBlank
     private String departureCountry;
     @NotNull
     private double flightTimeHours;
 
-
-    public FlightConnection(String flightNumber, String destinationAirport, String departureAirport, String destinationCountry, String departureCountry, double flightTimeHours) {
+    public FlightConnection(String flightNumber, String destinationAirport, String destinationCity, String destinationCountry, String departureAirport, String departureCity, String departureCountry, double flightTimeHours) {
         this.flightNumber = flightNumber;
         this.destinationAirport = destinationAirport;
         this.departureAirport = departureAirport;
-        this.flightTimeHours = flightTimeHours;
-        this.departureCountry = departureCountry;
+        this.destinationCity = destinationCity;
+        this.departureCity = departureCity;
         this.destinationCountry = destinationCountry;
+        this.departureCountry = departureCountry;
+        this.flightTimeHours = flightTimeHours;
     }
 
     @Override
@@ -89,6 +93,22 @@ public class FlightConnection extends SingleIdEntity<String> {
         this.departureCountry = departureCountry;
     }
 
+    public String getDestinationCity() {
+        return destinationCity;
+    }
+
+    public void setDestinationCity(String destinationCity) {
+        this.destinationCity = destinationCity;
+    }
+
+    public String getDepartureCity() {
+        return departureCity;
+    }
+
+    public void setDepartureCity(String departureCity) {
+        this.departureCity = departureCity;
+    }
+
     public FlightConnection() {
 
     }
@@ -99,6 +119,8 @@ public class FlightConnection extends SingleIdEntity<String> {
                 "flightNumber='" + flightNumber + '\'' +
                 ", destinationAirport='" + destinationAirport + '\'' +
                 ", departureAirport='" + departureAirport + '\'' +
+                ", destinationCity='" + destinationCity + '\'' +
+                ", departureCity='" + departureCity + '\'' +
                 ", destinationCountry='" + destinationCountry + '\'' +
                 ", departureCountry='" + departureCountry + '\'' +
                 ", flightTimeHours=" + flightTimeHours +
