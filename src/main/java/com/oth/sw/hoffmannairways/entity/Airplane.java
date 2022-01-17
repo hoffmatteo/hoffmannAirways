@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,11 +19,8 @@ public class Airplane extends SingleIdEntity<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int planeID;
-    @NotBlank
     private String planeName;
-    @NotNull
     private int totalSeats;
-    @NotNull
     private double maxCargo;
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -30,9 +29,10 @@ public class Airplane extends SingleIdEntity<Integer> {
     @ElementCollection
     @JsonIgnore
     private List<@NotBlank @Length(min = 4, max = 800) String> issues;
-    @OneToOne(mappedBy = "airplane", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "airplane", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
-    private Flight assignment;
+    @Nullable
+    private List<@NotNull Flight> assignments = new ArrayList<>();
 
     @Override
     public Integer getID() {
@@ -88,12 +88,12 @@ public class Airplane extends SingleIdEntity<Integer> {
         this.issues = issues;
     }
 
-    public Flight getAssignment() {
-        return assignment;
+    public List<Flight> getAssignments() {
+        return assignments;
     }
 
-    public void setAssignment(Flight assignment) {
-        this.assignment = assignment;
+    public void setAssignments(List<Flight> assignment) {
+        this.assignments = assignment;
     }
 
     public Airplane(String planeName, int totalSeats, double maxCargo) {

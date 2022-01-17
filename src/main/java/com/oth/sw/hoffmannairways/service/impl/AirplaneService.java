@@ -16,13 +16,16 @@ import java.util.Date;
 public class AirplaneService implements AirplaneServiceIF {
     @Autowired
     AirplaneRepository airplaneRepository;
-    //TODO Schnittstelle fehlt --> flightService
-    //TODO oder ich rufe das von FlightService aus auf?
+
+    //TODO save?
 
     @Transactional
     public Airplane assignPlane(Flight flight) throws AirplaneException {
+        if (flight.getAirplane() == null) {
+            throw new AirplaneException("Plane is not set!", null);
+        }
         Airplane plane = airplaneRepository.findAirplaneByPlaneID(flight.getAirplane().getPlaneID()).orElseThrow(() -> new AirplaneException("Plane could not be found", flight.getAirplane()));
-        if (plane.getUnavailableUntil() == null || plane.getUnavailableUntil().before(new Date())) {
+        if (plane.getUnavailableUntil() == null || plane.getUnavailableUntil().before(flight.getDepartureTime())) {
             plane.setUnavailableUntil(flight.getArrivalTime());
             return plane;
         } else {
@@ -35,10 +38,15 @@ public class AirplaneService implements AirplaneServiceIF {
     public Airplane repairPlane(Airplane plane) throws AirplaneException {
 
         if (!plane.getIssues().isEmpty() && plane.getUnavailableUntil() != null) {
-            //TODO call haberl repairs
-            //Date newDeadline = new Date();
-            //plane.setUnavailableUntil(newDeadline);
-            return airplaneRepository.save(plane);
+            Airplane oldPlane = airplaneRepository.findAirplaneByPlaneID(plane.getPlaneID()).orElseThrow();
+            oldPlane.setUnavailableUntil(plane.getUnavailableUntil());
+            oldPlane.setIssues(plane.getIssues());
+            if (oldPlane.getAssignments() != null) {
+                if (!oldPlane.getAssignments().isEmpty()) {
+                    oldPlane.getAssignments().clear();
+                }
+            }
+            return airplaneRepository.save(oldPlane);
         } else {
             throw new AirplaneException("Repair request information was not set properly!", plane);
 
@@ -56,15 +64,15 @@ public class AirplaneService implements AirplaneServiceIF {
 
 
     public Collection<Airplane> getAllPlanes() {
-        return airplaneRepository.findAll();
+        return airplaneRepository.findAllByOrderByPlaneName();
     }
 
     public Collection<Airplane> getAllAssignedPlanes() {
-        return airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentIsNotNull(new Date());
+        return airplaneRepository.findDistinctByUnavailableUntilAfterAndAssignmentsIsNotNull(new Date());
     }
 
     public Collection<Airplane> getAllBrokenPlanes() {
-        return airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentIsNull(new Date());
+        return airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentsIsNull(new Date());
     }
 
 

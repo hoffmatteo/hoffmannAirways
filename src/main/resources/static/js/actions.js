@@ -7,6 +7,7 @@ $(document).ready(function () {
     var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
     if (sPage === "createflight") {
         $("#DepartureTimePicker").val(new Date().toDateInputValue());
+        setFlightDuration();
         updateArrivalTime();
     } else {
         setFlightDuration();
@@ -15,18 +16,43 @@ $(document).ready(function () {
 
 function updateArrivalTime() {
     var date = new Date($("#DepartureTimePicker").val());
+    filterPlanes(date);
     date.addHours(routeTime);
-    $("#ArrivalTimePicker").val(date.toDateInputValue());
-    console.log("done");
+    var arrivalDate = date.toDateInputValue();
+    $("#ArrivalTimePicker").val(arrivalDate);
+
 }
+
+function filterPlanes(departureDate) {
+    $("#selectAirplane option").each(function () {
+        var text = $(this).text();
+        var strings = $(this).text().split(':');
+        var dateString = strings[1];
+        if (dateString != null) {
+            console.log("true");
+            dateString += ":" + strings[2];
+            var planeDate = new Date(dateString);
+            if (departureDate < planeDate.addHours(1)) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        } else {
+            $(this).show();
+
+        }
+
+    });
+    $("#selectAirplane").val("default");
+}
+
 
 function setFlightDuration() {
     var connection = $("#selectFlightroute").find(":selected").text();
-    var strings = connection.split(',');
-    var flightTime = strings[1];
+    var strings = connection.split(':');
+    var flightTime = strings[2];
     if (flightTime != null) {
         var result = flightTime.substring(1, flightTime.length - 1);
-        console.log(result);
 
         routeTime = parseFloat(result);
         if (routeTime != null) {
@@ -38,7 +64,6 @@ function setFlightDuration() {
         routeTime = 0;
     }
     updateArrivalTime();
-
 }
 
 //Source: https://stackoverflow.com/a/1050782
@@ -87,15 +112,4 @@ $(document).on('click', '#removeRow', function () {
     $(this).closest('#inputFormRow').remove();
 });
 
-function testFunc() {
-    console.log("lol");
-}
 
-function empty() {
-    var issue = $("#issues0").val;
-    if (issue === "") {
-
-        return false;
-    }
-
-}

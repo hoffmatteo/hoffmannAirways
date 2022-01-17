@@ -45,13 +45,6 @@ public class FlightService implements FlightServiceIF {
     public Flight createFlight(Flight flight) throws FlightException {
         try {
             Airplane plane = airplaneService.assignPlane(flight);
-            Optional<Flight> overlappingFlightOption = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
-            if (overlappingFlightOption.isPresent()) {
-                Flight overlappingFlight = overlappingFlightOption.get();
-                if (overlappingFlight.getFlightID() != flight.getFlightID()) {
-                    overlappingFlight.setAirplane(null);
-                }
-            }
             Flight savedFlight = flightRepo.save(flight);
             Flight confirmedFlight = airportService.createFlight(savedFlight);
             return flightRepo.save(confirmedFlight);
@@ -163,7 +156,7 @@ public class FlightService implements FlightServiceIF {
 
     @Override
     public List<FlightConnection> listAllFlightConnections() {
-        return flightConnectionRepo.findAll();
+        return flightConnectionRepo.findAllByOrderByDepartureAirport();
     }
 
     @Override
@@ -181,10 +174,11 @@ public class FlightService implements FlightServiceIF {
     @Override
     @Transactional
     public Airplane repairPlane(Airplane plane) throws FlightException, AirplaneException {
-        
-        Optional<Flight> flightOptional = flightRepo.findFlightByAirplane_PlaneID(plane.getPlaneID());
-        if (flightOptional.isPresent()) {
-            deleteFlight(flightOptional.get());
+
+
+        List<Flight> flightList = flightRepo.findFlightsByAirplane_PlaneID(plane.getPlaneID());
+        for (Flight flight : flightList) {
+            deleteFlight(flight);
         }
         return airplaneService.repairPlane(plane);
 

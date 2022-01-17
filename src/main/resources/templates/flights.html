@@ -39,10 +39,13 @@
         <tr th:each="flight : ${flights}">
             <th scope="row" class="align-middle">
                 <label th:text="${flight.getConnection().getFlightNumber()}"></label></th>
-            <td class="align-middle"><label th:text="${flight.getConnection().getDepartureAirport()}"></label>
+            <td class="align-middle"><label
+                    th:text="${flight.getConnection().getDepartureAirport() + ', ' + flight.getConnection().getDepartureCountry()}"></label>
             </td>
-            <td class="align-middle"><label th:text=" ${flight.getConnection().getDestinationAirport()}
-        "></label></td>
+
+            <td class="align-middle"><label
+                    th:text=" ${flight.getConnection().getDestinationAirport() + ', ' + flight.getConnection().getDestinationCountry()}"></label>
+            </td>
             <td class="align-middle"><label
                     th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
             <td class="align-middle"><label

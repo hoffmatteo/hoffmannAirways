@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class FlightConnection extends SingleIdEntity<String> {
+    //TODO destinationCity, departureCity!
     @Id
     @Length(min = 5, max = 10)
     private String flightNumber;

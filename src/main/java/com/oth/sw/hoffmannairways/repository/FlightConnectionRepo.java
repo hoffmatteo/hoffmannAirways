@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FlightConnectionRepo extends CrudRepository<FlightConnection, String> {
 
-    List<FlightConnection> findAll();
+    List<FlightConnection> findAllByOrderByDepartureAirport();
 }

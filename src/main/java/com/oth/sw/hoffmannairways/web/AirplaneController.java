@@ -51,6 +51,7 @@ public class AirplaneController {
             try {
 
                 Airplane plane = flightService.repairPlane(a);
+                System.out.println("testing");
 
                 String message = "Successfully started repair process for Airplane " + plane.getPlaneName()
                         + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());

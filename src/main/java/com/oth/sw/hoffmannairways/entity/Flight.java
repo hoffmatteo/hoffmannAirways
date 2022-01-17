@@ -27,7 +27,7 @@ public class Flight extends SingleIdEntity<Integer> {
     private double bookedCargoInKg = 0.0;
 
     //TODO cascade stuff
-    @OneToOne
+    @ManyToOne
     private Airplane airplane;
     @ManyToOne
     @JsonIgnore

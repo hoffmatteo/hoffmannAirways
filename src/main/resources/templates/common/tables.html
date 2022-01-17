@@ -28,9 +28,11 @@
                 <label th:text="${order.getCustomer()?.getUsername()}"></label></td>
             <td class="align-middle">
                 <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></td>
-            <td class="align-middle"><label th:text="${order.getFlight().getConnection().getDeparture()}"></label>
+            <td class="align-middle"><label
+                    th:text="${order.getFlight().getConnection().getDepartureAirport() + ', ' + order.getFlight().getConnection().getDepartureCountry()}"></label>
             </td>
-            <td class="align-middle"><label th:text=" ${order.getFlight().getConnection().getDestination()}"></label>
+            <td class="align-middle"><label
+                    th:text=" ${order.getFlight().getConnection().getDestinationAirport() + ', ' + order.getFlight().getConnection().getDestinationCountry()}"></label>
             </td>
             <td class="align-middle"><label
                     th:text="${#dates.format(order.getFlight().getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
@@ -61,7 +63,6 @@
         </tr>
         </thead>
         <tbody>
-        <!-- data-toggle="collapse" th:attr="data-bs-target='#accordion'+${plane.getPlaneID()}" -->
         <div th:each="plane : ${planes}">
             <tr>
                 <th scope="row" class="align-middle">
@@ -69,8 +70,10 @@
                 <td><label th:text="${plane.getPlaneName()}"></label>
                 </td>
                 <div th:if="${case} == 'assigned'">
-
-                    <td><label th:text="${plane.getAssignment()?.getConnection()?.getFlightNumber()}"></label>
+                    <td>
+                        <div th:each="assignment : ${plane.getAssignments()}">
+                            <label th:text="${assignment?.getConnection()?.getFlightNumber()}"></label>
+                        </div>
                     </td>
                 </div>
                 <div th:if="${case eq 'assigned' or case eq 'broken'}">
@@ -129,17 +132,6 @@
                                                     <div class="form-group">
                                                         <input type="hidden" th:value="${plane.getPlaneID()}"
                                                                id="planeID" name="planeID" readonly>
-                                                        <input type="hidden" th:value="${plane.getPlaneName()}"
-                                                               id="planeName" name="planeName" readonly>
-                                                        <input type="hidden"
-                                                               th:value="${plane.getAssignment()?.getFlightID()}"
-                                                               id="assignment" name="assignment" readonly>
-                                                        <input type="hidden" th:value="${plane.getMaxCargo()}"
-                                                               id="maxCargo" name="maxCargo" readonly>
-                                                        <input type="hidden" th:value="${plane.getTotalSeats()}"
-                                                               id="totalSeats" name="totalSeats" readonly>
-
-
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

@@ -14,13 +14,14 @@ public interface AirplaneRepository extends CrudRepository<Airplane, Integer> {
     //get all available planes
     List<Airplane> findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNullOrderByPlaneName(Date date);
 
-    List<Airplane> findAll();
+    List<Airplane> findAllByOrderByPlaneName();
+
 
     //get all assigned planes
-    List<Airplane> findAirplanesByUnavailableUntilAfterAndAssignmentIsNotNull(Date date);
+    List<Airplane> findDistinctByUnavailableUntilAfterAndAssignmentsIsNotNull(Date date);
 
     //get all planes that are being repaired
-    List<Airplane> findAirplanesByUnavailableUntilAfterAndAssignmentIsNull(Date date);
+    List<Airplane> findAirplanesByUnavailableUntilAfterAndAssignmentsIsNull(Date date);
 
 
 }

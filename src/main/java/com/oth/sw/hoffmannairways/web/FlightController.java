@@ -40,7 +40,7 @@ public class FlightController {
 
     private Map<String, Object> setFlightArguments() {
         Map<String, Object> attributes = new HashMap<>();
-        Collection<Airplane> planeList = airplaneService.getAvailablePlanes();
+        Collection<Airplane> planeList = airplaneService.getAllPlanes();
         List<FlightConnection> connectionList = flightService.listAllFlightConnections();
         attributes.put("planes", planeList);
         attributes.put("connections", connectionList);
