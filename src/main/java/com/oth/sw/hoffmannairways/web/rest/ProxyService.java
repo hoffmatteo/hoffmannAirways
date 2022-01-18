@@ -28,6 +28,16 @@ public class ProxyService implements tempAirportIF {
         return f;
     }
 
+    @Override
+    public boolean cancelFlight(Flight f) {
+        return false;
+    }
+
+    @Override
+    public Flight editFlight(Flight oldFlight, Flight newFlight) {
+        return null;
+    }
+
     private Date findSlot(Date slot, Flight f) {
 
         if (airport.containsKey(f.getConnection())) {

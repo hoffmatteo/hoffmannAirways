@@ -17,6 +17,7 @@ import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.web.rest.tempAirportIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -56,6 +57,7 @@ public class FlightService implements FlightServiceIF {
     //TODO implement
     @Transactional
     public void deleteFlight(Flight flight) throws FlightException {
+        //TODO check what happens when errors occur!
         if (flight.getDepartureTime().before(new Date()) && flight.getArrivalTime().after(new Date())) {
             throw new FlightException("Can not delete flight that is currently in transit.", flight);
         }
@@ -63,7 +65,8 @@ public class FlightService implements FlightServiceIF {
             List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
             notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
             orderRepository.deleteAll(orders);
-            //TODO notify airport here if necessary
+            //TODO return value?
+            airportService.cancelFlight(flight);
             flight.getAirplane().setUnavailableUntil(null);
             flightRepo.delete(flight);
         } catch (IllegalArgumentException e) {
@@ -75,10 +78,31 @@ public class FlightService implements FlightServiceIF {
     //TODO
     @Transactional
     public Flight editFlight(Flight flight) throws FlightException {
-        Flight oldFlight = flightRepo.findById(flight.getFlightID()).orElseThrow(() -> new FlightException("Could not find flight to edit!", flight));
-        Flight savedFlight = flightRepo.save(flight);
-        notifyCustomer(savedFlight, AirlineDTO.Status.CHANGED);
-        return savedFlight;
+        if (flight.getDepartureTime().before(new Date()) && flight.getArrivalTime().after(new Date())) {
+            throw new FlightException("Can not edit flight that is currently in transit.", flight);
+        } else {
+
+            Flight oldFlight = flightRepo.findById(flight.getFlightID()).orElseThrow(() -> new FlightException("Could not find flight to edit!", flight));
+            System.out.println(oldFlight.getDepartureTime());
+            try {
+
+                Flight confirmedFlight = airportService.editFlight(oldFlight, flight);
+                System.out.println(confirmedFlight.getDepartureTime());
+
+                flightRepo.save(confirmedFlight);
+
+                notifyCustomer(confirmedFlight, AirlineDTO.Status.CHANGED);
+
+                return confirmedFlight;
+
+            } catch (FlightException e) {
+                TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+                throw e;
+
+            }
+        }
+
+
     }
 
     private void notifyCustomer(Flight flight, AirlineDTO.Status status) {

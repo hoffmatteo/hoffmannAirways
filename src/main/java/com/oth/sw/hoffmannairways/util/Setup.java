@@ -134,7 +134,7 @@ public class Setup {
         connection = new FlightConnection("HA9854", "ICN", "Seoul", "South Korea", "MUC", "Munich", "Germany", 11.5);
         flightService.createFlightConnection(connection);
         connection = new FlightConnection("HA2345", "MUC", "Munich", "Germany", "ICN", "Seoul", "South Korea", 11.5);
-        flightService.createFlightConnection(connection);
+        flightService.createFlightConnection(connection); //TODO dheli flighttime
         connection = new FlightConnection("HA8762", "MUC", "Munich", "Germany", "DEL", "Dheli", "India", 7.25);
         flightService.createFlightConnection(connection);
         connection = new FlightConnection("HA3920", "DEL", "Dheli", "India", "MUC", "Munich", "Germany", 7.25);

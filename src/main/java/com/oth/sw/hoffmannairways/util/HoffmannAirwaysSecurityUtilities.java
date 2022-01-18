@@ -10,7 +10,7 @@ import java.security.SecureRandom;
 @Configuration
 public class HoffmannAirwaysSecurityUtilities {
 
-    @Value("#{environment.USER_PASSWORD_SALT}")
+    @Value("${application-config.user-password-salt")
     private String salt;
 
     @Bean
