@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common/header :: header"/>
-<script type="text/javascript" th:src="@{/js/actions.js}"></script>
+<script type="text/javascript" th:src="@{/js/repairplane.js}"></script>
 
 
 <div th:fragment="flightTable (orders)">
@@ -26,20 +26,7 @@
                 <label th:text="${order.getOrderID()}"></label></th>
             <td class="align-middle" sec:authorize="hasAuthority('STAFF')">
                 <label th:text="${order.getCustomer()?.getUsername()}"></label></td>
-            <td class="align-middle">
-                <label th:text="${order.getFlight().getConnection().getFlightNumber()}"></label></td>
-            <!-- TODO fragments for this, just pass connection -->
-            <td class="align-middle"><label
-                    th:text="${order.getFlight().getConnection().getDepartureAirport() + ', ' + order.getFlight().getConnection().getDepartureCity() +', ' + order.getFlight().getConnection().getDepartureCountry()}"></label>
-            </td>
-            <td class="align-middle"><label
-                    th:text=" ${order.getFlight().getConnection().getDestinationAirport() + ', '  + order.getFlight().getConnection().getDestinationCity() +', ' + order.getFlight().getConnection().getDestinationCountry()}"></label>
-            </td>
-            <td class="align-middle"><label
-                    th:text="${#dates.format(order.getFlight().getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
-            <td class="align-middle"><label
-                    th:text="${#dates.format(order.getFlight().getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
-            </td>
+            <div th:replace="common/components :: FlightInfo (${order.getFlight()})"></div>
             <td class="align-middle"><label th:text="${order.getTotalSeats()}"></label>
             </td>
         </tr>
@@ -100,8 +87,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </td>
                 </div>
                 <div th:if="${case} == 'broken'">

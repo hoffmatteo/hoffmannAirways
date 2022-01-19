@@ -6,7 +6,6 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
 import com.oth.sw.hoffmannairways.entity.Order;
 import com.oth.sw.hoffmannairways.entity.util.AccountType;
-import com.oth.sw.hoffmannairways.queue.QueueController;
 import com.oth.sw.hoffmannairways.repository.FlightConnectionRepo;
 import com.oth.sw.hoffmannairways.repository.FlightRepository;
 import com.oth.sw.hoffmannairways.repository.OrderRepository;
@@ -14,6 +13,7 @@ import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
 import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
+import com.oth.sw.hoffmannairways.web.queue.QueueController;
 import com.oth.sw.hoffmannairways.web.rest.tempAirportIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +54,6 @@ public class FlightService implements FlightServiceIF {
         }
     }
 
-    //TODO implement
     @Transactional
     public void deleteFlight(Flight flight) throws FlightException {
         //TODO check what happens when errors occur!
@@ -63,11 +62,13 @@ public class FlightService implements FlightServiceIF {
         }
         try {
             List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
-            notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
-            orderRepository.deleteAll(orders);
             //TODO return value?
             airportService.cancelFlight(flight);
-            flight.getAirplane().setUnavailableUntil(null);
+            if (flight.getArrivalTime() == flight.getAirplane().getUnavailableUntil()) {
+                flight.getAirplane().setUnavailableUntil(null);
+            }
+            notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
+            orderRepository.deleteAll(orders);
             flightRepo.delete(flight);
         } catch (IllegalArgumentException e) {
             throw new FlightException("Could not delete orders and flight", flight);
@@ -75,7 +76,6 @@ public class FlightService implements FlightServiceIF {
     }
 
 
-    //TODO
     @Transactional
     public Flight editFlight(Flight flight) throws FlightException {
         if (flight.getDepartureTime().before(new Date()) && flight.getArrivalTime().after(new Date())) {
@@ -109,10 +109,6 @@ public class FlightService implements FlightServiceIF {
         List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
         for (Order order : orders) {
             if (order.getCustomer().isSendNotification()) {
-                //TODO does order already contain new information? --> probably depends on if save is called before or after!
-                System.out.println("Order flight: " + order.getFlight());
-                System.out.println("New flight: " + flight);
-
                 AirlineDTO dto = new AirlineDTO(order, flight, status);
                 queueController.sendDTO(dto);
             }
@@ -133,10 +129,11 @@ public class FlightService implements FlightServiceIF {
             flightRepo.save(flight);
             Order savedOrder = orderRepository.save(order);
             //TODO remove
-            if (order.getCustomer() != null) {
-                if (order.getCustomer().getAccountType() == AccountType.STAFF) {
+            if (savedOrder.getCustomer() != null) {
+                if (savedOrder.getCustomer().getAccountType() == AccountType.STAFF) {
                     queueController.bookAsPartner(savedOrder);
                 }
+
             }
             return savedOrder;
 

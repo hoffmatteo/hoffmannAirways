@@ -28,7 +28,7 @@ public class SecurityController {
     public String login(Model model) {
         model.addAttribute("user", new User());
 
-        return "login";
+        return "security/login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST) // th:action="@{/login}"
@@ -40,7 +40,7 @@ public class SecurityController {
     public String register(Model model) {
         model.addAttribute("user", new User());
 
-        return "register";
+        return "security/register";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST) // /login

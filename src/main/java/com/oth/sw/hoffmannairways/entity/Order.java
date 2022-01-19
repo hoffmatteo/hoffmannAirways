@@ -38,6 +38,13 @@ public class Order extends SingleIdEntity<Integer> implements Serializable {
         this.customer = customer;
     }
 
+    public Order(int totalSeats, double totalCargoInKg, Flight flight) {
+        //TODO if 0 seats and 0 cargo is booked?
+        this.totalSeats = totalSeats;
+        this.totalCargoInKg = totalCargoInKg;
+        this.flight = flight;
+    }
+
     @Override
     public Integer getID() {
         return this.orderID;

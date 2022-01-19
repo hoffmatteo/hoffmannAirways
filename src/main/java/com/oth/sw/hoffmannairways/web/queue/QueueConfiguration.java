@@ -1,4 +1,4 @@
-package com.oth.sw.hoffmannairways.queue;
+package com.oth.sw.hoffmannairways.web.queue;
 
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.spring.ActiveMQConnectionFactory;

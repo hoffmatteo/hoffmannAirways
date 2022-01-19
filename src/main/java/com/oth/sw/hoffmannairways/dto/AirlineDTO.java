@@ -10,7 +10,7 @@ import java.util.Collection;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AirlineDTO implements Serializable {
-    //TODO split up in two queues?
+    int messageID;
     Collection<Flight> availableFlights;
     Collection<FlightConnection> availableConnections;
     Order currentOrder;

@@ -1,12 +1,10 @@
 package com.oth.sw.hoffmannairways.web;
 
-import com.oth.sw.hoffmannairways.entity.Airplane;
-import com.oth.sw.hoffmannairways.entity.Flight;
-import com.oth.sw.hoffmannairways.entity.FlightConnection;
-import com.oth.sw.hoffmannairways.entity.User;
+import com.oth.sw.hoffmannairways.entity.*;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
 import com.oth.sw.hoffmannairways.service.impl.FlightService;
+import com.oth.sw.hoffmannairways.util.Helper;
 import com.oth.sw.hoffmannairways.web.util.UIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -30,11 +28,43 @@ public class FlightController {
     @Autowired
     private AirplaneService airplaneService;
 
+    @RequestMapping("/flights")
+    //Principal als parameter
+    public String viewFlights(Model model) {
+        Collection<Flight> flightList = flightService.listAllFlights();
+        model.addAttribute("flights", flightList);
+        model.addAttribute("order", new Order());
+        return "flights/flights";
+    }
+
+    @RequestMapping(value = "/flights", method = RequestMethod.POST)
+    //Principal als parameter
+    public String createOrder(Model model, @ModelAttribute("order") Order o, @AuthenticationPrincipal User user) {
+
+        if (user != null) {
+            o.setCustomer(user);
+            try {
+                Order savedOrder = flightService.bookFlight(o);
+                Flight f = savedOrder.getFlight();
+                String message = "Successfully booked flight " + f.getConnection().getFlightNumber() + " leaving on " + Helper.getFormattedDate(f.getDepartureTime());
+                model.addAttribute("UIMessage", new UIMessage(message, "alert-success"));
+
+            } catch (FlightException e) {
+                model.addAttribute("UIMessage", new UIMessage("Booking failed.", "alert-danger"));
+
+            }
+        } else {
+            model.addAttribute("UIMessage", new UIMessage("Booking failed, could not find user.", "alert-danger"));
+        }
+
+        return viewFlights(model);
+    }
+
     @RequestMapping(value = "/createflight", method = RequestMethod.GET)
     public String viewCreateFlight(Model model) {
         model.addAllAttributes(setFlightArguments());
         model.addAttribute("flight", new Flight());
-        return "createflight";
+        return "flights/createflight";
 
     }
 
@@ -81,7 +111,7 @@ public class FlightController {
         }
         model.addAllAttributes(setFlightArguments());
 
-        return "editflight";
+        return "flights/editflight";
 
     }
 

@@ -31,7 +31,7 @@ public class HoffmannAirwaysSecurityConfiguration extends WebSecurityConfigurerA
     };
 
     private static final String[] ALLOW_ACCESS_FOR_STAFF = {
-            "/repairplane", "/editflight/**", "/createflight"
+            "/repairplane", "/editflight/**", "/createflight", "/planes"
     };
 
     @Override

@@ -8,9 +8,8 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomerDTO implements Serializable {
-    //TODO split up in two queues?
+    int messageID; //shipment ID
     private Message message; //e.g. request flights, request flightoperations, create order, ...?
-    //TODO authentification?
     private Order order; //if a new order should be created
     private UserDTO userInfo;
 

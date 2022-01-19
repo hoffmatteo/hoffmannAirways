@@ -39,7 +39,7 @@ public class AirplaneController {
         model.addAttribute("brokenPlanes", brokenPlanes);
         model.addAttribute("newPlane", new Airplane());
 
-        return "planes";
+        return "planes/planes";
     }
 
     @RequestMapping(value = "/repairplane/{planeID}", method = RequestMethod.GET)
@@ -54,7 +54,7 @@ public class AirplaneController {
         }
 
 
-        return "repairplane";
+        return "planes/repairplane";
     }
 
 

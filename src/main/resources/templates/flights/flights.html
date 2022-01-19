@@ -37,20 +37,7 @@
         </thead>
         <tbody>
         <tr th:each="flight : ${flights}">
-            <th scope="row" class="align-middle">
-                <label th:text="${flight.getConnection().getFlightNumber()}"></label></th>
-            <td class="align-middle"><label
-                    th:text="${flight.getConnection().getDepartureAirport() + ', ' + flight.getConnection().getDepartureCity() +', ' + flight.getConnection().getDepartureCountry()}"></label>
-            </td>
-
-            <td class="align-middle"><label
-                    th:text=" ${flight.getConnection().getDestinationAirport() + ', ' + flight.getConnection().getDestinationCity() + ', ' + flight.getConnection().getDestinationCountry()}"></label>
-            </td>
-            <td class="align-middle"><label
-                    th:text="${#dates.format(flight.getDepartureTime(), 'dd.MM.yyyy HH:mm')}"></label></td>
-            <td class="align-middle"><label
-                    th:text="${#dates.format(flight.getArrivalTime(), 'dd.MM.yyyy HH:mm')}"></label>
-            </td>
+            <div th:replace="common/components :: FlightInfo (${flight})"></div>
             <td class="align-middle">
                 <div class="float-end">
                     <a type="button" class="btn btn-primary" data-bs-toggle="modal"

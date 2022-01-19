@@ -1,4 +1,4 @@
-package com.oth.sw.hoffmannairways.queue;
+package com.oth.sw.hoffmannairways.web.queue;
 
 import com.oth.sw.hoffmannairways.dto.AirlineDTO;
 import com.oth.sw.hoffmannairways.dto.CustomerDTO;
@@ -53,11 +53,11 @@ public class QueueController {
                 //TODO
             }
         }
+        
     }
 
     private AirlineDTO createBooking(Order order, User registeredUser) {
         AirlineDTO dto = new AirlineDTO();
-        dto.setStatus(AirlineDTO.Status.ERROR);
         if (order != null) {
             order.setCustomer(registeredUser);
             try {
@@ -65,7 +65,10 @@ public class QueueController {
                 dto.setCurrentOrder(completedOrder);
                 dto.setStatus(AirlineDTO.Status.CONFIRMED);
             } catch (FlightException e) {
-                //TODO
+                //TODO zuweisung order für christoph?
+                dto.setCurrentOrder(order);
+                dto.setStatus(AirlineDTO.Status.ERROR);
+
             }
         }
         return dto;
