@@ -44,10 +44,10 @@ public class FlightService implements FlightServiceIF {
 
     @Transactional
     public Flight createFlight(Flight flight) throws FlightException {
+        //TODO think about changing to proxy airport when exception occurs?
         try {
-            Airplane plane = airplaneService.assignPlane(flight);
-            Flight savedFlight = flightRepo.save(flight);
-            Flight confirmedFlight = airportService.createFlight(savedFlight);
+            Flight confirmedFlight = airportService.createFlight(flight);
+            Airplane plane = airplaneService.assignPlane(confirmedFlight);
             return flightRepo.save(confirmedFlight);
         } catch (AirplaneException e) {
             throw new FlightException(e.getMessage(), flight);

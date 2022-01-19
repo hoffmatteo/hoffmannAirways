@@ -22,34 +22,52 @@
 
 
 <div class="p-5">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                    role="tab" aria-controls="home" aria-selected="true">Available planes
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                    role="tab" aria-controls="profile" aria-selected="false">Assigned planes
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button"
-                    role="tab" aria-controls="contact" aria-selected="false">Broken planes
-            </button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div th:replace="common/tables :: planeTable(${availablePlanes}, 'available')"></div>
+
+    <form th:action="@{/repairplane}" method="post" th:object="${plane}">
+        <h5><label
+                th:text="'Repair Plane '+${plane.getPlaneName()}+ ', ID: ' +${plane.getPlaneID()}"></label>
+        </h5>
+        <div class="form-group">
+            <div class="mb-3">
+                <label for="DeadlinePicker"
+                       class="form-label">Deadline</label>
+                <input class="form-control" type="datetime-local"
+                       id="DeadlinePicker"
+                       th:field="${plane.unavailableUntil}"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="control-label">Issues</label>
+                <div id="inputFormRow">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control m-input"
+                               placeholder="Enter title" autocomplete="off"
+                               th:field="${plane.issues[0]}"/>
+
+                    </div>
+                </div>
+
+                <div id="newRow"></div>
+                <button th:id="addRow" type="button"
+                        class="btn btn-primary"
+                        th:onclick="addrow()">
+                    Add Row
+                </button>
+            </div>
         </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <div th:replace="common/tables :: planeTable(${assignedPlanes}, 'assigned')"></div>
+        <div class="form-group">
+            <input type="hidden" th:value="${plane.getPlaneID()}"
+                   id="planeID" name="planeID" readonly>
         </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            <div th:replace="common/tables :: planeTable(${brokenPlanes}, 'broken')"></div>
-        </div>
-    </div>
+
+        <button type="submit" class="btn btn-primary"
+        >Submit
+        </button>
+        <a type="button" class="btn btn-danger"
+           href="/planes">
+            Go back
+        </a>
+    </form>
 
 
 </div>
@@ -61,3 +79,4 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 </html>
+

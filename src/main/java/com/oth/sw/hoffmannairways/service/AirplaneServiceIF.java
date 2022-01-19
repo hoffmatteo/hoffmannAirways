@@ -22,5 +22,7 @@ public interface AirplaneServiceIF {
 
     public Collection<Airplane> getAllBrokenPlanes();
 
+    public Airplane getPlane(int id) throws AirplaneException;
+
 
 }

@@ -75,5 +75,8 @@ public class AirplaneService implements AirplaneServiceIF {
         return airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentsIsNull(new Date());
     }
 
-
+    @Override
+    public Airplane getPlane(int id) throws AirplaneException {
+        return airplaneRepository.findAirplaneByPlaneID(id).orElseThrow(() -> new AirplaneException("TODO", null));
+    }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -28,8 +29,8 @@ public class AirplaneController {
     @Autowired
     private FlightService flightService;
 
-    @RequestMapping(value = "/repairplane", method = RequestMethod.GET)
-    public String viewRepairPlane(Model model) {
+    @RequestMapping(value = "/planes", method = RequestMethod.GET)
+    public String viewPlanes(Model model) {
         Collection<Airplane> availablePlanes = airplaneService.getAvailablePlanes();
         Collection<Airplane> assignedPlanes = airplaneService.getAllAssignedPlanes();
         Collection<Airplane> brokenPlanes = airplaneService.getAllBrokenPlanes();
@@ -38,13 +39,27 @@ public class AirplaneController {
         model.addAttribute("brokenPlanes", brokenPlanes);
         model.addAttribute("newPlane", new Airplane());
 
+        return "planes";
+    }
+
+    @RequestMapping(value = "/repairplane/{planeID}", method = RequestMethod.GET)
+    public String viewRepairPlane(Model model, @PathVariable("planeID") int planeID) {
+        try {
+            Airplane plane = airplaneService.getPlane(planeID);
+            model.addAttribute("plane", plane);
+
+
+        } catch (AirplaneException e) {
+            e.printStackTrace();
+        }
+
 
         return "repairplane";
     }
 
 
     @RequestMapping(value = "/repairplane", method = RequestMethod.POST)
-    public String createRepairJob(Model model, @Valid @ModelAttribute("newPlane") Airplane a, BindingResult bindingResult) {
+    public String createRepairJob(Model model, @Valid @ModelAttribute("plane") Airplane a, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("UIMessage", new UIMessage("Failed to repair plane: Inputs were not valid", "alert-danger"));
         } else {
@@ -62,7 +77,6 @@ public class AirplaneController {
                 model.addAttribute("UIMessage", new UIMessage("Failed to repair plane: " + e.getMessage(), "alert-danger"));
             }
         }
-
-        return viewRepairPlane(model);
+        return viewPlanes(model);
     }
 }

@@ -91,8 +91,9 @@ Date.prototype.toDateInputValue = (function () {
 });
 
 var index = 1;
+
 //Source: https://shouts.dev/add-or-remove-input-fields-dynamically-using-jquery
-$(document).on('click', '#addRow', function () {
+function addrow() {
     var html = '';
     html += '<div id="inputFormRow">';
     html += '<div class="input-group mb-3">';
@@ -103,13 +104,35 @@ $(document).on('click', '#addRow', function () {
     html += '</div>';
 
     $('#newRow').append(html);
-    console.log("test");
+    console.log(index);
     index++;
-});
+}
 
 // remove row
 $(document).on('click', '#removeRow', function () {
+    var removedIDString = $(this).closest('#inputFormRow').find("input")[0].id;
     $(this).closest('#inputFormRow').remove();
+    issues = "issues";
+    var removedID = removedIDString.substring(6);
+
+
+    if (removedID !== undefined) {
+        removedID = parseInt(removedID);
+        console.log(removedID);
+        if (removedID !== undefined) {
+            for (var i = removedID + 1; i < index; i++) {
+                var temp = $("#issues" + i)[0];
+
+                temp.name = issues + "[" + (i - 1) + "]";
+                temp.id = issues + (i - 1);
+            }
+        }
+
+    }
+    index--;
+    
 });
+
+
 
 
