@@ -33,6 +33,7 @@ public class QueueController {
     @Autowired
     JmsTemplate jmsTemplate;
 
+
     @JmsListener(destination = "sw_matteo_hoffmann_queue_Customer")
     public void receiveMessage(CustomerDTO message) {
         System.out.println("Received from customer: " + message);
@@ -44,31 +45,32 @@ public class QueueController {
                 User registeredUser = userService.getUserByUsername(info.getUsername());
                 if (userService.checkPassword(info.getPassword(), registeredUser)) {
                     if (message.getMessage() == CustomerDTO.Message.CREATE_ORDER) {
-                        sendDTO(createBooking(message.getOrder(), registeredUser));
+                        sendDTO(createBooking(message, registeredUser));
+                        return;
                     } else if (message.getMessage() == CustomerDTO.Message.UPDATE_INFO) {
                         sendDTO(listInfo());
+                        return;
                     }
                 }
             } catch (UserException e) {
-                //TODO
+                sendDTO(new AirlineDTO(message.getMessageID(), message.getOrder().getFlight(), AirlineDTO.Status.ERROR));
             }
         }
-        
+        sendDTO(new AirlineDTO(message.getMessageID(), message.getOrder().getFlight(), AirlineDTO.Status.ERROR));
+
     }
 
-    private AirlineDTO createBooking(Order order, User registeredUser) {
+    private AirlineDTO createBooking(CustomerDTO message, User registeredUser) {
         AirlineDTO dto = new AirlineDTO();
+        dto.setMessageID(message.getMessageID());
+        Order order = message.getOrder();
         if (order != null) {
             order.setCustomer(registeredUser);
             try {
                 Order completedOrder = flightService.bookFlight(order);
-                dto.setCurrentOrder(completedOrder);
                 dto.setStatus(AirlineDTO.Status.CONFIRMED);
             } catch (FlightException e) {
-                //TODO zuweisung order für christoph?
-                dto.setCurrentOrder(order);
                 dto.setStatus(AirlineDTO.Status.ERROR);
-
             }
         }
         return dto;
@@ -98,6 +100,7 @@ public class QueueController {
             jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Airline", dto);
         } catch (JmsException e) {
             //TODO
+            System.out.println(e.getMessage());
         }
     }
 

@@ -109,8 +109,9 @@ public class FlightService implements FlightServiceIF {
         List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
         for (Order order : orders) {
             if (order.getCustomer().isSendNotification()) {
-                AirlineDTO dto = new AirlineDTO(order, flight, status);
+                AirlineDTO dto = new AirlineDTO(flight, status);
                 queueController.sendDTO(dto);
+                break;
             }
         }
     }

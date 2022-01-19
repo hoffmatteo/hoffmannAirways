@@ -43,6 +43,21 @@ public class CustomerDTO implements Serializable {
         this.order = order;
     }
 
+    public CustomerDTO(int messageID, Message message, Order order, UserDTO userInfo) {
+        this.messageID = messageID;
+        this.message = message;
+        this.order = order;
+        this.userInfo = userInfo;
+    }
+
+    public int getMessageID() {
+        return messageID;
+    }
+
+    public void setMessageID(int messageID) {
+        this.messageID = messageID;
+    }
+
     public UserDTO getUserInfo() {
         return userInfo;
     }

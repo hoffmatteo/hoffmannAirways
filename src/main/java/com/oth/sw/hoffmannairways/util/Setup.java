@@ -164,7 +164,7 @@ public class Setup {
     }
 
     public void setupUser() throws UserException {
-        userService.registerUser(new User("daumen", "123", "DaumDeliveries", AccountType.USER));
+        userService.registerUser(new User("daumen", "123", "DaumDeliveries", AccountType.USER, true));
         userService.registerUser(new User("admin", "123", "Administrator", AccountType.STAFF));
 
     }

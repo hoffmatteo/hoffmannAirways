@@ -47,6 +47,13 @@ public class User extends SingleIdEntity<String> implements UserDetails, Seriali
         this.accountType = accountType;
     }
 
+    public User(String username, String password, String name, AccountType accountType, boolean sendNotification) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.accountType = accountType;
+        this.sendNotification = sendNotification;
+    }
 
     public void setUsername(String email) {
         this.username = email;

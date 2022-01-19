@@ -3,7 +3,6 @@ package com.oth.sw.hoffmannairways.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
-import com.oth.sw.hoffmannairways.entity.Order;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -13,7 +12,6 @@ public class AirlineDTO implements Serializable {
     int messageID;
     Collection<Flight> availableFlights;
     Collection<FlightConnection> availableConnections;
-    Order currentOrder;
     Flight currentFlight; //contains updated information
     Status status;
 
@@ -35,14 +33,14 @@ public class AirlineDTO implements Serializable {
         this.status = status;
     }
 
-    public AirlineDTO(Order currentOrder, Flight currentFlight, Status status) {
-        this.currentOrder = currentOrder;
+    public AirlineDTO(int messageID, Flight currentFlight, Status status) {
+        this.messageID = messageID;
         this.currentFlight = currentFlight;
         this.status = status;
     }
 
-    public AirlineDTO(Order currentOrder, Status status) {
-        this.currentOrder = currentOrder;
+    public AirlineDTO(Flight currentFlight, Status status) {
+        this.currentFlight = currentFlight;
         this.status = status;
     }
 
@@ -62,13 +60,6 @@ public class AirlineDTO implements Serializable {
         this.availableConnections = availableConnections;
     }
 
-    public Order getCurrentOrder() {
-        return currentOrder;
-    }
-
-    public void setCurrentOrder(Order currentOrder) {
-        this.currentOrder = currentOrder;
-    }
 
     public Flight getCurrentFlight() {
         return currentFlight;
@@ -86,12 +77,19 @@ public class AirlineDTO implements Serializable {
         this.status = status;
     }
 
+    public int getMessageID() {
+        return messageID;
+    }
+
+    public void setMessageID(int messageID) {
+        this.messageID = messageID;
+    }
+
     @Override
     public String toString() {
         return "AirlineDTO{" +
                 "availableFlights=" + availableFlights +
                 ", availableConnections=" + availableConnections +
-                ", currentOrder=" + currentOrder +
                 ", currentFlight=" + currentFlight +
                 ", status=" + status +
                 '}';

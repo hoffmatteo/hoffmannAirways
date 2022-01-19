@@ -16,7 +16,7 @@ public class QueueConfiguration {
     private String brokerUrl;
 
     @Bean
-    public ActiveMQQueue queue() {
+    public ActiveMQQueue airlineQueue() {
         return new ActiveMQQueue("sw_matteo_hoffmann_queue_Airline");
     }
 
