@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class Airplane extends SingleIdEntity<Integer> {
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @JsonIgnore
-    private Collection<@NotNull SingleRepairOrderDTO> issues = new ArrayList<>();
+    private List<@NotNull SingleRepairOrderDTO> issues = new ArrayList<>();
     @OneToMany(mappedBy = "airplane", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     @Nullable
@@ -81,11 +80,11 @@ public class Airplane extends SingleIdEntity<Integer> {
         this.unavailableUntil = unavailableUntil;
     }
 
-    public Collection<SingleRepairOrderDTO> getIssues() {
+    public List<SingleRepairOrderDTO> getIssues() {
         return issues;
     }
 
-    public void setIssues(Collection<SingleRepairOrderDTO> issues) {
+    public void setIssues(List<SingleRepairOrderDTO> issues) {
         this.issues = issues;
     }
 

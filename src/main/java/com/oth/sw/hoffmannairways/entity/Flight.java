@@ -28,6 +28,7 @@ public class Flight extends SingleIdEntity<Integer> {
 
     //TODO cascade stuff
     @ManyToOne
+    @JsonIgnore
     private Airplane airplane;
     @ManyToOne
     @JsonIgnore
@@ -143,4 +144,5 @@ public class Flight extends SingleIdEntity<Integer> {
                 ", connection=" + connection +
                 '}';
     }
+
 }

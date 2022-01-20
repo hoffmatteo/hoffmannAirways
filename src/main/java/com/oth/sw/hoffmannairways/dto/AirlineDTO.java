@@ -1,7 +1,6 @@
 package com.oth.sw.hoffmannairways.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
 
 import java.io.Serializable;
@@ -10,9 +9,9 @@ import java.util.Collection;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AirlineDTO implements Serializable {
     int messageID; //dictated by customer
-    Collection<Flight> availableFlights;
+    Collection<FlightDTO> availableFlights;
     Collection<FlightConnection> availableConnections;
-    Flight currentFlight; //contains updated information
+    FlightDTO currentFlight; //contains updated information
     Status status;
 
 
@@ -38,28 +37,28 @@ public class AirlineDTO implements Serializable {
         this.status = status;
     }
 
-    public AirlineDTO(Collection<Flight> availableFlights, Collection<FlightConnection> availableConnections, Status status) {
+    public AirlineDTO(Collection<FlightDTO> availableFlights, Collection<FlightConnection> availableConnections, Status status) {
         this.availableFlights = availableFlights;
         this.availableConnections = availableConnections;
         this.status = status;
     }
 
-    public AirlineDTO(int messageID, Flight currentFlight, Status status) {
+    public AirlineDTO(int messageID, FlightDTO currentFlight, Status status) {
         this.messageID = messageID;
         this.currentFlight = currentFlight;
         this.status = status;
     }
 
-    public AirlineDTO(Flight currentFlight, Status status) {
+    public AirlineDTO(FlightDTO currentFlight, Status status) {
         this.currentFlight = currentFlight;
         this.status = status;
     }
 
-    public Collection<Flight> getAvailableFlights() {
+    public Collection<FlightDTO> getAvailableFlights() {
         return availableFlights;
     }
 
-    public void setAvailableFlights(Collection<Flight> availableFlights) {
+    public void setAvailableFlights(Collection<FlightDTO> availableFlights) {
         this.availableFlights = availableFlights;
     }
 
@@ -72,11 +71,11 @@ public class AirlineDTO implements Serializable {
     }
 
 
-    public Flight getCurrentFlight() {
+    public FlightDTO getCurrentFlight() {
         return currentFlight;
     }
 
-    public void setCurrentFlight(Flight currentFlight) {
+    public void setCurrentFlight(FlightDTO currentFlight) {
         this.currentFlight = currentFlight;
     }
 

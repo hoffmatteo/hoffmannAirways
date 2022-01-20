@@ -11,7 +11,7 @@
 <div th:fragment="FlightInfo (flight)">
     <th scope="row" class="align-middle">
         <label th:text="${flight.getConnection().getFlightNumber()}"></label></th>
-    <td>
+    <td class="align-middle">
         <label th:text="${flight.getConnection().getDepartureAirport() + ', ' +
             flight.getConnection().getDepartureCity() +', ' +
             flight.getConnection().getDepartureCountry()}"></label>

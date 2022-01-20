@@ -5,6 +5,7 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.repository.AirplaneRepository;
 import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
+import com.oth.sw.hoffmannairways.web.queue.QueueController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ import java.util.Date;
 public class AirplaneService implements AirplaneServiceIF {
     @Autowired
     AirplaneRepository airplaneRepository;
+
+    @Autowired
+    QueueController queueController;
 
     //TODO save?
 
@@ -46,6 +50,8 @@ public class AirplaneService implements AirplaneServiceIF {
                     oldPlane.getAssignments().clear();
                 }
             }
+            queueController.requestRepairJob(plane);
+
             return airplaneRepository.save(oldPlane);
         } else {
             throw new AirplaneException("Repair request information was not set properly!", plane);
@@ -77,6 +83,16 @@ public class AirplaneService implements AirplaneServiceIF {
 
     @Override
     public Airplane getPlane(int id) throws AirplaneException {
-        return airplaneRepository.findAirplaneByPlaneID(id).orElseThrow(() -> new AirplaneException("TODO", null));
+        return airplaneRepository.findAirplaneByPlaneID(id).orElseThrow(() -> new AirplaneException("Could not find Airplane!", null));
+    }
+
+    @Override
+    public void updateUnavailable(Date date, int planeID) throws AirplaneException {
+        Airplane plane = getPlane(planeID);
+        if (date.before(plane.getUnavailableUntil()) || date.equals(plane.getUnavailableUntil())) {
+            plane.setUnavailableUntil(date);
+        }
+
+
     }
 }

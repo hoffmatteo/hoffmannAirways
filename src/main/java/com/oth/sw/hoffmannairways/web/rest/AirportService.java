@@ -30,6 +30,7 @@ public class AirportService implements tempAirportIF {
         try {
             FlighttransactionDTO returnedDTO = restServiceClient.postForObject(createPath, dto,
                     FlighttransactionDTO.class);
+            //TODO null checks
 
 
             f.setDepartureTime(convertToDateViaSqlTimestamp(returnedDTO.getDepartureTime()));
@@ -45,7 +46,7 @@ public class AirportService implements tempAirportIF {
         FlightConnection connection = f.getConnection();
         Airplane airplane = f.getAirplane();
 
-        return new FlighttransactionDTO("HoffmannAirways", "matteo", null, connection.getFlightTimeHours(),
+        return new FlighttransactionDTO("HoffmannAirways", "matteo", connection.getFlightNumber(), connection.getFlightTimeHours(),
                 airplane.getMaxCargo(), airplane.getTotalSeats(), connection.getDepartureAirport(), connection.getDestinationAirport(),
                 convertToLocalDateTimeViaInstant(f.getDepartureTime()), convertToLocalDateTimeViaInstant(f.getArrivalTime()));
 

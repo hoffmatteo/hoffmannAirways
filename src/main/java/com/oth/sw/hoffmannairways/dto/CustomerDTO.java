@@ -2,7 +2,6 @@ package com.oth.sw.hoffmannairways.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
-import com.oth.sw.hoffmannairways.entity.Order;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,7 +11,7 @@ public class CustomerDTO implements Serializable {
     int messageID; //shipment ID
     private Message message;
     private FlightConnection connection;
-    private Order order; //if a new order should be created
+    private OrderDTO order; //if a new order should be created
     private UserDTO userInfo;
 
     public enum Message {
@@ -37,11 +36,11 @@ public class CustomerDTO implements Serializable {
         this.message = message;
     }
 
-    public Order getOrder() {
+    public OrderDTO getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderDTO order) {
         this.order = order;
     }
 
@@ -49,19 +48,19 @@ public class CustomerDTO implements Serializable {
         this.message = message;
     }
 
-    public CustomerDTO(Message message, Order order) {
+    public CustomerDTO(Message message, OrderDTO order) {
         this.message = message;
         this.order = order;
     }
 
-    public CustomerDTO(int messageID, Message message, Order order, UserDTO userInfo) {
+    public CustomerDTO(int messageID, Message message, OrderDTO order, UserDTO userInfo) {
         this.messageID = messageID;
         this.message = message;
         this.order = order;
         this.userInfo = userInfo;
     }
 
-    public CustomerDTO(int messageID, Message message, FlightConnection connection, Order order, UserDTO userInfo) {
+    public CustomerDTO(int messageID, Message message, FlightConnection connection, OrderDTO order, UserDTO userInfo) {
         this.messageID = messageID;
         this.message = message;
         this.connection = connection;

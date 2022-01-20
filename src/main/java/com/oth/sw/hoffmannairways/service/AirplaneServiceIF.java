@@ -5,6 +5,7 @@ import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 
 import java.util.Collection;
+import java.util.Date;
 
 public interface AirplaneServiceIF {
 
@@ -23,6 +24,6 @@ public interface AirplaneServiceIF {
     public Collection<Airplane> getAllBrokenPlanes();
 
     public Airplane getPlane(int id) throws AirplaneException;
-
-
+    
+    void updateUnavailable(Date date, int planeID) throws AirplaneException;
 }

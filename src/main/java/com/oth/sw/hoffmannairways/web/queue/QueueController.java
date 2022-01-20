@@ -1,18 +1,14 @@
 package com.oth.sw.hoffmannairways.web.queue;
 
-import com.oth.sw.hoffmannairways.dto.AirlineDTO;
-import com.oth.sw.hoffmannairways.dto.CustomerDTO;
-import com.oth.sw.hoffmannairways.dto.UserDTO;
-import com.oth.sw.hoffmannairways.entity.Flight;
-import com.oth.sw.hoffmannairways.entity.FlightConnection;
-import com.oth.sw.hoffmannairways.entity.Order;
-import com.oth.sw.hoffmannairways.entity.User;
+import com.oth.sw.hoffmannairways.dto.*;
+import com.oth.sw.hoffmannairways.entity.*;
+import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
 import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
+import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.exception.UserException;
 import de.othr.sw.HaberlRepairs.entity.dto.RepairOrderDTO;
-import de.othr.sw.HaberlRepairs.entity.dto.SingleRepairOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jms.JmsException;
@@ -20,8 +16,6 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -33,6 +27,9 @@ public class QueueController {
 
     @Autowired
     private UserServiceIF userService;
+
+    @Autowired
+    private AirplaneServiceIF planeService;
 
     @Autowired
     JmsTemplate jmsTemplate;
@@ -49,14 +46,10 @@ public class QueueController {
                 //TODO switch
                 User registeredUser = userService.getUserByUsername(info.getUsername());
                 if (userService.checkPassword(info.getPassword(), registeredUser)) {
-                    if (message.getMessage() == CustomerDTO.Message.CREATE_ORDER) {
-                        dto = createBooking(message, registeredUser);
-                    } else if (message.getMessage() == CustomerDTO.Message.UPDATE_CONNECTIONS) {
-                        dto = listConnections();
-                    } else if (message.getMessage() == CustomerDTO.Message.UPDATE_FLIGHTS) {
-                        if (message.getConnection() != null) {
-                            dto = listFlightsForConnection(message.getConnection());
-                        }
+                    switch (message.getMessage()) {
+                        case CREATE_ORDER -> dto = createBooking(message, registeredUser);
+                        case UPDATE_CONNECTIONS -> dto = listConnections();
+                        case UPDATE_FLIGHTS -> dto = listFlightsForConnection(message.getConnection());
                     }
                 }
             } catch (UserException e) {
@@ -73,10 +66,12 @@ public class QueueController {
     private AirlineDTO createBooking(CustomerDTO message, User registeredUser) {
         AirlineDTO dto = new AirlineDTO();
         dto.setMessageID(message.getMessageID());
-        Order order = message.getOrder();
-        if (order != null) {
-            order.setCustomer(registeredUser);
+        OrderDTO orderDTO = message.getOrder();
+        FlightDTO flightDTO = message.getOrder().getFlight();
+        Flight flight = new Flight(flightDTO.getFlightID(), );
+        if (orderDTO != null) {
             try {
+                Order order = new Order(orderDTO.getTotalSeats(), orderDTO.getTotalCargoInKg(), orderDTO.getFlight(), registeredUser);
                 Order completedOrder = flightService.bookFlight(order);
                 dto.setStatus(AirlineDTO.Status.CONFIRMED);
             } catch (FlightException e) {
@@ -132,17 +127,11 @@ public class QueueController {
         } catch (JmsException e) {
             //TODO
         }
-
-        /*dto = new CustomerDTO(CustomerDTO.Message.UPDATE_INFO);
-        dto.setUserInfo(new UserDTO("daumen", "123"));
-        jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Customer", dto);
-
-         */
-
     }
 
-    public void testQueue() {
-        RepairOrderDTO dto = new RepairOrderDTO(0, new Date(), "desc", new de.othr.sw.HaberlRepairs.entity.dto.CustomerDTO("test", "test"), new ArrayList<SingleRepairOrderDTO>());
+    public void requestRepairJob(Airplane plane) { //TODO desc
+        RepairOrderDTO dto = new RepairOrderDTO(plane.getPlaneID(), plane.getUnavailableUntil(), "desc", new de.othr.sw.HaberlRepairs.entity.dto.CustomerDTO("test", "test"), plane.getIssues());
+        System.out.println("Sending to haberl repairs " + dto);
         try {
             jmsTemplate.convertAndSend("sw_simon_haberl_queue_RepairOrderInquiry", dto);
         } catch (JmsException e) {
@@ -151,8 +140,17 @@ public class QueueController {
     }
 
     @JmsListener(destination = "sw_simon_haberl_queue_RepairOrderReply")
-    public void receiveMessage(RepairOrderDTO message) {
-        System.out.println(message);
+    public void receiveRepairMessage(RepairOrderDTO message) {
+        System.out.println("Received from haberlRepairs: " + message);
+        if (message.isAccepted()) {
+            if (message.getPickUpDate() != null && message.getPlaneId() != 0) {
+                try {
+                    planeService.updateUnavailable(message.getPickUpDate(), message.getPlaneId());
+                } catch (AirplaneException e) {
+                    System.out.println("Queue: could not update date: " + e.getMessage());
+                }
+            }
+        }
     }
 
 

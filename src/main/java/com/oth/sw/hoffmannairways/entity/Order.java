@@ -39,7 +39,6 @@ public class Order extends SingleIdEntity<Integer> implements Serializable {
     }
 
     public Order(int totalSeats, double totalCargoInKg, Flight flight) {
-        //TODO if 0 seats and 0 cargo is booked?
         this.totalSeats = totalSeats;
         this.totalCargoInKg = totalCargoInKg;
         this.flight = flight;

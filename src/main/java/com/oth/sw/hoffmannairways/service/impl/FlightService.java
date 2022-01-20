@@ -1,6 +1,7 @@
 package com.oth.sw.hoffmannairways.service.impl;
 
 import com.oth.sw.hoffmannairways.dto.AirlineDTO;
+import com.oth.sw.hoffmannairways.dto.FlightDTO;
 import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
@@ -109,7 +110,8 @@ public class FlightService implements FlightServiceIF {
         List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
         for (Order order : orders) {
             if (order.getCustomer().isSendNotification()) {
-                AirlineDTO dto = new AirlineDTO(flight, status);
+                FlightDTO flightDTO = new FlightDTO(flight.getFlightID(), flight.getDepartureTime(), flight.getArrivalTime(), flight.getBookedSeats(), flight.getBookedCargoInKg());
+                AirlineDTO dto = new AirlineDTO(flightDTO, status);
                 queueController.sendDTO(dto);
                 break;
             }
