@@ -1,9 +1,9 @@
 package com.oth.sw.hoffmannairways.web;
 
 import com.oth.sw.hoffmannairways.entity.*;
+import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
+import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
-import com.oth.sw.hoffmannairways.service.impl.AirplaneService;
-import com.oth.sw.hoffmannairways.service.impl.FlightService;
 import com.oth.sw.hoffmannairways.util.Helper;
 import com.oth.sw.hoffmannairways.web.util.UIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,10 @@ import java.util.*;
 @Scope("singleton")
 public class FlightController {
     @Autowired
-    private FlightService flightService;
+    private FlightServiceIF flightService;
 
     @Autowired
-    private AirplaneService airplaneService;
+    private AirplaneServiceIF airplaneService;
 
     @RequestMapping("/flights")
     //Principal als parameter

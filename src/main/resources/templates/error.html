@@ -9,10 +9,11 @@
 
 <div class="text-center">
 
-    <img src="/img/undraw_aircraft_fbvl.svg" width="30%" height="30%" alt="Image: Aircraft" class="my-5"/>
+    <img src="/img/undraw_warning_cyit.svg" class="my-5" height="30%"
+         width="30%" alt="Image: Warning"/>
 
-    <h1 class="my-5">Welcome to Hoffmann Airways!</h1>
-    <a class="btn btn-primary" href="/flights">Enter here to see available flights!</a>
+    <h1 th:text="'The error '+ ${status} + ' was detected!'"></h1>
+    <h3>Please go back and try again or return to the starting page.</h3>
 </div>
 
 

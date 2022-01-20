@@ -9,22 +9,33 @@ import java.util.Collection;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AirlineDTO implements Serializable {
-    int messageID;
+    int messageID; //dictated by customer
     Collection<Flight> availableFlights;
     Collection<FlightConnection> availableConnections;
     Flight currentFlight; //contains updated information
     Status status;
 
+
+    public AirlineDTO(Status status) {
+        this.status = status;
+    }
+
     public enum Status {
         CANCELLED,
         CHANGED,
         CONFIRMED,
-        INFO, //if only information was requested
+        INFO_CONNECTIONS,
+        INFO_FLIGHTS,
         ERROR //previous message threw error
     }
 
     public AirlineDTO() {
 
+    }
+
+    public AirlineDTO(int messageID, Status status) {
+        this.messageID = messageID;
+        this.status = status;
     }
 
     public AirlineDTO(Collection<Flight> availableFlights, Collection<FlightConnection> availableConnections, Status status) {

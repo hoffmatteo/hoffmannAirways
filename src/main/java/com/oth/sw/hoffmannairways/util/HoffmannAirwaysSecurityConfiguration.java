@@ -27,7 +27,7 @@ public class HoffmannAirwaysSecurityConfiguration extends WebSecurityConfigurerA
     }
 
     private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
-            "/css/**", "/image/**", "/fonts/**", "/js/**", "/", "/flights", "/login", "/forgotPassword", "/register"
+            "/css/**", "/img/**", "/fonts/**", "/js/**", "/", "/flights", "/login", "/forgotPassword", "/register", "/error", "/static/img/**"
     };
 
     private static final String[] ALLOW_ACCESS_FOR_STAFF = {

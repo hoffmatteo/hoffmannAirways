@@ -37,7 +37,7 @@ public class QueueController {
     @JmsListener(destination = "sw_matteo_hoffmann_queue_Customer")
     public void receiveMessage(CustomerDTO message) {
         System.out.println("Received from customer: " + message);
-
+        AirlineDTO dto = new AirlineDTO(AirlineDTO.Status.ERROR);
 
         if (message.getUserInfo() != null) {
             UserDTO info = message.getUserInfo();
@@ -45,18 +45,23 @@ public class QueueController {
                 User registeredUser = userService.getUserByUsername(info.getUsername());
                 if (userService.checkPassword(info.getPassword(), registeredUser)) {
                     if (message.getMessage() == CustomerDTO.Message.CREATE_ORDER) {
-                        sendDTO(createBooking(message, registeredUser));
-                        return;
-                    } else if (message.getMessage() == CustomerDTO.Message.UPDATE_INFO) {
-                        sendDTO(listInfo());
-                        return;
+                        dto = createBooking(message, registeredUser);
+                    } else if (message.getMessage() == CustomerDTO.Message.UPDATE_CONNECTIONS) {
+                        dto = listConnections();
+                    } else if (message.getMessage() == CustomerDTO.Message.UPDATE_FLIGHTS) {
+                        if (message.getConnection() != null) {
+                            dto = listFlightsForConnection(message.getConnection());
+                        }
                     }
                 }
             } catch (UserException e) {
-                sendDTO(new AirlineDTO(message.getMessageID(), message.getOrder().getFlight(), AirlineDTO.Status.ERROR));
+                System.out.println("Could not authenticate queue partner!");
             }
         }
-        sendDTO(new AirlineDTO(message.getMessageID(), message.getOrder().getFlight(), AirlineDTO.Status.ERROR));
+        if (message.getMessageID() != 0) {
+            dto.setMessageID(message.getMessageID());
+        }
+        sendDTO(dto);
 
     }
 
@@ -76,37 +81,44 @@ public class QueueController {
         return dto;
     }
 
-    private AirlineDTO listInfo() {
+    private AirlineDTO listConnections() {
         AirlineDTO dto = new AirlineDTO();
-        dto.setStatus(AirlineDTO.Status.ERROR);
 
-        List<Flight> flights = flightService.listAllFlights();
         List<FlightConnection> connections = flightService.listAllFlightConnections();
-        dto.setAvailableConnections(connections);
-        dto.setAvailableFlights(flights);
-        dto.setStatus(AirlineDTO.Status.INFO);
+        if (connections.isEmpty()) {
+            dto.setStatus(AirlineDTO.Status.ERROR);
+
+        } else {
+            dto.setAvailableConnections(connections);
+            dto.setStatus(AirlineDTO.Status.INFO_CONNECTIONS);
+        }
         return dto;
-
     }
 
-    @JmsListener(destination = "sw_matteo_hoffmann_queue_Airline")
-    public void receiveTest(AirlineDTO message) {
-        System.out.println("Received from Airline: " + message);
+    private AirlineDTO listFlightsForConnection(FlightConnection conn) {
+        AirlineDTO dto = new AirlineDTO();
+        List<Flight> flights = flightService.getFlightsForConnection(conn);
+        if (flights.isEmpty()) {
+            dto.setStatus(AirlineDTO.Status.ERROR);
+        } else {
+            dto.setAvailableFlights(flights);
+            dto.setStatus(AirlineDTO.Status.INFO_FLIGHTS);
+        }
+        return dto;
     }
+
 
     public void sendDTO(AirlineDTO dto) {
         System.out.println("Sending message to Customer: " + dto);
         try {
             jmsTemplate.convertAndSend("sw_matteo_hoffmann_queue_Airline", dto);
         } catch (JmsException e) {
-            //TODO
             System.out.println(e.getMessage());
         }
     }
 
 
     public void bookAsPartner(Order order) {
-        //order.setFlight(new Flight());
         CustomerDTO dto = new CustomerDTO(CustomerDTO.Message.CREATE_ORDER, order);
         dto.setUserInfo(new UserDTO("daumen", "123"));
         System.out.println("Sending message to Airline: " + dto);

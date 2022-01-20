@@ -118,7 +118,6 @@ public class FlightService implements FlightServiceIF {
 
     @Transactional
     public Order bookFlight(Order order) throws FlightException {
-        //TODO customer checking
         Flight flight = flightRepo.findById(order.getFlight().getFlightID()).orElseThrow(() -> new FlightException("Could not find flight.", order.getFlight()));
         int maxSeats = flight.getAirplane().getTotalSeats();
         double maxCargo = flight.getAirplane().getMaxCargo();
@@ -129,7 +128,6 @@ public class FlightService implements FlightServiceIF {
             flight.setBookedCargoInKg(totalBookedCargo);
             flightRepo.save(flight);
             Order savedOrder = orderRepository.save(order);
-            //TODO remove
             if (savedOrder.getCustomer() != null) {
                 if (savedOrder.getCustomer().getAccountType() == AccountType.STAFF) {
                     queueController.bookAsPartner(savedOrder);
