@@ -18,6 +18,8 @@ public class PartnerServiceFactory {
 
     @Bean
     public tempAirportIF createAirport() {
+        //TODO
+
         try {
             Flight flight = restServiceClient.getForObject("http://im-codd.oth-regensburg.de:8935/api/rest/flight",
                     Flight.class,

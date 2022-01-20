@@ -31,9 +31,12 @@ public class FlightController {
     @RequestMapping("/flights")
     //Principal als parameter
     public String viewFlights(Model model) {
+        //TODO list vs. collecitons
         Collection<Flight> flightList = flightService.listAllFlights();
+        List<FlightConnection> connectionList = flightService.listAllFlightConnections();
         model.addAttribute("flights", flightList);
         model.addAttribute("order", new Order());
+        model.addAttribute("connections", connectionList);
         return "flights/flights";
     }
 

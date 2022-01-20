@@ -26,6 +26,13 @@
     </td>
 </div>
 
+<div th:fragment="ConnectionOptions (connections)">
+    <option th:each="connection : ${connections}" th:value="${connection.getFlightNumber()}"
+            th:text="${connection.getFlightNumber() + ': '+connection.getDepartureAirport() + ', ' + connection.getDepartureCity() +', ' +connection.getDepartureCountry+ ' &rArr; '+ connection.getDestinationAirport() + ', '
+                    + connection.getDestinationCity()+', '+ connection.getDestinationCountry + ': '
+                     + connection.getFlightTimeHours() + 'h'}">
+</div>
+
 
 </html>
 
