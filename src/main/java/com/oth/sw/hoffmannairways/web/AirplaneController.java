@@ -6,6 +6,7 @@ import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.util.Helper;
+import com.oth.sw.hoffmannairways.web.queue.QueueController;
 import com.oth.sw.hoffmannairways.web.util.UIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -13,11 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.Collection;
 
 @Controller
@@ -28,6 +29,9 @@ public class AirplaneController {
 
     @Autowired
     private FlightServiceIF flightService;
+
+    @Autowired
+    private QueueController controller;
 
     @RequestMapping(value = "/planes", method = RequestMethod.GET)
     public String viewPlanes(Model model) {
@@ -42,24 +46,12 @@ public class AirplaneController {
         return "planes/planes";
     }
 
-    @RequestMapping(value = "/repairplane/{planeID}", method = RequestMethod.GET)
-    public String viewRepairPlane(Model model, @PathVariable("planeID") int planeID) {
-        try {
-            Airplane plane = airplaneService.getPlane(planeID);
-            model.addAttribute("plane", plane);
 
-
-        } catch (AirplaneException e) {
-            e.printStackTrace();
-        }
-
-
-        return "planes/repairplane";
-    }
-
-
-    @RequestMapping(value = "/repairplane", method = RequestMethod.POST)
+    @RequestMapping(value = "/planes", method = RequestMethod.POST)
     public String createRepairJob(Model model, @Valid @ModelAttribute("plane") Airplane a, BindingResult bindingResult) {
+        //controller.testQueue();
+        System.out.println(a);
+        System.out.println(Arrays.toString(a.getIssues().toArray()));
         if (bindingResult.hasErrors()) {
             model.addAttribute("UIMessage", new UIMessage("Failed to repair plane: Inputs were not valid", "alert-danger"));
         } else {

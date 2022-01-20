@@ -25,6 +25,16 @@ public class QueueConfiguration {
         return new ActiveMQQueue("sw_matteo_hoffmann_queue_Customer");
     }
 
+    @Bean
+    public ActiveMQQueue repairQueueInquiry() {
+        return new ActiveMQQueue("sw_simon_haberl_queue_RepairOrderInquiry");
+    }
+
+    @Bean
+    public ActiveMQQueue repairQueueReply() {
+        return new ActiveMQQueue("sw_simon_haberl_queue_RepairOrderReply");
+    }
+
 
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {

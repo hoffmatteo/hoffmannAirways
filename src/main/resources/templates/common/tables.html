@@ -72,8 +72,8 @@
                 <div th:if="${case} != 'broken'">
                     <td class="align-middle">
                         <div class="float-end">
-                            <a type="button" class="btn btn-primary" th:href="'/repairplane/'+${plane.getPlaneID()}"
-                            >
+                            <a type="button" class="btn btn-primary" data-bs-toggle="modal"
+                               th:attr="data-bs-target='#planeModal'+${plane.getPlaneID()}">
                                 Repair plane
                             </a>
                             <div class="modal fade" tabindex="-1" aria-labelledby="planeModalLabel"
@@ -81,12 +81,59 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="container-fluid">
+                                            <form th:action="@{/planes}" method="post" th:object="${newPlane}">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="bookModalLabel"><label
+                                                            th:text="'Repair Plane '+${plane.getPlaneName()}+ ', ID: ' +${plane.getPlaneID()}"></label>
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <div class="mb-3">
+                                                            <label for="DeadlinePicker"
+                                                                   class="form-label">Deadline</label>
+                                                            <input class="form-control" type="datetime-local"
+                                                                   id="DeadlinePicker"
+                                                                   th:field="${newPlane.unavailableUntil}"/>
+                                                        </div>
 
+                                                        <div class="form-group">
+                                                            <label class="my-2">Select the needed tasks</label>
+                                                            <div th:each="issueType : ${T(de.othr.sw.HaberlRepairs.entity.dto.SingleRepairOrderDTO).values()}"
+                                                                 class="mb-3">
+                                                                <input type="checkbox" class="form-check-input"
+                                                                       th:id="${{issueType}}"
+                                                                       th:value="${{issueType}}" th:field="*{issues}"/>
+                                                                <label th:for="${{issueType}}"
+                                                                       th:text="${issueType}"></label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="hidden" th:value="${plane.getPlaneID()}"
+                                                               id="planeID" name="planeID" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary"
+                                                            th:onclick="return empty()">Submit
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                     </td>
                 </div>
                 <div th:if="${case} == 'broken'">
@@ -96,7 +143,7 @@
                             <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseIssue" aria-expanded="false"
                                     th:attr="data-bs-target='#collapseIssue'+${plane.getPlaneID()}">
-                                View issues
+                                View tasks
                             </button>
                         </div>
 
@@ -110,7 +157,7 @@
                             <div class="accordion-body">
                                 <table>
                                     <tr>
-                                        <th>Issues</th>
+                                        <th>Tasks</th>
                                     </tr>
                                     <tr th:each="issue : ${plane.getIssues()}">
                                         <td>

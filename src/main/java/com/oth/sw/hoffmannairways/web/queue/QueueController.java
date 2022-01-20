@@ -11,6 +11,8 @@ import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.service.exception.UserException;
+import de.othr.sw.HaberlRepairs.entity.dto.RepairOrderDTO;
+import de.othr.sw.HaberlRepairs.entity.dto.SingleRepairOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jms.JmsException;
@@ -18,6 +20,8 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -42,6 +46,7 @@ public class QueueController {
         if (message.getUserInfo() != null) {
             UserDTO info = message.getUserInfo();
             try {
+                //TODO switch
                 User registeredUser = userService.getUserByUsername(info.getUsername());
                 if (userService.checkPassword(info.getPassword(), registeredUser)) {
                     if (message.getMessage() == CustomerDTO.Message.CREATE_ORDER) {
@@ -134,7 +139,20 @@ public class QueueController {
 
          */
 
+    }
 
+    public void testQueue() {
+        RepairOrderDTO dto = new RepairOrderDTO(0, new Date(), "desc", new de.othr.sw.HaberlRepairs.entity.dto.CustomerDTO("test", "test"), new ArrayList<SingleRepairOrderDTO>());
+        try {
+            jmsTemplate.convertAndSend("sw_simon_haberl_queue_RepairOrderInquiry", dto);
+        } catch (JmsException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @JmsListener(destination = "sw_simon_haberl_queue_RepairOrderReply")
+    public void receiveMessage(RepairOrderDTO message) {
+        System.out.println(message);
     }
 
 

@@ -2,14 +2,14 @@ package com.oth.sw.hoffmannairways.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oth.sw.hoffmannairways.entity.util.SingleIdEntity;
-import org.hibernate.validator.constraints.Length;
+import de.othr.sw.HaberlRepairs.entity.dto.SingleRepairOrderDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -27,8 +27,9 @@ public class Airplane extends SingleIdEntity<Integer> {
     @JsonIgnore
     private Date unavailableUntil;
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     @JsonIgnore
-    private List<@NotBlank @Length(min = 4, max = 800) String> issues;
+    private Collection<@NotNull SingleRepairOrderDTO> issues = new ArrayList<>();
     @OneToMany(mappedBy = "airplane", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     @Nullable
@@ -80,11 +81,11 @@ public class Airplane extends SingleIdEntity<Integer> {
         this.unavailableUntil = unavailableUntil;
     }
 
-    public List<String> getIssues() {
+    public Collection<SingleRepairOrderDTO> getIssues() {
         return issues;
     }
 
-    public void setIssues(List<String> issues) {
+    public void setIssues(Collection<SingleRepairOrderDTO> issues) {
         this.issues = issues;
     }
 
