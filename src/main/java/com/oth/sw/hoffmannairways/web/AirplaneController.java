@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.Collection;
 
 @Controller
@@ -49,16 +48,11 @@ public class AirplaneController {
 
     @RequestMapping(value = "/planes", method = RequestMethod.POST)
     public String createRepairJob(Model model, @Valid @ModelAttribute("plane") Airplane a, BindingResult bindingResult) {
-        //controller.testQueue();
-        System.out.println(a);
-        System.out.println(Arrays.toString(a.getIssues().toArray()));
         if (bindingResult.hasErrors()) {
             model.addAttribute("UIMessage", new UIMessage("Failed to repair plane: Inputs were not valid", "alert-danger"));
         } else {
             try {
-
                 Airplane plane = flightService.repairPlane(a);
-                System.out.println("testing");
 
                 String message = "Successfully started repair process for Airplane " + plane.getPlaneName()
                         + ", ID: " + plane.getPlaneID() + ". Deadline is set to " + Helper.getFormattedDate(plane.getUnavailableUntil());

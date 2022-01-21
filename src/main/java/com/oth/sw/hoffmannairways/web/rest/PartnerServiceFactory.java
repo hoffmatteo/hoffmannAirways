@@ -24,13 +24,10 @@ public class PartnerServiceFactory {
             Flight flight = restServiceClient.getForObject("http://im-codd.oth-regensburg.de:8935/api/rest/flight",
                     Flight.class,
                     "R-ZY701");
-            System.out.println(flight);
-            System.out.println("returning true");
+
             return new AirportService();
         } catch (RestClientException e) {
             if (e.contains(ConnectException.class)) {
-                System.out.println("returning false");
-                System.out.println(e.getMessage());
                 return new ProxyService();
             } else {
                 return new AirportService();

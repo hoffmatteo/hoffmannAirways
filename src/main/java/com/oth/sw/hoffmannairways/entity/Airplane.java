@@ -106,6 +106,7 @@ public class Airplane extends SingleIdEntity<Integer> {
 
     }
 
+
     @Override
     public String toString() {
         return "Airplane{" +

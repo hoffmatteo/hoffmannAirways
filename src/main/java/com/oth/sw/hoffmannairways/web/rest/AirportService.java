@@ -4,8 +4,10 @@ import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
+import com.oth.sw.hoffmannairways.util.logger.LoggerIF;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +19,10 @@ public class AirportService implements tempAirportIF {
     @Autowired
     private RestTemplate restServiceClient;
 
+    @Autowired
+    @Qualifier("SuccessLogger")
+    private LoggerIF successLogger;
+
     private final String airportString = "http://im-codd.oth-regensburg.de:8935/api/rest/";
 
     private final String createPath = airportString + "/flight";
@@ -25,17 +31,22 @@ public class AirportService implements tempAirportIF {
 
     @Override
     public Flight createFlight(Flight f) throws FlightException {
-        System.out.println("asked airport!");
         FlighttransactionDTO dto = createDTO(f);
         try {
             FlighttransactionDTO returnedDTO = restServiceClient.postForObject(createPath, dto,
                     FlighttransactionDTO.class);
-            //TODO null checks
 
+            if (returnedDTO.getDepartureTime() != null && returnedDTO.getArrivalTime() != null) {
+                f.setDepartureTime(convertToDateViaSqlTimestamp(returnedDTO.getDepartureTime()));
+                f.setArrivalTime(convertToDateViaSqlTimestamp(returnedDTO.getArrivalTime()));
+                successLogger.log("AirportService", "Successfully created flight at ErbenAirports " + f);
+                return f;
 
-            f.setDepartureTime(convertToDateViaSqlTimestamp(returnedDTO.getDepartureTime()));
-            f.setArrivalTime(convertToDateViaSqlTimestamp(returnedDTO.getArrivalTime()));
-            return f;
+            } else {
+                throw new FlightException("Could not create flight: Received null values from airport ", f);
+
+            }
+
 
         } catch (RestClientException e) {
             throw new FlightException("Could not create flight: Communication to airport failed!", f);
@@ -58,10 +69,11 @@ public class AirportService implements tempAirportIF {
         FlighttransactionDTO dto = createDTO(f);
         //TODO boolean?
         try {
-            return restServiceClient.postForObject(cancelPath, dto, boolean.class);
+            boolean result = restServiceClient.postForObject(cancelPath, dto, boolean.class);
+            successLogger.log("AirportService", "Successfully cancelled flight at ErbenAirports " + f);
+            return result;
 
         } catch (RestClientException | NullPointerException e) {
-            System.out.println("cancel failed!");
             throw new FlightException("Could not cancel flight: Communication to airport failed!", f);
         }
 

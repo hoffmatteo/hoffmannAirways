@@ -6,7 +6,6 @@ import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.entity.FlightConnection;
 import com.oth.sw.hoffmannairways.entity.Order;
-import com.oth.sw.hoffmannairways.entity.util.AccountType;
 import com.oth.sw.hoffmannairways.repository.FlightConnectionRepo;
 import com.oth.sw.hoffmannairways.repository.FlightRepository;
 import com.oth.sw.hoffmannairways.repository.OrderRepository;
@@ -14,16 +13,17 @@ import com.oth.sw.hoffmannairways.service.AirplaneServiceIF;
 import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
+import com.oth.sw.hoffmannairways.util.logger.LoggerIF;
 import com.oth.sw.hoffmannairways.web.queue.QueueController;
 import com.oth.sw.hoffmannairways.web.rest.tempAirportIF;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FlightService implements FlightServiceIF {
@@ -42,6 +42,10 @@ public class FlightService implements FlightServiceIF {
     @Autowired
     tempAirportIF airportService;
 
+    @Autowired
+    @Qualifier("DatabaseLogger")
+    LoggerIF databaseLogger;
+
 
     @Transactional
     public Flight createFlight(Flight flight) throws FlightException {
@@ -49,6 +53,7 @@ public class FlightService implements FlightServiceIF {
         try {
             Flight confirmedFlight = airportService.createFlight(flight);
             Airplane plane = airplaneService.assignPlane(confirmedFlight);
+            databaseLogger.log("FlightService", "Creating flight " + flight);
             return flightRepo.save(confirmedFlight);
         } catch (AirplaneException e) {
             throw new FlightException(e.getMessage(), flight);
@@ -66,13 +71,16 @@ public class FlightService implements FlightServiceIF {
             //TODO return value?
             airportService.cancelFlight(flight);
             if (flight.getArrivalTime() == flight.getAirplane().getUnavailableUntil()) {
-                flight.getAirplane().setUnavailableUntil(null);
+                airplaneService.updateUnavailable(new Date(), flight.getAirplane().getPlaneID());
             }
             notifyCustomer(flight, AirlineDTO.Status.CANCELLED);
             orderRepository.deleteAll(orders);
             flightRepo.delete(flight);
+            databaseLogger.log("FlightService", "Deleting flight " + flight);
         } catch (IllegalArgumentException e) {
             throw new FlightException("Could not delete orders and flight", flight);
+        } catch (AirplaneException e) {
+            throw new FlightException("Could not update plane's availability", flight);
         }
     }
 
@@ -84,13 +92,12 @@ public class FlightService implements FlightServiceIF {
         } else {
 
             Flight oldFlight = flightRepo.findById(flight.getFlightID()).orElseThrow(() -> new FlightException("Could not find flight to edit!", flight));
-            System.out.println(oldFlight.getDepartureTime());
             try {
 
                 Flight confirmedFlight = airportService.editFlight(oldFlight, flight);
-                System.out.println(confirmedFlight.getDepartureTime());
 
                 flightRepo.save(confirmedFlight);
+                databaseLogger.log("FlightService", "Updated flight " + flight);
 
                 notifyCustomer(confirmedFlight, AirlineDTO.Status.CHANGED);
 
@@ -129,14 +136,9 @@ public class FlightService implements FlightServiceIF {
             flight.setBookedSeats(totalBookedSeats);
             flight.setBookedCargoInKg(totalBookedCargo);
             flightRepo.save(flight);
-            Order savedOrder = orderRepository.save(order);
-            if (savedOrder.getCustomer() != null) {
-                if (savedOrder.getCustomer().getAccountType() == AccountType.STAFF) {
-                    queueController.bookAsPartner(savedOrder);
-                }
+            databaseLogger.log("FlightService", "Successfully created order " + order);
+            return orderRepository.save(order);
 
-            }
-            return savedOrder;
 
         } else {
             throw new FlightException("Could not book flight as there are is no more space available.", flight);
@@ -197,9 +199,9 @@ public class FlightService implements FlightServiceIF {
     @Transactional
     public Airplane repairPlane(Airplane plane) throws FlightException, AirplaneException {
 
-
         List<Flight> flightList = flightRepo.findFlightsByAirplane_PlaneID(plane.getPlaneID());
         for (Flight flight : flightList) {
+            databaseLogger.log("FlightService", "Deleting flight because plane has to be repaired " + flight);
             deleteFlight(flight);
         }
         return airplaneService.repairPlane(plane);
@@ -208,8 +210,10 @@ public class FlightService implements FlightServiceIF {
 
     @Override
     public Flight getFlight(int flightID) throws FlightException {
-        Optional<Flight> flightOption = flightRepo.findById(flightID);
-        return flightOption.orElseThrow(() -> new FlightException("Could not find flight", new Flight(flightID)));
+        Flight flight = flightRepo.findById(flightID).orElseThrow(() -> new FlightException("Could not find flight", new Flight(flightID)));
+        databaseLogger.log("FlightService", "Returning flight " + flight);
+        return flight;
+
     }
 
 

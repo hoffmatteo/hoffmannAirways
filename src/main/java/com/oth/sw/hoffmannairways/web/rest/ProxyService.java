@@ -18,7 +18,6 @@ public class ProxyService implements tempAirportIF {
         Date roundedTime = DateUtils.round(proposedTime, Calendar.HOUR);
 
         Date proposedSlot = DateUtils.addMinutes(roundedTime, 5 * (proposedCalendar.get(Calendar.MINUTE) / 5));
-        System.out.println(proposedSlot);
 
         Date correctDate = findSlot(proposedSlot, f);
 
@@ -47,7 +46,6 @@ public class ProxyService implements tempAirportIF {
         }
         HashMap<Date, Flight> currSlot = new HashMap<>();
         currSlot.put(slot, f);
-        System.out.println(airport.toString());
         airport.put(f.getConnection(), currSlot);
         return slot;
 

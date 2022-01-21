@@ -9,7 +9,9 @@ import com.oth.sw.hoffmannairways.service.FlightServiceIF;
 import com.oth.sw.hoffmannairways.service.UserServiceIF;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.UserException;
+import com.oth.sw.hoffmannairways.util.logger.LoggerIF;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,13 +19,17 @@ import javax.annotation.PostConstruct;
 @Component
 public class Setup {
     @Autowired
-    AirplaneServiceIF airplaneService;
+    private AirplaneServiceIF airplaneService;
 
     @Autowired
-    FlightServiceIF flightService;
+    private FlightServiceIF flightService;
 
     @Autowired
-    UserServiceIF userService;
+    private UserServiceIF userService;
+
+    @Autowired
+    @Qualifier("ErrorLogger")
+    private LoggerIF errorLogger;
 
     @PostConstruct
     public void setup() {
@@ -32,7 +38,7 @@ public class Setup {
                 setupAirplanes();
             }
         } catch (AirplaneException e) {
-            System.out.println(e.getMessage());
+            errorLogger.log("Setup", "Could not setup airplanes!");
         }
         if (flightService.listAllFlightConnections().isEmpty()) {
             setupConnections();
@@ -42,7 +48,7 @@ public class Setup {
                 setupUser();
             }
         } catch (UserException e) {
-            System.out.println(e.getMessage());
+            errorLogger.log("Setup", "Could not setup users!");
         }
 
 
