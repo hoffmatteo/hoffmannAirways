@@ -4,12 +4,12 @@
 
 
 <div th:fragment="UIMessage (message)">
-    <div th:if="${message}" th:text="${message.getMessage()}"
-         th:class="${'alert ' + message.getAlertClass()}"></div>
+    <div th:class="${'alert ' + message.getAlertClass()}" th:if="${message}"
+         th:text="${message.getMessage()}"></div>
 </div>
 
 <div th:fragment="FlightInfo (flight)">
-    <th scope="row" class="align-middle">
+    <th class="align-middle" scope="row">
         <label th:text="${flight.getConnection().getFlightNumber()}"></label></th>
     <td class="align-middle">
         <label th:text="${flight.getConnection().getDepartureAirport() + ', ' +
@@ -27,10 +27,11 @@
 </div>
 
 <div th:fragment="ConnectionOptions (connections)">
-    <option th:each="connection : ${connections}" th:value="${connection.getFlightNumber()}"
+    <option th:each="connection : ${connections}"
             th:text="${connection.getFlightNumber() + ': '+connection.getDepartureAirport() + ', ' + connection.getDepartureCity() +', ' +connection.getDepartureCountry+ ' &rArr; '+ connection.getDestinationAirport() + ', '
                     + connection.getDestinationCity()+', '+ connection.getDestinationCountry + ': '
-                     + connection.getFlightTimeHours() + 'h'}">
+                     + connection.getFlightTimeHours() + 'h'}"
+            th:value="${connection.getFlightNumber()}">
 </div>
 
 

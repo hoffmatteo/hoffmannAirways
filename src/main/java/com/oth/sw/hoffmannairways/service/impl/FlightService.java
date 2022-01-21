@@ -15,7 +15,7 @@ import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.util.logger.LoggerIF;
 import com.oth.sw.hoffmannairways.web.queue.QueueController;
-import com.oth.sw.hoffmannairways.web.rest.AirportService;
+import com.oth.sw.hoffmannairways.web.rest.AirportServiceIF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -40,14 +40,14 @@ public class FlightService implements FlightServiceIF {
     QueueController queueController;
 
     @Autowired
-    AirportService airportService;
+    AirportServiceIF airportService;
 
     @Autowired
     @Qualifier("DatabaseLogger")
     LoggerIF databaseLogger;
 
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public Flight createFlight(Flight flight) throws FlightException {
         try {
             Flight confirmedFlight = airportService.createFlight(flight);
@@ -59,7 +59,7 @@ public class FlightService implements FlightServiceIF {
         }
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public void deleteFlight(Flight flight) throws FlightException {
         if (flight.getDepartureTime().before(new Date()) && flight.getArrivalTime().after(new Date())) {
             throw new FlightException("Can not delete flight that is currently in transit.", flight);
@@ -82,7 +82,7 @@ public class FlightService implements FlightServiceIF {
     }
 
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public Flight editFlight(Flight flight) throws FlightException {
         if (flight.getDepartureTime().before(new Date()) && flight.getArrivalTime().after(new Date())) {
             throw new FlightException("Can not edit flight that is currently in transit.", flight);
@@ -122,7 +122,7 @@ public class FlightService implements FlightServiceIF {
         }
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public Order bookFlight(Order order) throws FlightException {
         Flight flight = flightRepo.findById(order.getFlight().getFlightID()).orElseThrow(() -> new FlightException("Could not find flight.", order.getFlight()));
         int maxSeats = flight.getAirplane().getTotalSeats();
@@ -169,7 +169,6 @@ public class FlightService implements FlightServiceIF {
         return orderRepository.findOrdersByCustomer_UsernameAndFlight_DepartureTimeAfterOrderByFlight_DepartureTime(username, new Date());
     }
 
-    //TODO change name
     @Override
     public List<Flight> listAllFlights() {
         return flightRepo.getAllByDepartureTimeAfterOrderByDepartureTime(new Date());
@@ -187,13 +186,13 @@ public class FlightService implements FlightServiceIF {
     }
 
     @Override
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public FlightConnection createFlightConnection(FlightConnection flightConnection) {
         return flightConnectionRepo.save(flightConnection);
     }
 
     @Override
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public Airplane repairPlane(Airplane plane) throws FlightException, AirplaneException {
 
         List<Flight> flightList = flightRepo.findFlightsByAirplane_PlaneID(plane.getPlaneID());

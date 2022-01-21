@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AirplaneService implements AirplaneServiceIF {
@@ -27,7 +27,8 @@ public class AirplaneService implements AirplaneServiceIF {
     @Qualifier("DatabaseLogger")
     LoggerIF databaseLogger;
 
-    @Transactional
+    @Override
+    @Transactional(Transactional.TxType.REQUIRED)
     public Airplane assignPlane(Flight flight) throws AirplaneException {
         if (flight.getAirplane() == null) {
             throw new AirplaneException("Plane is not set!", null);
@@ -43,7 +44,8 @@ public class AirplaneService implements AirplaneServiceIF {
     }
 
 
-    @Transactional
+    @Override
+    @Transactional(Transactional.TxType.REQUIRED)
     public Airplane repairPlane(Airplane plane) throws AirplaneException {
 
         if (!plane.getIssues().isEmpty() && plane.getUnavailableUntil() != null) {
@@ -66,25 +68,29 @@ public class AirplaneService implements AirplaneServiceIF {
         }
     }
 
-    @Transactional
+    @Override
+    @Transactional(Transactional.TxType.REQUIRED)
     public Airplane createPlane(Airplane airplane) {
         return airplaneRepository.save(airplane);
     }
 
-    public Collection<Airplane> getAvailablePlanes() {
+    @Override
+    public List<Airplane> getAvailablePlanes() {
         return airplaneRepository.findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNullOrderByPlaneName(new Date());
     }
 
-
-    public Collection<Airplane> getAllPlanes() {
+    @Override
+    public List<Airplane> getAllPlanes() {
         return airplaneRepository.findAllByOrderByPlaneName();
     }
 
-    public Collection<Airplane> getAllAssignedPlanes() {
+    @Override
+    public List<Airplane> getAllAssignedPlanes() {
         return airplaneRepository.findDistinctByUnavailableUntilAfterAndAssignmentsIsNotNull(new Date());
     }
 
-    public Collection<Airplane> getAllBrokenPlanes() {
+    @Override
+    public List<Airplane> getAllBrokenPlanes() {
         return airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentsIsNull(new Date());
     }
 
@@ -95,6 +101,7 @@ public class AirplaneService implements AirplaneServiceIF {
     }
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRED)
     public void updateUnavailable(Date date, int planeID) throws AirplaneException {
         Airplane plane = getPlane(planeID);
         if (date != null) {

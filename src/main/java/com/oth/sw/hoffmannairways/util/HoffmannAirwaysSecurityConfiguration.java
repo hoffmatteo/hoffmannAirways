@@ -16,23 +16,20 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class HoffmannAirwaysSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
+            "/css/**", "/img/**", "/fonts/**", "/js/**", "/", "/flights", "/login", "/forgotPassword", "/register", "/error", "/static/img/**"
+    };
+    private static final String[] ALLOW_ACCESS_FOR_STAFF = {
+            "/repairplane", "/editflight/**", "/createflight", "/planes"
+    };
     @Autowired
     private UserDetailsService userSecurityService;
-
     @Autowired
     private HoffmannAirwaysSecurityUtilities securityUtilities;
 
     private BCryptPasswordEncoder passwordEncoder() {
         return securityUtilities.passwordEncoder();
     }
-
-    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {
-            "/css/**", "/img/**", "/fonts/**", "/js/**", "/", "/flights", "/login", "/forgotPassword", "/register", "/error", "/static/img/**"
-    };
-
-    private static final String[] ALLOW_ACCESS_FOR_STAFF = {
-            "/repairplane", "/editflight/**", "/createflight", "/planes"
-    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -46,7 +43,7 @@ public class HoffmannAirwaysSecurityConfiguration extends WebSecurityConfigurerA
                 .formLogin()
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/")
-                .failureUrl("/login?error")
+                .failureUrl("/login?error=true")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/?logout")

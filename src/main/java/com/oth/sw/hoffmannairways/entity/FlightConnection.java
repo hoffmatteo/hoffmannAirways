@@ -39,11 +39,14 @@ public class FlightConnection extends SingleIdEntity<String> {
         this.flightTimeHours = flightTimeHours;
     }
 
+    public FlightConnection() {
+
+    }
+
     @Override
     public String getID() {
         return this.flightNumber;
     }
-
 
     public String getFlightNumber() {
         return flightNumber;
@@ -107,10 +110,6 @@ public class FlightConnection extends SingleIdEntity<String> {
 
     public void setDepartureCity(String departureCity) {
         this.departureCity = departureCity;
-    }
-
-    public FlightConnection() {
-
     }
 
     @Override

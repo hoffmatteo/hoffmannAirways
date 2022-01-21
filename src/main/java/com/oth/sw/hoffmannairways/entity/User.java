@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-//TODO unmodifiable list
 public class User extends SingleIdEntity<String> implements UserDetails, Serializable {
     @Id
     @Length(min = 4, max = 30)
@@ -55,10 +54,6 @@ public class User extends SingleIdEntity<String> implements UserDetails, Seriali
         this.sendNotification = sendNotification;
     }
 
-    public void setUsername(String email) {
-        this.username = email;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new GrantedAuthority() {
@@ -73,9 +68,17 @@ public class User extends SingleIdEntity<String> implements UserDetails, Seriali
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     @Override
@@ -96,10 +99,6 @@ public class User extends SingleIdEntity<String> implements UserDetails, Seriali
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {

@@ -26,7 +26,6 @@ public class Flight extends SingleIdEntity<Integer> {
     private int bookedSeats = 0;
     private double bookedCargoInKg = 0.0;
 
-    //TODO cascade stuff
     @ManyToOne
     @JsonIgnore
     private Airplane airplane;
@@ -36,13 +35,7 @@ public class Flight extends SingleIdEntity<Integer> {
 
     @ManyToOne
     private FlightConnection connection;
-    //TODO diagramm
 
-
-    @Override
-    public Integer getID() {
-        return this.flightID;
-    }
 
     public Flight(Date departureTime, Airplane airplane, User creator, FlightConnection connection) {
         this.departureTime = departureTime;
@@ -66,6 +59,10 @@ public class Flight extends SingleIdEntity<Integer> {
         this.flightID = flightID;
     }
 
+    @Override
+    public Integer getID() {
+        return this.flightID;
+    }
 
     public Airplane getAirplane() {
         return airplane;

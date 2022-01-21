@@ -1,48 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head th:replace="common/header :: header"/>
-<script type="text/javascript" th:src="@{/js/createflight.js}"></script>
+<script th:src="@{/js/createflight.js}" type="text/javascript"></script>
 <div th:fragment="flightform (flight, connections, planes, selectedPlane, delete)">
     <div class="mb-3">
-        <label for="selectFlightroute" class="form-label">Flight route</label>
-        <select class="form-select" aria-label="Default select example" id="selectFlightroute"
-                th:onchange="setFlightDuration()" th:field="${flight.connection}">
+        <label class="form-label" for="selectFlightroute">Flight route</label>
+        <select aria-label="Default select example" class="form-select" id="selectFlightroute"
+                th:field="${flight.connection}" th:onchange="setFlightDuration()">
             <div th:replace="common/components :: ConnectionOptions (${connections})">
             </div>
 
         </select>
     </div>
     <div class="mb-3">
-        <label for="DepartureTimePicker" class="form-label">Departure time</label>
-        <input class="form-control" type="datetime-local" id="DepartureTimePicker" th:onchange="updateArrivalTime()"
-               th:field="${flight.departureTime}"/>
+        <label class="form-label" for="DepartureTimePicker">Departure time</label>
+        <input class="form-control" id="DepartureTimePicker" th:field="${flight.departureTime}"
+               th:onchange="updateArrivalTime()"
+               type="datetime-local"/>
     </div>
     <div class="mb-3">
-        <label for="ArrivalTimePicker" class="form-label">Arrival time</label>
-        <input class="form-control" type="datetime-local" id="ArrivalTimePicker" readonly
-               th:field="${flight.arrivalTime}"/>
+        <label class="form-label" for="ArrivalTimePicker">Arrival time</label>
+        <input class="form-control" id="ArrivalTimePicker" readonly th:field="${flight.arrivalTime}"
+               type="datetime-local"/>
     </div>
 
     <div class="mb-3">
-        <label for="selectAirplane" class="form-label">Airplane</label>
-        <select class="form-select" aria-label="Default select example" id="selectAirplane"
+        <label class="form-label" for="selectAirplane">Airplane</label>
+        <select aria-label="Default select example" class="form-select" id="selectAirplane"
                 th:field="${flight.airplane}">
             <div th:unless="${selectedPlane}">
-                <option value="0" selected hidden aria-disabled="true">Choose here</option>
+                <option aria-disabled="true" hidden selected value="0">Choose here</option>
             </div>
             <div th:if="${selectedPlane}">
-                <option th:value="${selectedPlane.getPlaneID()}"
-                        th:text="${selectedPlane.getPlaneName() +' #' + selectedPlane.getPlaneID()}">
+                <option th:text="${selectedPlane.getPlaneName() +' #' + selectedPlane.getPlaneID()}"
+                        th:value="${selectedPlane.getPlaneID()}">
             </div>
 
-            <option th:each="airplane : ${planes}" th:value="${airplane.getPlaneID()}"
-                    th:text="${airplane.getPlaneName() +' #' + airplane.getPlaneID() + (airplane.getUnavailableUntil() == null ? ', Available' : ', Assigned until: ' + #dates.format(airplane.getUnavailableUntil(), 'yyyy-MM-dd HH:mm'))}">
+            <option th:each="airplane : ${planes}"
+                    th:text="${airplane.getPlaneName() +' #' + airplane.getPlaneID() + (airplane.getUnavailableUntil() == null ? ', Available' : ', Assigned until: ' + #dates.format(airplane.getUnavailableUntil(), 'yyyy-MM-dd HH:mm'))}"
+                    th:value="${airplane.getPlaneID()}">
         </select>
     </div>
 
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a th:href="'/deleteflight/'+${flight.getFlightID()}" class="btn btn-danger"
+    <button class="btn btn-primary" type="submit">Submit</button>
+    <a class="btn btn-danger" th:href="'/deleteflight/'+${flight.getFlightID()}"
        th:if="${delete == true}">Delete
     </a>
 

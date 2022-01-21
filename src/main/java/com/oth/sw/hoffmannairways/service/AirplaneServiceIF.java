@@ -4,8 +4,8 @@ import com.oth.sw.hoffmannairways.entity.Airplane;
 import com.oth.sw.hoffmannairways.entity.Flight;
 import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public interface AirplaneServiceIF {
 
@@ -15,15 +15,15 @@ public interface AirplaneServiceIF {
 
     public Airplane createPlane(Airplane plane) throws AirplaneException;
 
-    public Collection<Airplane> getAvailablePlanes();
+    public List<Airplane> getAvailablePlanes();
 
-    public Collection<Airplane> getAllPlanes();
+    public List<Airplane> getAllPlanes();
 
-    public Collection<Airplane> getAllAssignedPlanes();
+    public List<Airplane> getAllAssignedPlanes();
 
-    public Collection<Airplane> getAllBrokenPlanes();
+    public List<Airplane> getAllBrokenPlanes();
 
     public Airplane getPlane(int id) throws AirplaneException;
-    
+
     void updateUnavailable(Date date, int planeID) throws AirplaneException;
 }

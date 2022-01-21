@@ -17,20 +17,17 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Component
-public class AirportService {
+public class AirportService implements AirportServiceIF {
+    private final String airportString = "http://im-codd.oth-regensburg.de:8935/api/rest/";
+    private final String createPath = airportString + "/flight";
+    private final String cancelPath = createPath + "/cancel";
     @Autowired
     private RestTemplate restServiceClient;
-
     @Autowired
     @Qualifier("SuccessLogger")
     private LoggerIF successLogger;
 
-    private final String airportString = "http://im-codd.oth-regensburg.de:8935/api/rest/";
-
-    private final String createPath = airportString + "/flight";
-
-    private final String cancelPath = createPath + "/cancel";
-
+    @Override
     public Flight createFlight(Flight f) throws FlightException {
         FlighttransactionDTO dto = createDTO(f);
         try {
@@ -64,7 +61,7 @@ public class AirportService {
 
     }
 
-
+    @Override
     public boolean cancelFlight(Flight f) throws FlightException {
         FlighttransactionDTO dto = createDTO(f);
         try {
@@ -79,6 +76,7 @@ public class AirportService {
 
     }
 
+    @Override
     public Flight editFlight(Flight oldFlight, Flight newFlight) throws FlightException {
         boolean cancelled = cancelFlight(oldFlight);
         if (cancelled) {

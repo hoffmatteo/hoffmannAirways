@@ -19,15 +19,6 @@ public class AirlineDTO implements Serializable {
         this.status = status;
     }
 
-    public enum Status {
-        CANCELLED,
-        CHANGED,
-        CONFIRMED,
-        INFO_CONNECTIONS,
-        INFO_FLIGHTS,
-        ERROR //previous message threw error
-    }
-
     public AirlineDTO() {
 
     }
@@ -70,7 +61,6 @@ public class AirlineDTO implements Serializable {
         this.availableConnections = availableConnections;
     }
 
-
     public FlightDTO getCurrentFlight() {
         return currentFlight;
     }
@@ -103,5 +93,14 @@ public class AirlineDTO implements Serializable {
                 ", currentFlight=" + currentFlight +
                 ", status=" + status +
                 '}';
+    }
+
+    public enum Status {
+        CANCELLED,
+        CHANGED,
+        CONFIRMED,
+        INFO_CONNECTIONS,
+        INFO_FLIGHTS,
+        ERROR //previous message threw error
     }
 }

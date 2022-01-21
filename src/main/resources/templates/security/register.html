@@ -6,46 +6,56 @@
 <body>
 
 <div th:replace="common/header :: navigation"/>
-
-<div class="p-5">
-    <h2>Register a new account</h2>
+<div class="p-3">
     <div th:replace="common/components :: UIMessage (${UIMessage})"></div>
+</div>
 
-    <form th:action="@{/register}" method="post" th:object="${user}">
+<div class="text-center">
+    <img alt="Image: Register" class="my-3" height="20%" src="/img/undraw_sign_in_re_o58h.svg"
+         width="20%"/>
+    <h2>Register a new account</h2>
+
+</div>
+
+
+<div class="container py-3 d-flex justify-content-center">
+
+    <form method="post" th:action="@{/register}" th:object="${user}">
         <div class="mb-3">
-            <label for="inputName" class="form-label">Full name</label>
-            <input type="text" name="name" class="form-control" id="inputName" aria-describedby="emailHelp"
-                   th:field="${user.name}">
-            <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}"
-                 th:errors="${user.name}"></div>
+            <label class="form-label" for="inputName">Full name</label>
+            <input aria-describedby="emailHelp" class="form-control" id="inputName" name="name" th:field="${user.name}"
+                   type="text">
+            <div class="alert alert-danger" th:errors="${user.name}"
+                 th:if="${#fields.hasErrors('name')}"></div>
 
         </div>
         <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                   th:field="${user.username}">
-            <div class="alert alert-danger" th:if="${#fields.hasErrors('username')}"
-                 th:errors="${user.username}"></div>
+            <label class="form-label" for="exampleInputEmail1">Username</label>
+            <input aria-describedby="emailHelp" class="form-control" id="exampleInputEmail1" name="username"
+                   th:field="${user.username}"
+                   type="text">
+            <div class="alert alert-danger" th:errors="${user.username}"
+                 th:if="${#fields.hasErrors('username')}"></div>
 
 
         </div>
         <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" id="exampleInputPassword1"
-                   th:field="${user.password}">
-            <div class="alert alert-danger" th:if="${#fields.hasErrors('password')}"
-                 th:errors="${user.password}"></div>
+            <label class="form-label" for="exampleInputPassword1">Password</label>
+            <input class="form-control" id="exampleInputPassword1" name="password" th:field="${user.password}"
+                   type="password">
+            <div class="alert alert-danger" th:errors="${user.password}"
+                 th:if="${#fields.hasErrors('password')}"></div>
 
 
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
     </form>
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+<script crossorigin="anonymous"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
 </body>

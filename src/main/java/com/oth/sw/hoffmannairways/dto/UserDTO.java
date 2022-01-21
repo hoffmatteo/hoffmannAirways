@@ -11,6 +11,10 @@ public class UserDTO implements Serializable {
         this.password = password;
     }
 
+    public UserDTO() {
+
+    }
+
     public String getUsername() {
         return username;
     }
@@ -25,9 +29,5 @@ public class UserDTO implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public UserDTO() {
-        
     }
 }

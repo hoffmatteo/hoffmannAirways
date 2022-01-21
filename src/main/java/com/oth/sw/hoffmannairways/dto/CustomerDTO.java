@@ -14,36 +14,6 @@ public class CustomerDTO implements Serializable {
     private OrderDTO order; //if a new order should be created
     private UserDTO userInfo;
 
-    public enum Message {
-        CREATE_ORDER,
-        UPDATE_CONNECTIONS,
-        UPDATE_FLIGHTS
-    }
-
-    public FlightConnection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(FlightConnection connection) {
-        this.connection = connection;
-    }
-
-    public Message getMessage() {
-        return message;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
-    }
-
-    public OrderDTO getOrder() {
-        return order;
-    }
-
-    public void setOrder(OrderDTO order) {
-        this.order = order;
-    }
-
     public CustomerDTO(Message message) {
         this.message = message;
     }
@@ -75,6 +45,34 @@ public class CustomerDTO implements Serializable {
         this.userInfo = userInfo;
     }
 
+    public CustomerDTO() {
+
+    }
+
+    public FlightConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(FlightConnection connection) {
+        this.connection = connection;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
+    public OrderDTO getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderDTO order) {
+        this.order = order;
+    }
+
     public int getMessageID() {
         return messageID;
     }
@@ -99,7 +97,9 @@ public class CustomerDTO implements Serializable {
                 '}';
     }
 
-    public CustomerDTO() {
-
+    public enum Message {
+        CREATE_ORDER,
+        UPDATE_CONNECTIONS,
+        UPDATE_FLIGHTS
     }
 }

@@ -34,11 +34,21 @@ public class Airplane extends SingleIdEntity<Integer> {
     @Nullable
     private List<@NotNull Flight> assignments = new ArrayList<>();
 
+    public Airplane(String planeName, int totalSeats, double maxCargo) {
+        this.planeName = planeName;
+        this.totalSeats = totalSeats;
+        this.maxCargo = maxCargo;
+    }
+
+
+    public Airplane() {
+
+    }
+
     @Override
     public Integer getID() {
         return this.planeID;
     }
-
 
     public int getPlaneID() {
         return planeID;
@@ -95,17 +105,6 @@ public class Airplane extends SingleIdEntity<Integer> {
     public void setAssignments(List<Flight> assignment) {
         this.assignments = assignment;
     }
-
-    public Airplane(String planeName, int totalSeats, double maxCargo) {
-        this.planeName = planeName;
-        this.totalSeats = totalSeats;
-        this.maxCargo = maxCargo;
-    }
-
-    public Airplane() {
-
-    }
-
 
     @Override
     public String toString() {

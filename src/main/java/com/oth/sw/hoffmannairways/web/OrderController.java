@@ -19,7 +19,6 @@ import java.util.Collection;
 @Controller
 @Scope("singleton")
 public class OrderController {
-    //TODO order controller?
     @Autowired
     private FlightServiceIF flightService;
 
@@ -30,7 +29,6 @@ public class OrderController {
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
     //Principal als parameter
     public String viewOrders(Model model, @AuthenticationPrincipal User user) {
-        //TODO check if values are null, return errors
         Collection<Order> upcomingOrders = new ArrayList<>();
         Collection<Order> pastOrders = new ArrayList<>();
 
@@ -46,7 +44,7 @@ public class OrderController {
         }
         model.addAttribute("pastOrders", pastOrders);
         model.addAttribute("upcomingOrders", upcomingOrders);
-        
+
         return "orders";
     }
 

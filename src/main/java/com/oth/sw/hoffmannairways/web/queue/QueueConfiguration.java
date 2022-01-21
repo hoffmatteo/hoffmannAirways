@@ -15,6 +15,10 @@ public class QueueConfiguration {
     @Value("${active-mq-broker-url}")
     private String brokerUrl;
 
+    public QueueConfiguration() {
+
+    }
+
     @Bean
     public ActiveMQQueue airlineQueue() {
         return new ActiveMQQueue("sw_matteo_hoffmann_queue_Airline");
@@ -35,7 +39,6 @@ public class QueueConfiguration {
         return new ActiveMQQueue("sw_simon_haberl_queue_RepairOrderReply");
     }
 
-
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory();
@@ -52,15 +55,10 @@ public class QueueConfiguration {
         return converter;
     }
 
-
     @Bean
     public JmsTemplate jmsTemplate() {
         JmsTemplate template = new JmsTemplate(connectionFactory());
         template.setMessageConverter(jacksonJmsMessageConverter());
         return template;
-    }
-
-    public QueueConfiguration() {
-
     }
 }

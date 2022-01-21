@@ -7,6 +7,6 @@ public class DatabaseLogger implements LoggerIF {
 
     @Override
     public void log(String module, String message) {
-        System.out.println(ANSI_BLUE + "[" + module + "]+Database: " + message + ANSI_RESET);
+        System.out.println(ANSI_BLUE + "[" + module + "]: " + message + ANSI_RESET);
     }
 }

@@ -7,6 +7,6 @@ public class QueueLogger implements LoggerIF {
 
     @Override
     public void log(String module, String message) {
-        System.out.println(ANSI_CYAN + "[" + module + "] + Queue: " + message + ANSI_RESET);
+        System.out.println(ANSI_CYAN + "[" + module + "]: " + message + ANSI_RESET);
     }
 }
