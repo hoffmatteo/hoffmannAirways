@@ -72,35 +72,25 @@ public class AirplaneService implements AirplaneServiceIF {
     }
 
     public Collection<Airplane> getAvailablePlanes() {
-        Collection<Airplane> availablePlanes = airplaneRepository.findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNullOrderByPlaneName(new Date());
-        databaseLogger.log("AirplaneService", "Returning available planes, size " + availablePlanes.size());
-        return availablePlanes;
+        return airplaneRepository.findAirplanesByUnavailableUntilBeforeOrUnavailableUntilIsNullOrderByPlaneName(new Date());
     }
 
 
     public Collection<Airplane> getAllPlanes() {
-        Collection<Airplane> allPlanes = airplaneRepository.findAllByOrderByPlaneName();
-        databaseLogger.log("AirplaneService", "Returning all planes, size " + allPlanes.size());
-        return allPlanes;
+        return airplaneRepository.findAllByOrderByPlaneName();
     }
 
     public Collection<Airplane> getAllAssignedPlanes() {
-        Collection<Airplane> assignedPlanes = airplaneRepository.findDistinctByUnavailableUntilAfterAndAssignmentsIsNotNull(new Date());
-        databaseLogger.log("AirplaneService", "Returning all assigned planes, size " + assignedPlanes.size());
-        return assignedPlanes;
+        return airplaneRepository.findDistinctByUnavailableUntilAfterAndAssignmentsIsNotNull(new Date());
     }
 
     public Collection<Airplane> getAllBrokenPlanes() {
-        Collection<Airplane> brokenPlanes = airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentsIsNull(new Date());
-        databaseLogger.log("AirplaneService", "Returning all broken planes, size " + brokenPlanes.size());
-        return brokenPlanes;
+        return airplaneRepository.findAirplanesByUnavailableUntilAfterAndAssignmentsIsNull(new Date());
     }
 
     @Override
     public Airplane getPlane(int id) throws AirplaneException {
-        Airplane plane = airplaneRepository.findAirplaneByPlaneID(id).orElseThrow(() -> new AirplaneException("Could not find Airplane!", null));
-        databaseLogger.log("AirplaneService", "Returning plane " + plane.getPlaneID());
-        return plane;
+        return airplaneRepository.findAirplaneByPlaneID(id).orElseThrow(() -> new AirplaneException("Could not find Airplane!", null));
 
     }
 

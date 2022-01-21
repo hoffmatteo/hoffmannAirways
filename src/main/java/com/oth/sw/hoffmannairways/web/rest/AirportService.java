@@ -8,6 +8,7 @@ import com.oth.sw.hoffmannairways.util.logger.LoggerIF;
 import de.othr.eerben.erbenairports.backend.data.entities.dto.FlighttransactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class AirportService implements tempAirportIF {
+@Component
+public class AirportService {
     @Autowired
     private RestTemplate restServiceClient;
 
@@ -29,7 +31,6 @@ public class AirportService implements tempAirportIF {
 
     private final String cancelPath = createPath + "/cancel";
 
-    @Override
     public Flight createFlight(Flight f) throws FlightException {
         FlighttransactionDTO dto = createDTO(f);
         try {
@@ -64,10 +65,8 @@ public class AirportService implements tempAirportIF {
     }
 
 
-    @Override
     public boolean cancelFlight(Flight f) throws FlightException {
         FlighttransactionDTO dto = createDTO(f);
-        //TODO boolean?
         try {
             boolean result = restServiceClient.postForObject(cancelPath, dto, boolean.class);
             successLogger.log("AirportService", "Successfully cancelled flight at ErbenAirports " + f);
@@ -80,7 +79,6 @@ public class AirportService implements tempAirportIF {
 
     }
 
-    @Override
     public Flight editFlight(Flight oldFlight, Flight newFlight) throws FlightException {
         boolean cancelled = cancelFlight(oldFlight);
         if (cancelled) {

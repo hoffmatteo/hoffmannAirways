@@ -155,8 +155,8 @@ public class QueueController {
     }
 
 
-    public void requestRepairJob(Airplane plane) { //TODO desc
-        RepairOrderDTO dto = new RepairOrderDTO(plane.getPlaneID(), plane.getUnavailableUntil(), "desc", new de.othr.sw.HaberlRepairs.entity.dto.CustomerDTO("test", "test"), plane.getIssues());
+    public void requestRepairJob(Airplane plane) {
+        RepairOrderDTO dto = new RepairOrderDTO(plane.getPlaneID(), plane.getUnavailableUntil(), "New request from HoffmannAirways", new de.othr.sw.HaberlRepairs.entity.dto.CustomerDTO("test", "test"), plane.getIssues());
         try {
             jmsTemplate.convertAndSend("sw_simon_haberl_queue_RepairOrderInquiry", dto);
             queueLogger.log("QueueController", "Sending message to HaberlRepairs " + dto);

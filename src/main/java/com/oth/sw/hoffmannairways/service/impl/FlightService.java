@@ -15,7 +15,7 @@ import com.oth.sw.hoffmannairways.service.exception.AirplaneException;
 import com.oth.sw.hoffmannairways.service.exception.FlightException;
 import com.oth.sw.hoffmannairways.util.logger.LoggerIF;
 import com.oth.sw.hoffmannairways.web.queue.QueueController;
-import com.oth.sw.hoffmannairways.web.rest.tempAirportIF;
+import com.oth.sw.hoffmannairways.web.rest.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class FlightService implements FlightServiceIF {
     QueueController queueController;
 
     @Autowired
-    tempAirportIF airportService;
+    AirportService airportService;
 
     @Autowired
     @Qualifier("DatabaseLogger")
@@ -49,7 +49,6 @@ public class FlightService implements FlightServiceIF {
 
     @Transactional
     public Flight createFlight(Flight flight) throws FlightException {
-        //TODO think about changing to proxy airport when exception occurs?
         try {
             Flight confirmedFlight = airportService.createFlight(flight);
             Airplane plane = airplaneService.assignPlane(confirmedFlight);
@@ -62,13 +61,11 @@ public class FlightService implements FlightServiceIF {
 
     @Transactional
     public void deleteFlight(Flight flight) throws FlightException {
-        //TODO check what happens when errors occur!
         if (flight.getDepartureTime().before(new Date()) && flight.getArrivalTime().after(new Date())) {
             throw new FlightException("Can not delete flight that is currently in transit.", flight);
         }
         try {
             List<Order> orders = orderRepository.findOrdersByFlight_FlightID(flight.getFlightID());
-            //TODO return value?
             airportService.cancelFlight(flight);
             if (flight.getArrivalTime() == flight.getAirplane().getUnavailableUntil()) {
                 airplaneService.updateUnavailable(new Date(), flight.getAirplane().getPlaneID());

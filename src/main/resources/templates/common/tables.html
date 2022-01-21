@@ -17,6 +17,7 @@
             <th scope="col">Departure time</th>
             <th scope="col">Arrival time</th>
             <th scope="col">Booked seats</th>
+            <th scope="col" sec:authorize="hasAuthority('STAFF')">Booked cargo</th>
 
         </tr>
         </thead>
@@ -29,6 +30,8 @@
             <div th:replace="common/components :: FlightInfo (${order.getFlight()})"></div>
             <td class="align-middle"><label th:text="${order.getTotalSeats()}"></label>
             </td>
+            <td class="align-middle" sec:authorize="hasAuthority('STAFF')">
+                <label th:text="${order.getTotalCargoInKg()}"></label></td>
         </tr>
         </tbody>
     </table>
